@@ -33,5 +33,20 @@ Configuration parameters:
 * alfresco/@host: Alfresco Installation URL
 * alfresco/@rootFolderId: Alfresco folder managed by Zefiro
 
+##License
+
+Zefiro is is licensed under the terms of GNU AFFERO GENERAL PUBLIC LICENSE Version 3.
+
+##Contribution
+
+To contribute to Zefiro development you need to:
+* download Zefiro Individual Contributor Assignment Agreement or Zefiro Entity Contributor Assignment Agreement
+* sign the Agreement
+* email the signed agreement to dev@make-it.it
+
+
+
+
+
 
 
