@@ -1,0 +1,71 @@
+package it.makeit.zefiro.ws.resources;
+
+import it.makeit.alfresco.AlfrescoHelper;
+import it.makeit.jbrick.JBrickConfigManager;
+import it.makeit.zefiro.Util;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.apache.chemistry.opencmis.client.api.ObjectType;
+import org.apache.chemistry.opencmis.client.api.Session;
+
+
+@Path("/DocumentType")
+@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+public class DocumentType {
+	//Ottengo la lista delle proprietà che non voglio visualizzare sul client
+	private String[] mPropertyBlacklist = JBrickConfigManager.getInstance().getPropertyList("propertyBlacklist/entry", "@name");
+	private static final String mAlfrescoBaseTypeId = JBrickConfigManager.getInstance().getMandatoryProperty("alfresco/@baseTypeId");
+
+	@Context
+	private HttpServletRequest httpRequest;
+
+	// TODO (Alessio): mantenere una sessione Alfresco permanente per interrogare i tipi documento,
+	// posto che faccia caching anche dei tipi documento (da verificare).
+	// Si tratta di dati stabili e che variano solo per intervento di un utente privilegiato
+	// mediante una maschera apposita: alla variazione si potrebbe fare un refresh dell'oggetto
+	// Session.
+
+	@GET
+	@Path("/")
+	public Response getDocTypes() {
+		Session lSession = Util.getUserAlfrescoSession(httpRequest);
+
+		List<ObjectType> lObjectTypeTreeLeaves =
+		        AlfrescoHelper.getTypesTreeLeaves(lSession, mAlfrescoBaseTypeId, true);
+
+		return Response.ok(lObjectTypeTreeLeaves).build();
+	}
+
+	@GET
+	@Path("/{id}")
+	public Response getDocTypeById(@PathParam("id") String pStrId) {
+		Session lSession = Util.getUserAlfrescoSession(httpRequest);
+		ObjectType lObjectType = AlfrescoHelper.getTypeDefinition(lSession, pStrId);
+
+		return Response.ok(lObjectType).build();
+	}
+
+	@Path("/{id}/relation")
+	public RelationType getAllowedRelationTypes(@PathParam("id") String pStrId) {
+		return new RelationType(pStrId, httpRequest);
+	}
+	
+	// Non più usato: logica trasferita a front-end
+	// Rimuovo dall' ObjectType le proprietà nella blackslist
+	private void removeBlacklistProperties(ObjectType pObjectType) {
+		
+		for (String lPropertyName : mPropertyBlacklist) {
+			pObjectType.getPropertyDefinitions().remove(lPropertyName);
+		}
+	}
+}
