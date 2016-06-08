@@ -222,6 +222,7 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 			$scope.documentBreadcrumbs.push({
 				id: $scope.documentEditing.id,
 				name: $scope.documentEditing.name,
+				description: $scope.documentEditing.description,
 				rownum: i
 			});
 			$scope.editing = true;

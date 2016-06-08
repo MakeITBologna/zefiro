@@ -216,7 +216,7 @@
 							<span ng-show="dv.isLatestVersion" class="label label-success">{{dv.version}}</span>
 							<span ng-hide="dv.isLatestVersion" class="label label-default">{{dv.version}}</span>
 						</td>
-						<td>{{dv.lastModificationDate | date: '${localePatternTimestamp}'}}</td>
+						<td><a ng-href="a/Document/{{dv.id}}/content" target="_blank">{{dv.lastModificationDate | date: '${localePatternTimestamp}'}}</a></td>
 						<td>{{dv.lastModifiedBy}}</td>
 					</tr>
 				</tbody>
@@ -236,12 +236,12 @@
 					<table class="table table-hover">
 					<tbody><!-- relazioni esistenti per il tipo -->
 						<tr ng-repeat="r in documentEditing.relationships | filter:isRelationOfType(rt, 'source', documentEditing.id)">
-							<td><a ng-click="showDocument({id: r.target.id, name: r.target.name})" href>{{r.target.name}}</a></td>
+							<td><a ng-click="showDocument({id: r.target.id, name: r.target.name, description: r.target.description})" href>{{r.target.description}}</a></td>
 							<td>{{r.target.createdBy}}</td>
 							<td ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
 						</tr>
 						<tr ng-repeat="r in documentEditing.relationships | filter:isRelationOfType(rt, 'target', documentEditing.id)">
-							<td><a ng-click="showDocument({id: r.source.id, name: r.source.name})" href>{{r.source.name}}</a></td>
+							<td><a ng-click="showDocument({id: r.source.id, name: r.source.name, description: r.source.description})" href>{{r.source.description}}</a></td>
 							<td>{{r.source.createdBy}}</td>
 							<td ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
 						</tr>
