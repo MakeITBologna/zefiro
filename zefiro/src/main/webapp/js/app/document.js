@@ -467,10 +467,10 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 				$scope.documentEditing.id = data.id;
 				$scope.documentEditing.uploadedFileName = data.uploadedFileName;
 				angular.extend($scope.documentTable.data[$scope.currentRownum], $scope.documentEditing);
+				jbValidate.clearForm(form);
+				$scope.contentReplace = false;
 				$scope.startEdit($scope.currentRownum,false);
 		});
-		
-		$scope.closeContentReplace(form,false);
 	}
 	
 	//Chiude la modalità per la creazione di una nuova versione

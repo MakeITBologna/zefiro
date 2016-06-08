@@ -7,8 +7,8 @@
 		<li><a href ng-click="closeContentReplace(jbContentReplaceFormDocument); gotoDocumentBreadcrumb(-1, jbDetailFormDocument)"><fmt:message key="jsp.document.label"/></a></li>
 		<li class="active" ng-show="currentRownum == null"><fmt:message key="jsp.document.insert"/></li>
 		<li ng-repeat="d in documentBreadcrumbs">
-		  <a ng-if="!$last" href ng-click="gotoDocumentBreadcrumb($index, jbDetailFormDocument)">{{d.name}}</a>
-		  <span ng-if="$last">{{d.name}}</span>
+		  <a ng-if="!$last" href ng-click="gotoDocumentBreadcrumb($index, jbDetailFormDocument)">{{d.description}}</a>
+		  <span ng-if="$last">{{d.description}}</span>
 		</li>
 	</ol>
 	<div class="page-header ">
@@ -40,7 +40,7 @@
 					<label for="jbContentReplaceFormDocument-file" class="control-label col-sm-4" title="<fmt:message key="jsp.document.file.title"/>"><fmt:message key="jsp.document.file.title"/></label>
 					<div class="col-sm-8">
 						<div class="input-group">
-						 <input ng-required="true" id="jbContentReplaceFormDocument-file" class="form-control" title="<fmt:message key="jsp.document.file.title"/>" type="file" name="file" jb-upload="setCurrentFileName(newUrl,up)"/>
+						 <input ng-required="true" id="jbContentReplaceFormDocument-file" class="form-control" title="<fmt:message key="jsp.document.file.title"/>" type="file" name="file" jb-upload="setCurrentFileName(newUrl, uploaded, userFilename)"/>
 						 <span class="input-group-btn">
 						   <button class="btn btn-default" type="button" ng-click=""><i class="fa fa-upload"></i> Upload</button>
 						 </span>
