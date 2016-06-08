@@ -62,8 +62,8 @@ public class SessionUtil {
 		
 				    	
     	// Inserisco i patterns a livello di sessione
-		ResourceBundle lResource = ResourceBundle.getBundle("ApplicationResources");
 		Locale lLocale = LocaleUtil.getLocale(lHttpSession);
+		ResourceBundle lResource = ResourceBundle.getBundle("ApplicationResources", lLocale);
 		
 		lHttpSession.setAttribute("locale", lLocale);
 		

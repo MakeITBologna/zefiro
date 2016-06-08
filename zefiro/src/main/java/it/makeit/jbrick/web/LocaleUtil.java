@@ -57,7 +57,7 @@ public final class LocaleUtil {
 		//Ottengo la default locale dalla request non la prendo più dal web.xml
 		Locale lLocale = pHttpServletRequest.getLocale();
 		//LocaleUtil.setLocale(lLocale, lHttpSession);
-		mLog.debug("FINISH getDeaultLocale(Session)");
+		mLog.debug("FINISH getDeaultLocale(Session): ", lLocale.toString());
 		return lLocale;
 	}
 

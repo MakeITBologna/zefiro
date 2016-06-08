@@ -363,8 +363,6 @@ public class Document {
 		String lFileContentType = null;
 		String lFileName = pDocumentBean.getUploadedFileName();
 
-
-
 		try {
 			// XXX (Alessio): inspiegabilmente il servizio SPI di Tika non viene registrato,
 			// rendendo impossibile l'utilizzo di java.nio.file.Files.probeContentType()
