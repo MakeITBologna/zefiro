@@ -48,11 +48,11 @@ If you do that your jbrickConfig.xml should be modified like this
 ![Image](http://i.imgur.com/wjE3BDp.png)
 
 
-##License
+## License
 
 Zefiro is is licensed under the terms of GNU AFFERO GENERAL PUBLIC LICENSE Version 3.
 
-##Contribution
+## Contribution
 
 To contribute to Zefiro development you need to:
 * download [Zefiro Individual Contributor Assignment Agreement](https://github.com/MakeITBologna/zefiro/blob/master/Zefiro-Individual-Contributor-Assignment-Agreement.pdf) or [Zefiro Entity Contributor Assignment Agreement](https://github.com/MakeITBologna/zefiro/blob/master/Zefiro-Entity-Contributor-Assignment-Agreement.pdf)
