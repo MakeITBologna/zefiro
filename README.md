@@ -5,6 +5,7 @@ Zefiro is an Alfresco addon, oriented to business productivity.
 Zefiro is an interface to Alfresco, alternative to Alfresco Share. 
 
 While Alfresco Share is focused on team collaboration, Zefiro is focused on document types and their relationships.
+It provides a modern interface oriented on the document content and its metadata, rather then all the collaboration/social feature that Alfresco Share provides.
 
 Zefiro recognizes document types and relationships defined in Alfresco and without need for further development or configurations is able to manage:
 * search for specific metadata of a document type
@@ -32,6 +33,20 @@ Configuration parameters:
 * alfresco/@baseTypeId: base document type managed by Zefiro
 * alfresco/@host: Alfresco Installation URL
 * alfresco/@rootFolderId: Alfresco folder managed by Zefiro
+
+For example you can change jbrickConfig.xml file with this entry for loading in Zefiro all your Alfresco Document
+```
+<alfresco baseTypeId="cmis:document" host="{add your alfresco url}" rootFolderId="{add your noderef folder id}"/>
+```
+
+Best practice suggests to create a custom content model with a general document type (ie. my:myDoc) and some derived document type child that could be your specific documents (ie. my:myInvoice, my:myCustomer, my:myOrder etc...)
+If you do that your jbrickConfig.xml should be modified like this
+```
+<alfresco baseTypeId="my:myDoc" host="{add your alfresco url}" rootFolderId="{add your noderef folder id}"/>
+```
+
+![Image](http://i.imgur.com/wjE3BDp.png)
+
 
 ##License
 
