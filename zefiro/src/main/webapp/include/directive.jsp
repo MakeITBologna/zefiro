@@ -18,7 +18,16 @@ response.setHeader("Pragma", "no-cache");
 response.setHeader("Cache-Control", "no-cache");
 response.setDateHeader("Expires", -1);
 %>
-<c:set var="language" value="${(locale == null)? 'it' : locale.language}"/>
+
+<c:choose>
+  <c:when test="${(locale.language eq 'it') or (locale.language eq 'en')}">
+	  <c:set var="language" value="${locale.language}"/>
+  </c:when>
+  <c:otherwise>
+    <c:set var="language" value="en"/>
+  </c:otherwise>
+</c:choose>
+
 <c:if test="${initParam.applicationMode == 'production'}">
 <c:set var="version" value="${initParam.applicationVersion}" scope="request"/>
 </c:if>
