@@ -59,6 +59,9 @@
     <ul class="nav navbar-nav">
     	<li><a href="#home"><fmt:message key="jsp.document.label"/></a></li>
    	</ul>
+   	<ul class="nav navbar-nav">
+    	<li><a href="#process"><fmt:message key="jsp.process.label"/></a></li>
+   	</ul>
    	<ul class="nav navbar-nav navbar-right">
      	<li class="dropdown" uib-dropdown>
           <a class="dropdown-toggle" href uib-dropdown-toggle>{{getUser().fullName}}<span class="caret"></span></a>

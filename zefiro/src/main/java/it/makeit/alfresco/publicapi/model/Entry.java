@@ -1,5 +1,6 @@
 package it.makeit.alfresco.publicapi.model;
 
+import java.lang.reflect.ParameterizedType;
 
 
 /**

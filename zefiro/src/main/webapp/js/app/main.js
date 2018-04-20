@@ -25,6 +25,11 @@ function($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePick
 		controller: 'DocumentController'
 	})
 	
+	.when('/process', {
+		templateUrl: 'views/process/processBrowser.jsp',
+		controller: 'DocumentController'
+	})
+	
 	//Errore generico
 	.when('/error', {
 		templateUrl: 'views/error.jsp'
