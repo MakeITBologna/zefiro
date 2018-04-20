@@ -1,0 +1,81 @@
+@CHARSET "UTF-8";
+
+.jb-action {
+	cursor: pointer;
+	color: #337ab7;
+	padding: 1px;
+}
+
+.jb-action:hover { 
+    color: #23527c;
+}
+
+.jb-header-bar {
+	margin-top: 15px;
+	margin-right: 5px;
+}
+
+.jb-logo {
+	background: #ffd777;
+	padding: 1px;
+}
+
+.jb-full-width {
+	width:100%;
+}
+
+.jb-inverse {
+	background-color: #222;
+	border-color: #080808;
+	color: #fff;
+}
+
+.jb-footer {
+    background: #222;
+    color: #fff;
+    padding: 10px 0;
+}
+
+.jb-border {
+	border-style: solid;
+    border-width: 1px;
+	border-color: #e3e3e3;
+}
+
+jb-textarea-vertical {
+	style="resize:vertical;"
+}
+
+.jb-truncate-50 {
+	max-width: 50px;
+	word-wrap: break-word;
+}
+
+.jb-truncate-100 {
+	max-width: 100px;
+	word-wrap: break-word;
+}
+
+.jb-red {
+	color: red;
+}
+
+.jb-bold {
+	font-weight: bold;
+}
+
+.jb-page-header {
+	margin:0px 20px 0px 20px
+}
+
+.jb-clickable {
+	cursor: pointer;
+}
+
+.jb-toolbar {
+	margin-bottom: 0.5em;
+}
+
+.jb-form-group {
+	margin-bottom: 5px;
+}
