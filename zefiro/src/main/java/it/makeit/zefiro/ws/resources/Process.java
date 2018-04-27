@@ -26,15 +26,14 @@ import it.makeit.alfresco.workflow.model.WorkflowProcess;
 import it.makeit.zefiro.Util;
 import it.makeit.zefiro.dao.WorkFlowProcessComplete;
 
-@Path("/Workflow")
+@Path("/Process")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class Workflow {
+public class Process {
 
 	@Context
 	private HttpServletRequest httpRequest;
 
 	@GET
-	@Path("/process")
 	public Response getProcess() {
 		Session lSession = Util.getUserAlfrescoSession(httpRequest);
 		AlfrescoConfig pConfig = Util.getUserAlfrescoConfig(httpRequest);

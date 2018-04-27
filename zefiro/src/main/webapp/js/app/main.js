@@ -12,7 +12,8 @@ angular.module('main', [
   'angularPromiseButtons',
   'jbLocale',
   'documentType',
-  'document'
+  'document',
+  'process'
 ])
 
 //Contiene provider e costanti
@@ -27,7 +28,7 @@ function($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePick
 	
 	.when('/process', {
 		templateUrl: 'views/process/processBrowser.jsp',
-		controller: 'DocumentController'
+		controller: 'ProcessController'
 	})
 	
 	//Errore generico

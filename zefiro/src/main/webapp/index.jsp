@@ -19,6 +19,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<link rel="shortcut icon" href="images/zefiro.ico">
 <link rel="stylesheet" href="css/bootstrap.min.css" />
 <link rel="stylesheet" href="css/font-awesome.min.css" />
 <link rel="stylesheet" href="css/ng-table-custom.css" />
@@ -44,6 +45,7 @@
 <script type="text/javascript" src="js/app/main.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/documentType.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/document.js?version=${version}"></script>
+<script type="text/javascript" src="js/app/process.js?version=${version}"></script>
 
 </head>
 

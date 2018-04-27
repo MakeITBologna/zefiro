@@ -92,20 +92,20 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 		}
 		if($scope.documentTemplate.propertyNames != "")
 			$scope.documentTemplate.propertyNames = $scope.documentTemplate.propertyNames.substr(1);
-			$scope.documentTable.settings({dataset: []});
-			var documentPromise = DocumentResource.query($scope.documentTemplate, function() {
-				for (i in documentPromise) {
-					var d = documentPromise[i];
-					if (d.properties) {
-						for (j in $scope.documentType.propertyList) {
-							var p = $scope.documentType.propertyList[j];
-							d[p.queryName] = $scope.getColumnValue(d, p.queryName);
-						}
+		$scope.documentTable.settings({dataset: []});
+		var documentPromise = DocumentResource.query($scope.documentTemplate, function() {
+			for (i in documentPromise) {
+				var d = documentPromise[i];
+				if (d.properties) {
+					for (j in $scope.documentType.propertyList) {
+						var p = $scope.documentType.propertyList[j];
+						d[p.queryName] = $scope.getColumnValue(d, p.queryName);
 					}
 				}
-				$scope.documentTable.settings({dataset: documentPromise});
-				$scope.updateSummaries(documentPromise);
-			});
+			}
+			$scope.documentTable.settings({dataset: documentPromise});
+			$scope.updateSummaries(documentPromise);
+		});
 		return documentPromise;
 	}
 	

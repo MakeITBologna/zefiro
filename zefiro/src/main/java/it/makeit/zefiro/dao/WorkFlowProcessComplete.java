@@ -5,6 +5,7 @@ import java.util.Date;
 public class WorkFlowProcessComplete {
 	private String id;
 	private String processDefinitionId;
+	private String processDefinitionKey;
 	private String businessKey;
 	private Date startedAt;
 	private Date endedAt;
@@ -49,6 +50,14 @@ public class WorkFlowProcessComplete {
 
 	public String getEndActivityDefinitionId() {
 		return endActivityDefinitionId;
+	}
+
+	public String getProcessDefinitionKey() {
+		return processDefinitionKey;
+	}
+
+	public void setProcessDefinitionKey(String processDefinitionKey) {
+		this.processDefinitionKey = processDefinitionKey;
 	}
 
 	public String getStartUserId() {
