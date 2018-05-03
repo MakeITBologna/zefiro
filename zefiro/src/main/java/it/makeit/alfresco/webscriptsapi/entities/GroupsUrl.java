@@ -4,13 +4,15 @@ import java.net.URL;
 
 import com.google.api.client.http.GenericUrl;
 
+import it.makeit.alfresco.restApi.AlfrescoApiPath;
 
 public class GroupsUrl extends GenericUrl {
 
-	private static final String PATH = "/alfresco/s/api/groups";
+	private static final String PATH = "/groups";
 
 	public GroupsUrl(URL pHostUrl) {
 		super(pHostUrl);
+		this.appendRawPath(AlfrescoApiPath.SERVICE.getPath());
 		this.appendRawPath(PATH);
 	}
 

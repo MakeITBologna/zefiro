@@ -34,6 +34,7 @@ public class Process {
 	private HttpServletRequest httpRequest;
 
 	@GET
+	@Path("processes")
 	public Response getProcess() {
 		Session lSession = Util.getUserAlfrescoSession(httpRequest);
 		AlfrescoConfig pConfig = Util.getUserAlfrescoConfig(httpRequest);
@@ -53,7 +54,7 @@ public class Process {
 	}
 
 	@GET
-	@Path("/definition")
+	@Path("/definitions")
 	public Response getWorkflows() {
 		Session lSession = Util.getUserAlfrescoSession(httpRequest);
 		AlfrescoConfig pConfig = Util.getUserAlfrescoConfig(httpRequest);
@@ -76,6 +77,26 @@ public class Process {
 		}
 
 		return Response.ok(version.values()).build();
+	}
+
+	@GET
+	@Path("/startedProcess")
+	public Response getStartedProcess() {
+		Session lSession = Util.getUserAlfrescoSession(httpRequest);
+		AlfrescoConfig pConfig = Util.getUserAlfrescoConfig(httpRequest);
+		HttpRequestFactory pHttpRequestFactory = AlfrescoHelper.getRequestFactory(pConfig);
+		List<WorkflowProcess> workflowProcess = AlfrescoWorkflowHelper.getProcesses(pHttpRequestFactory, pConfig);
+		List<ProcessDefinition> processDefinition = AlfrescoWorkflowHelper.getProcessDefinitions(pHttpRequestFactory,
+				pConfig);
+
+		Map<String, ProcessDefinition> definitions = buildDefinitionsMap(processDefinition);
+		List<WorkFlowProcessComplete> processes = new ArrayList<WorkFlowProcessComplete>();
+		for (WorkflowProcess process : workflowProcess) {
+			ProcessDefinition definition = definitions.get(process.getProcessDefinitionId());
+			processes.add(buildProcess(process, definitions.get(process.getProcessDefinitionId())));
+		}
+
+		return Response.ok(processes).build();
 	}
 
 	private Map<String, ProcessDefinition> buildDefinitionsMap(List<ProcessDefinition> definitions) {

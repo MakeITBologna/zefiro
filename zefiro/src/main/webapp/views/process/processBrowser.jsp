@@ -30,10 +30,11 @@
             	</a>
           	</td>
           </tr>
-		  <tr ng-repeat="row in $group.data track by $index" ng-dblclick="!relation && startEdit($index)" ng-repeat-end>
+		  <tr ng-repeat="row in group.data track by $index" ng-dblclick="!relation && startEdit($index)" ng-repeat-end>
 		  	<td>
 		  	<div>{{row.name}}</div>
 		  	<div>{{row.startUserId}}</div>
+		  	</td>
 		  </tr>
 		 </tbody>
 		</table>
