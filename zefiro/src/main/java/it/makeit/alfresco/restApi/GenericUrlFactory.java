@@ -2,15 +2,22 @@ package it.makeit.alfresco.restApi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.api.client.http.GenericUrl;
 
+/**
+ * @author Alba Quarto
+ */
 public final class GenericUrlFactory {
 	private AlfrescoBaseUrl baseUrl;
 	private List<AlfrescoBaseUrl> urls;
 
 	public GenericUrlFactory(AlfrescoBaseUrl baseUrl) {
 		checkUrl(baseUrl);
+		urls = new ArrayList<AlfrescoBaseUrl>();
 		this.baseUrl = baseUrl;
 	}
 
@@ -31,6 +38,23 @@ public final class GenericUrlFactory {
 			if (path != null) {
 				url.appendRawPath(path);
 			}
+		}
+
+		return url;
+	}
+
+	public GenericUrl build(Map<String, Object> parameters) {
+		GenericUrl url = this.build();
+		Set<String> paramNames = baseUrl.getQueryParamNames();
+		if (urls.size() > 0) {
+			paramNames = urls.get(urls.size() - 1).getQueryParamNames();
+		}
+		for (Entry<String, Object> param : parameters.entrySet()) {
+			String key = param.getKey();
+			if (!paramNames.contains(key)) {
+				continue;
+			}
+			url.put(key, param.getValue());
 		}
 		return url;
 	}

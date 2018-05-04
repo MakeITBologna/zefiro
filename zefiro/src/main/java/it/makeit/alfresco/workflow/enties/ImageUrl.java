@@ -1,6 +1,8 @@
 package it.makeit.alfresco.workflow.enties;
 
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.google.api.client.http.GenericUrl;
 
@@ -52,5 +54,10 @@ public class ImageUrl extends GenericUrl implements AlfrescoBaseUrl {
 	@Override
 	public void addIntPathParam(int pathPart) {
 		throw new AlfrescoUrlException(AlfrescoUrlException.METHOD);
+	}
+
+	@Override
+	public Set<String> getQueryParamNames() {
+		return new HashSet<String>();
 	}
 }

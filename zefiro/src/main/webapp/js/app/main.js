@@ -13,7 +13,8 @@ angular.module('main', [
   'jbLocale',
   'documentType',
   'document',
-  'process'
+  'process',
+  'task'
 ])
 
 //Contiene provider e costanti
@@ -24,11 +25,6 @@ function($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePick
 	.when('/home', {
 		templateUrl: 'views/document/documentBrowser.jsp',
 		controller: 'DocumentController'
-	})
-	
-	.when('/process', {
-		templateUrl: 'views/process/processBrowser.jsp',
-		controller: 'ProcessController'
 	})
 	
 	//Errore generico
@@ -58,6 +54,19 @@ function($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePick
 			}
 		}
 	})
+	
+	//Pagina processi avviati da te	
+	.when('/process', {
+		templateUrl: 'views/process/processBrowser.jsp',
+		controller: 'ProcessController'
+	})
+	
+	//Pagina attività assegante a te
+	.when('/task', {
+		templateUrl: 'views/process/taskBrowser.jsp',
+		controller: 'TaskController'
+	})
+
 	//Ridireziona a login
 	.otherwise({
 		redirectTo: '/login'

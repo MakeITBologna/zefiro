@@ -2,8 +2,10 @@ package it.makeit.alfresco.workflow;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +46,14 @@ public class AlfrescoWorkflowHelper {
 	private static Gson gson = new GsonBuilder().setDateFormat(dateFormat).create();
 
 	public static List<Deployment> getDeployments(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
+		return getDeployments(pHttpRequestFactory, pConfig, null);
+	}
+
+	public static List<Deployment> getDeployments(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig,
+			Map<String, Object> pParams) {
 		mLog.info("Start");
 
-		DeploymentsUrl url = new DeploymentsUrl(pConfig.getHost());
+		GenericUrl url = (new GenericUrlFactory(new DeploymentsUrl(pConfig.getHost()))).build(buildParams(pParams));
 
 		try {
 			HttpRequest request = pHttpRequestFactory.buildGetRequest(url);
@@ -72,9 +79,14 @@ public class AlfrescoWorkflowHelper {
 	}
 
 	public static List<WorkflowProcess> getProcesses(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
+		return getProcesses(pHttpRequestFactory, pConfig, null);
+	}
+
+	public static List<WorkflowProcess> getProcesses(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig,
+			Map<String, Object> pParams) {
 		mLog.info("Start");
 
-		ProcessesUrl url = new ProcessesUrl(pConfig.getHost());
+		GenericUrl url = (new GenericUrlFactory(new ProcessesUrl(pConfig.getHost()))).build(buildParams(pParams));
 
 		try {
 			HttpRequest request = pHttpRequestFactory.buildGetRequest(url);
@@ -101,9 +113,14 @@ public class AlfrescoWorkflowHelper {
 	}
 
 	public static List<Task> getTasks(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
+		return getTasks(pHttpRequestFactory, pConfig, null);
+	}
+
+	public static List<Task> getTasks(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig,
+			Map<String, Object> pParams) {
 		mLog.info("Start");
 
-		TasksUrl url = new TasksUrl(pConfig.getHost());
+		GenericUrl url = (new GenericUrlFactory(new TasksUrl(pConfig.getHost()))).build(buildParams(pParams));
 
 		try {
 			HttpRequest request = pHttpRequestFactory.buildGetRequest(url);
@@ -131,13 +148,18 @@ public class AlfrescoWorkflowHelper {
 
 	public static List<Task> getTaskVariables(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig,
 			String taskId) {
+		return getTaskVariables(pHttpRequestFactory, pConfig, taskId, null);
+	}
+
+	public static List<Task> getTaskVariables(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig,
+			String taskId, Map<String, Object> pParams) {
 		mLog.info("Start");
 
 		URL host = pConfig.getHost();
 		TasksUrl taskUrl = new TasksUrl(host);
 		taskUrl.addStringPathParam(taskId);
 		VariablesUrl varUrl = new VariablesUrl(host);
-		GenericUrl url = (new GenericUrlFactory(taskUrl)).add(varUrl).build();
+		GenericUrl url = (new GenericUrlFactory(taskUrl)).add(varUrl).build(buildParams(pParams));
 
 		try {
 			HttpRequest request = pHttpRequestFactory.buildGetRequest(url);
@@ -165,9 +187,15 @@ public class AlfrescoWorkflowHelper {
 
 	public static List<ProcessDefinition> getProcessDefinitions(HttpRequestFactory pHttpRequestFactory,
 			AlfrescoConfig pConfig) {
+		return getProcessDefinitions(pHttpRequestFactory, pConfig, null);
+	}
+
+	public static List<ProcessDefinition> getProcessDefinitions(HttpRequestFactory pHttpRequestFactory,
+			AlfrescoConfig pConfig, Map<String, Object> pParams) {
 		mLog.info("Start");
 
-		ProcessDefinitionsUrl url = new ProcessDefinitionsUrl(pConfig.getHost());
+		GenericUrl url = (new GenericUrlFactory(new ProcessDefinitionsUrl(pConfig.getHost())))
+				.build(buildParams(pParams));
 		try {
 			HttpRequest request = pHttpRequestFactory.buildGetRequest(url);
 
@@ -226,7 +254,6 @@ public class AlfrescoWorkflowHelper {
 	}
 
 	// UTILS METHODS BELOW
-
 	public static void debugRequest(HttpRequest req) {
 		switch (req.getRequestMethod()) {
 		case HttpMethods.GET: {
@@ -247,10 +274,6 @@ public class AlfrescoWorkflowHelper {
 
 	private static void debugResponse(HttpResponse response, String responseAsString) {
 		mLog.debug("RESPONSE " + response.getStatusCode() + " " + responseAsString);
-	}
-
-	private static GenericUrl url(String url) {
-		return new GenericUrl(url);
 	}
 
 	private static <T> T parse(String json, String key, Class<T> clz) {
@@ -282,6 +305,13 @@ public class AlfrescoWorkflowHelper {
 		// diversamento all'interno di Alfresco
 		AlfrescoWorkflowHelper.dateFormat = dateFormat;
 		gson = new GsonBuilder().setDateFormat(dateFormat).create();
+	}
+
+	private static Map<String, Object> buildParams(Map<String, Object> pParams) {
+		if (pParams == null) {
+			pParams = new HashMap<String, Object>();
+		}
+		return pParams;
 	}
 
 }

@@ -46,6 +46,7 @@
 <script type="text/javascript" src="js/app/documentType.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/document.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/process.js?version=${version}"></script>
+<script type="text/javascript" src="js/app/task.js?version=${version}"></script>
 
 </head>
 
@@ -62,7 +63,13 @@
     	<li><a href="#home"><fmt:message key="jsp.document.label"/></a></li>
    	</ul>
    	<ul class="nav navbar-nav">
-    	<li><a href="#process"><fmt:message key="jsp.process.label"/></a></li>
+   	<li class="dropdown" uib-dropdown>
+          <a class="dropdown-toggle" href uib-dropdown-toggle><fmt:message key="jsp.process.label"/><span class="caret"></span></a>
+          <ul class="dropdown-menu" uib-dropdown-menu>
+    		<li><a href="#process"><fmt:message key="jsp.process.label"/></a></li>
+    		<li><a href="#task"><fmt:message key="jsp.task.label"/></a></li>
+    	  </ul>
+        </li>
    	</ul>
    	<ul class="nav navbar-nav navbar-right">
      	<li class="dropdown" uib-dropdown>

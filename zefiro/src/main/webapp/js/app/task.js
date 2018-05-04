@@ -1,8 +1,8 @@
-angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter'])
+angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter'])
 
-.factory('ProcessResource', ['$resource', '$log', function($resource, $log) {
+.factory('TaskResource', ['$resource', '$log', function($resource, $log) {
 	$log.log("ProcessResource", $resource);
-	return $resource('a/Process/processes:id', {id:'@id'},
+	return $resource('a/Process/processes/:id', {id:'@id'},
 			{
 				startedProcesses: {
 					url:'a/Process/startedProcesses',
@@ -11,11 +11,11 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 			});
 }])
 
-.controller('ProcessController', ['$scope', 'ProcessResource', 'NgTableParams', '$log',
+.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', '$log',
 	function($scope, ProcessResource,  NgTableParams, $log) {
 
-	$scope.processes = {};
-	$scope.documentTable = new NgTableParams({count: 25, group: "name"}, {});
+	$scope.taskes = {};
+	$scope.documentTable = new NgTableParams({count: 25, group: "processName"}, {});
 	
 	//Ricerca documenti a partire dalla form di ricerca
 	$scope.search = function() {
