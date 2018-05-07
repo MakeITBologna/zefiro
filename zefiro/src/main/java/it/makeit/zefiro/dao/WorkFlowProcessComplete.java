@@ -1,72 +1,14 @@
 package it.makeit.zefiro.dao;
 
-import java.util.Date;
+import it.makeit.alfresco.workflow.model.WorkflowProcess;
 
-public class WorkFlowProcessComplete {
-	private String id;
-	private String processDefinitionId;
-	private String processDefinitionKey;
-	private String businessKey;
-	private Date startedAt;
-	private Date endedAt;
-	private Long durationInMs;
-	private String startActivityDefinitionId;
-	private String endActivityDefinitionId;
-	private String startUserId;
-	private String deleteReason;
-
+public class WorkFlowProcessComplete extends WorkflowProcess {
 	private String name;
 	private String title;
 	private String description;
 	private Integer version;
-
-	public String getId() {
-		return id;
-	}
-
-	public String getProcessDefinitionId() {
-		return processDefinitionId;
-	}
-
-	public String getBusinessKey() {
-		return businessKey;
-	}
-
-	public Date getStartedAt() {
-		return startedAt;
-	}
-
-	public Date getEndedAt() {
-		return endedAt;
-	}
-
-	public Long getDurationInMs() {
-		return durationInMs;
-	}
-
-	public String getStartActivityDefinitionId() {
-		return startActivityDefinitionId;
-	}
-
-	public String getEndActivityDefinitionId() {
-		return endActivityDefinitionId;
-	}
-
-	public String getProcessDefinitionKey() {
-		return processDefinitionKey;
-	}
-
-	public void setProcessDefinitionKey(String processDefinitionKey) {
-		this.processDefinitionKey = processDefinitionKey;
-	}
-
-	public String getStartUserId() {
-		return startUserId;
-	}
-
-	public String getDeleteReason() {
-		return deleteReason;
-	}
+	private String startUserFirstName;
+	private String startUserLastName;
 
 	public String getName() {
 		return name;
@@ -84,46 +26,6 @@ public class WorkFlowProcessComplete {
 		return version;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public void setProcessDefinitionId(String processDefinitionId) {
-		this.processDefinitionId = processDefinitionId;
-	}
-
-	public void setBusinessKey(String businessKey) {
-		this.businessKey = businessKey;
-	}
-
-	public void setStartedAt(Date startedAt) {
-		this.startedAt = startedAt;
-	}
-
-	public void setEndedAt(Date endedAt) {
-		this.endedAt = endedAt;
-	}
-
-	public void setDurationInMs(Long durationInMs) {
-		this.durationInMs = durationInMs;
-	}
-
-	public void setStartActivityDefinitionId(String startActivityDefinitionId) {
-		this.startActivityDefinitionId = startActivityDefinitionId;
-	}
-
-	public void setEndActivityDefinitionId(String endActivityDefinitionId) {
-		this.endActivityDefinitionId = endActivityDefinitionId;
-	}
-
-	public void setStartUserId(String startUserId) {
-		this.startUserId = startUserId;
-	}
-
-	public void setDeleteReason(String deleteReason) {
-		this.deleteReason = deleteReason;
-	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -138,6 +40,22 @@ public class WorkFlowProcessComplete {
 
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+
+	public String getStartUserFirstName() {
+		return startUserFirstName;
+	}
+
+	public String getStartUserLastName() {
+		return startUserLastName;
+	}
+
+	public void setStartUserFirstName(String startUserFirstName) {
+		this.startUserFirstName = startUserFirstName;
+	}
+
+	public void setStartUserLastName(String startUserLastName) {
+		this.startUserLastName = startUserLastName;
 	}
 
 }

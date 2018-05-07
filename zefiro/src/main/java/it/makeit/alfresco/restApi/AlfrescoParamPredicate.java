@@ -1,34 +1,41 @@
 package it.makeit.alfresco.restApi;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AlfrescoParamPredicate {
 
 	private AlfrescoWhereOperatorEnum operator;
-	private Collection value;
+	private List<Object> values;
 
 	public AlfrescoParamPredicate() {
 	}
 
-	public AlfrescoParamPredicate(AlfrescoWhereOperatorEnum pOperator, Collection pValue) {
+	public AlfrescoParamPredicate(AlfrescoWhereOperatorEnum pOperator, List<Object> pValue) {
 		operator = pOperator;
-		value = pValue;
+		values = pValue;
 	}
 
 	public AlfrescoWhereOperatorEnum getOperator() {
 		return operator;
 	}
 
-	public Collection getValue() {
-		return value;
+	public List<Object> getValues() {
+		return values;
 	}
 
 	public void setOperator(AlfrescoWhereOperatorEnum operator) {
 		this.operator = operator;
 	}
 
-	public void setValue(Collection value) {
-		this.value = value;
+	public void setValues(List<Object> value) {
+		this.values = value;
 	}
 
+	public void addValue(Object value) {
+		if (values == null) {
+			values = new ArrayList<Object>();
+		}
+		values.add(value);
+	}
 }

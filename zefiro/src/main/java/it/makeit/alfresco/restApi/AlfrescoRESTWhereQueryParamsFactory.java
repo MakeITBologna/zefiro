@@ -39,7 +39,7 @@ public class AlfrescoRESTWhereQueryParamsFactory {
 			for (Entry<String, AlfrescoParamPredicate> field : value.entrySet()) {
 				query = query.concat(field.getKey());
 				String listValue = "";
-				Object[] fieldValues = field.getValue().getValue().toArray();
+				Object[] fieldValues = field.getValue().getValues().toArray();
 				for (int i = 0; i < fieldValues.length; i++) {
 					if (i > 0) {
 						listValue = listValue.concat(",");
@@ -63,6 +63,13 @@ public class AlfrescoRESTWhereQueryParamsFactory {
 				and();
 			}
 		}
+		return this;
+	}
+
+	public AlfrescoRESTWhereQueryParamsFactory add(String pField, AlfrescoParamPredicate pValue) {
+		Map<String, AlfrescoParamPredicate> value = new HashMap<String, AlfrescoParamPredicate>();
+		value.put(pField, pValue);
+		this.values.add(value);
 		return this;
 	}
 }

@@ -14,7 +14,6 @@ public class Task {
 	private String startedAt;
 	private String endedAt;
 	private String durationInMs;
-
 	private String priority;
 	private String owner;
 	private String assignee;

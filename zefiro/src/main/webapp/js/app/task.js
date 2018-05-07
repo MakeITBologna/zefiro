@@ -2,28 +2,35 @@ angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter
 
 .factory('TaskResource', ['$resource', '$log', function($resource, $log) {
 	$log.log("ProcessResource", $resource);
-	return $resource('a/Process/processes/:id', {id:'@id'},
-			{
-				startedProcesses: {
-					url:'a/Process/startedProcesses',
-					method: 'GET'
-				}
-			});
+	return $resource('a/Task/:id', {id:'@id'});
 }])
 
-.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', '$log',
-	function($scope, ProcessResource,  NgTableParams, $log) {
+.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', '$log',
+	function($scope, TaskResource,  NgTableParams, jbMessages, $log) {
 
 	$scope.taskes = {};
 	$scope.documentTable = new NgTableParams({count: 25, group: "processName"}, {});
+	$scope.isGroupHeaderRowVisible = false;
+	$scope.jbMessages = jbMessages;
 	
 	//Ricerca documenti a partire dalla form di ricerca
 	$scope.search = function() {
-		var documentPromise = ProcessResource.query($scope.documentTemplate, function() {
+		var documentPromise = TaskResource.query($scope.documentTemplate, function() {
 			$log.log(documentPromise)
 			$scope.documentTable.settings({dataset: documentPromise});
 		});
 		return documentPromise;
+	}
+	
+	$scope.decodePriority = function(priority) {
+		var priorityName = "";
+		switch(priority){
+		case "1": priorityName = jbMessages.high; break;
+ 		case "2": priorityName = jbMessages.medium; break;
+		case "3": priorityName = jbMessages.low; break;
+		}
+		
+		return priorityName;
 	}
 	
 	

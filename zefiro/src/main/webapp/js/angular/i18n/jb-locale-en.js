@@ -16,6 +16,9 @@ angular.module("jbLocale", ["ngLocale"])
 "date" : "Date",
 "time" : "Time",
 
+"high": "High",
+"low": "Low",
+"medium": "Medium"
 })
 
 .factory('jbPatterns', ['$locale', function($locale) {

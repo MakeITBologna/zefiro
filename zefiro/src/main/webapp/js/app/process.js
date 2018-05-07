@@ -6,7 +6,8 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 			{
 				startedProcesses: {
 					url:'a/Process/startedProcesses',
-					method: 'GET'
+					method: 'GET',
+					isArray: true
 				}
 			});
 }])
@@ -15,11 +16,12 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 	function($scope, ProcessResource,  NgTableParams, $log) {
 
 	$scope.processes = {};
-	$scope.documentTable = new NgTableParams({count: 25, group: "name"}, {});
+	$scope.documentTable = new NgTableParams({count: 5, group: "name"}, {});
+	$scope.isGroupHeaderRowVisible = false;
 	
 	//Ricerca documenti a partire dalla form di ricerca
 	$scope.search = function() {
-		var documentPromise = ProcessResource.query($scope.documentTemplate, function() {
+		var documentPromise = ProcessResource.startedProcesses($scope.documentTemplate, function() {
 			$log.log(documentPromise)
 			$scope.documentTable.settings({dataset: documentPromise});
 		});
