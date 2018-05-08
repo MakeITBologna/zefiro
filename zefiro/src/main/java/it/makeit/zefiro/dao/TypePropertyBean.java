@@ -2,106 +2,106 @@ package it.makeit.zefiro.dao;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-
 /**
  *
  * @author MAKE IT
  */
-public class TypePropertyBean {
-    private String queryName;
+public class TypePropertyBean implements BaseData {
+	private String queryName;
 
-    private String propertyType;
+	private String propertyType;
 
-    private Object defaultValue;
+	private Object defaultValue;
 
-    private String choices;
+	private String choices;
 
-    private String linkType;
+	private String linkType;
 
-    private Boolean queryable;
-    
-    private String displayName;
+	private Boolean queryable;
 
-    private String description;
+	private String displayName;
 
-    private Boolean required;
-    
+	private String description;
+
+	private Boolean required;
+
 	public TypePropertyBean() {
-    }
+	}
 
-    public String getQueryName() {
-        return queryName;
-    }
+	public String getQueryName() {
+		return queryName;
+	}
 
-    public void setQueryName(String pStrName) {
-    	queryName = pStrName;
-    }
+	public void setQueryName(String pStrName) {
+		queryName = pStrName;
+	}
 
-    public String getPropertyType() {
-        return propertyType;
-    }
+	public String getPropertyType() {
+		return propertyType;
+	}
 
-    public void setPropertyType(String pStrType) {
-    	propertyType = pStrType;
-    }
+	public void setPropertyType(String pStrType) {
+		propertyType = pStrType;
+	}
 
-    public Object getDefaultValue() {
-        return defaultValue;
-    }
+	public Object getDefaultValue() {
+		return defaultValue;
+	}
 
-    public void setDefaultValue(Object pDefaultValue) {
-        defaultValue = pDefaultValue;
-    }
+	public void setDefaultValue(Object pDefaultValue) {
+		defaultValue = pDefaultValue;
+	}
 
-    public String getChoices() {
-        return choices;
-    }
+	public String getChoices() {
+		return choices;
+	}
 
-    public void setChoices(String pStrChoices) {
-        choices = pStrChoices;
-    }
+	public void setChoices(String pStrChoices) {
+		choices = pStrChoices;
+	}
 
-    public String getLinkType() {
-        return linkType;
-    }
+	public String getLinkType() {
+		return linkType;
+	}
 
-    public void setLinkType(String pStrLinkType) {
-        linkType = pStrLinkType;
-    }
+	public void setLinkType(String pStrLinkType) {
+		linkType = pStrLinkType;
+	}
 
-    public Boolean getQueryable() {
-        return queryable;
-    }
+	public Boolean getQueryable() {
+		return queryable;
+	}
 
-    public void setQueryable(Boolean pBlnQueryable) {
-        queryable = pBlnQueryable;
-    }
-	
+	public void setQueryable(Boolean pBlnQueryable) {
+		queryable = pBlnQueryable;
+	}
+
 	public String getDisplayName() {
-        return displayName;
-    }
+		return displayName;
+	}
 
-    public void setDisplayName(String pStrLabel) {
-        displayName = pStrLabel;
-    }
+	public void setDisplayName(String pStrLabel) {
+		displayName = pStrLabel;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setDescription(String pStrDescription) {
-        description = pStrDescription;
-    }
+	public void setDescription(String pStrDescription) {
+		description = pStrDescription;
+	}
 
-    public Boolean getRequired() {
-        return required;
-    }
+	public Boolean getRequired() {
+		return required;
+	}
 
-    public void setRequired(Boolean pBlnRequired) {
-        required = pBlnRequired;
-    }
+	public void setRequired(Boolean pBlnRequired) {
+		required = pBlnRequired;
+	}
 
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
+	@Override
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this);
+	}
 }

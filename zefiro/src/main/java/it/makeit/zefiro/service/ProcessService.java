@@ -9,6 +9,7 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.gson.Gson;
 
 import it.makeit.alfresco.AlfrescoConfig;
+import it.makeit.alfresco.publicapi.model.Person;
 import it.makeit.alfresco.restApi.AlfrescoParamPredicate;
 import it.makeit.alfresco.restApi.AlfrescoRESTQueryParamsEnum;
 import it.makeit.alfresco.restApi.AlfrescoRESTWhereQueryParamsFactory;
@@ -16,6 +17,8 @@ import it.makeit.alfresco.restApi.AlfrescoWhereOperatorEnum;
 import it.makeit.alfresco.workflow.AlfrescoWorkflowHelper;
 import it.makeit.alfresco.workflow.model.ProcessDefinition;
 import it.makeit.alfresco.workflow.model.WorkflowProcess;
+import it.makeit.zefiro.DecodedFieldNote.DecodingType;
+import it.makeit.zefiro.Util;
 import it.makeit.zefiro.dao.WorkFlowProcessComplete;
 
 public class ProcessService extends AbstractServcie {
@@ -33,12 +36,14 @@ public class ProcessService extends AbstractServcie {
 				pParams);
 		List<ProcessDefinition> processDefinition = AlfrescoWorkflowHelper.getProcessDefinitions(httpRequestFactory,
 				alfrescoConfig);
-
 		Map<String, ProcessDefinition> definitions = buildDefinitionsMap(processDefinition);
 		List<WorkFlowProcessComplete> entities = new ArrayList<WorkFlowProcessComplete>();
+		Map<String, Person> people = new HashMap<String, Person>();
 		for (WorkflowProcess process : workflowProcess) {
-			entities.add(buildProcess(process, definitions.get(process.getProcessDefinitionId())));
-			// TODO aggiungere decodifica nome cognome startUser
+			WorkFlowProcessComplete processComplete = buildProcess(process,
+					definitions.get(process.getProcessDefinitionId()));
+			addPersonDecoding(process.getStartUserId(), processComplete, people, DecodingType.STARTER);
+			entities.add(processComplete);
 		}
 		return entities;
 	}
@@ -68,8 +73,7 @@ public class ProcessService extends AbstractServcie {
 
 		Gson gson = new Gson();
 		process = gson.fromJson(gson.toJson(workflowProcess), WorkFlowProcessComplete.class);
-		process.setName(processDefinition.getName());
-		process.setDescription(processDefinition.getDescription());
+		Util.decodeField(process, processDefinition, DecodingType.DEFINITION);
 
 		return process;
 	}

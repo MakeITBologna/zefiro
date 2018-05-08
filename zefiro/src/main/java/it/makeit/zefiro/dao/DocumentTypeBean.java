@@ -6,74 +6,74 @@ import java.util.Map;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-
 /**
  *
  * @author MAKE IT
  */
-public class DocumentTypeBean {
-    private String id;
+public class DocumentTypeBean implements BaseData {
+	private String id;
 
-    private String name;
-    
-    private Map<String, TypePropertyBean> properties;
+	private String name;
 
-    public DocumentTypeBean() {
-    }
+	private Map<String, TypePropertyBean> properties;
 
-    public String getId() {
-        return id;
-    }
+	public DocumentTypeBean() {
+	}
 
-    public void setId(String pStrId) {
-        id = pStrId;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setId(String pStrId) {
+		id = pStrId;
+	}
 
-    public void setName(String pStrName) {
-        name = pStrName;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public Map<String, TypePropertyBean> getProperties() {
-    	return properties;
-    }
+	public void setName(String pStrName) {
+		name = pStrName;
+	}
 
-    public void setProperties(Map<String, TypePropertyBean> pProperties) {
-    	if (pProperties == null) {
-    		throw new IllegalArgumentException();
-    	}
-        properties = pProperties;
-    }
-    
-    public void addProperties(List<TypePropertyBean> pProperties) {
-    	if (pProperties == null) {
-    		throw new IllegalArgumentException();
-    	}
-    	
-    	if (properties == null) {
-    		properties = new LinkedHashMap<String, TypePropertyBean>();
-    	}
-    	
-        for (TypePropertyBean lTypePropertyBean : pProperties) {
-        	setProperty(lTypePropertyBean);
+	public Map<String, TypePropertyBean> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(Map<String, TypePropertyBean> pProperties) {
+		if (pProperties == null) {
+			throw new IllegalArgumentException();
 		}
-    }
-    
-    public TypePropertyBean getProperty(String pPropertyName) {
-    	return properties.get(pPropertyName);
-    }
+		properties = pProperties;
+	}
 
-    public void setProperty(TypePropertyBean pProperty) {
-    	if (pProperty == null ||pProperty.getQueryName() == null) {
-    		throw new IllegalArgumentException();
-    	}
-        properties.put(pProperty.getQueryName(), pProperty);
-    }
+	public void addProperties(List<TypePropertyBean> pProperties) {
+		if (pProperties == null) {
+			throw new IllegalArgumentException();
+		}
 
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
+		if (properties == null) {
+			properties = new LinkedHashMap<String, TypePropertyBean>();
+		}
+
+		for (TypePropertyBean lTypePropertyBean : pProperties) {
+			setProperty(lTypePropertyBean);
+		}
+	}
+
+	public TypePropertyBean getProperty(String pPropertyName) {
+		return properties.get(pPropertyName);
+	}
+
+	public void setProperty(TypePropertyBean pProperty) {
+		if (pProperty == null || pProperty.getQueryName() == null) {
+			throw new IllegalArgumentException();
+		}
+		properties.put(pProperty.getQueryName(), pProperty);
+	}
+
+	@Override
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this);
+	}
 }

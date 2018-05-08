@@ -42,6 +42,8 @@
 		  	 </div>
 		  	 <div ng-if="row.description"><fmt:message key="jsp.description"/>: {{row.description}}</div>
 		  	 <div ng-if="row.priority"><fmt:message key="jsp.priority"/>: {{decodePriority(row.priority)}}</div>
+		  	 <div><fmt:message key="jsp.startedFrom"/><span>: </span><span>{{row.startUserFirstName}}</span><span> </span><span ng-if="row.startUserLastName">{{row.startUserLastName}}</span></div>
+		  	 
 		  	</td>
 		  	
 		  	<td>

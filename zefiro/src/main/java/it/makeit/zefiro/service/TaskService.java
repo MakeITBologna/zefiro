@@ -11,12 +11,15 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.gson.Gson;
 
 import it.makeit.alfresco.AlfrescoConfig;
+import it.makeit.alfresco.publicapi.model.Person;
 import it.makeit.alfresco.restApi.AlfrescoParamPredicate;
 import it.makeit.alfresco.restApi.AlfrescoRESTQueryParamsEnum;
 import it.makeit.alfresco.restApi.AlfrescoRESTWhereQueryParamsFactory;
 import it.makeit.alfresco.restApi.AlfrescoWhereOperatorEnum;
 import it.makeit.alfresco.workflow.AlfrescoWorkflowHelper;
 import it.makeit.alfresco.workflow.model.Task;
+import it.makeit.zefiro.DecodedFieldNote.DecodingType;
+import it.makeit.zefiro.Util;
 import it.makeit.zefiro.dao.TaskComplete;
 import it.makeit.zefiro.dao.WorkFlowProcessComplete;
 
@@ -74,9 +77,14 @@ public class TaskService extends AbstractServcie {
 
 		Map<String, WorkFlowProcessComplete> processMap = buildProcessMap(processes);
 		List<TaskComplete> entities = new ArrayList<TaskComplete>();
+		Map<String, Person> people = new HashMap<String, Person>();
 		for (Task task : tasks) {
-			entities.add(buildTask(task, processMap.get(task.getProcessId())));
-			// TODO aggiungere decodifica nome cognome owner e assignee
+			TaskComplete taskComplete = buildTask(task, processMap.get(task.getProcessId()));
+
+			String assignee = task.getAssignee();
+			addPersonDecoding(task.getAssignee(), taskComplete, people, DecodingType.ASSIGNEE);
+			addPersonDecoding(task.getOwner(), taskComplete, people, DecodingType.OWNER);
+			entities.add(taskComplete);
 		}
 		return entities;
 	}
@@ -95,11 +103,7 @@ public class TaskService extends AbstractServcie {
 
 		Gson gson = new Gson();
 		taskComplete = gson.fromJson(gson.toJson(task), TaskComplete.class);
-		taskComplete.setProcessBusinessKey(workflowProcess.getBusinessKey());
-		taskComplete.setProcessDescription(workflowProcess.getDescription());
-		taskComplete.setProcessName(workflowProcess.getName());
-		taskComplete.setProcessStartUserId(workflowProcess.getStartUserId());
-		taskComplete.setProcessTitle(workflowProcess.getTitle());
+		Util.decodeField(taskComplete, workflowProcess, DecodingType.PROCESS);
 
 		return taskComplete;
 	}

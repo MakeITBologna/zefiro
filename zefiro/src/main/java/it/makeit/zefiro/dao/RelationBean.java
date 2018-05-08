@@ -2,57 +2,57 @@ package it.makeit.zefiro.dao;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-
 /**
  *
  * @author MAKE IT
  */
-public class RelationBean {
+public class RelationBean implements BaseData {
 
-    private String id;
-    
-    private String typeId;
+	private String id;
 
-    private String sourceId;
+	private String typeId;
 
-    private String targetId;
+	private String sourceId;
 
-    public RelationBean() {
-    }
+	private String targetId;
 
-    public String getId() {
-        return id;
-    }
+	public RelationBean() {
+	}
 
-    public void setId(String pStrId) {
-        id = pStrId;
-    }
-    
-    public String getTypeId() {
-        return typeId;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setTypeId(String pStrTypeId) {
-    	typeId = pStrTypeId;
-    }
+	public void setId(String pStrId) {
+		id = pStrId;
+	}
 
-    public String getSourceId() {
-        return sourceId;
-    }
+	public String getTypeId() {
+		return typeId;
+	}
 
-    public void setSourceId(String pStrSourceId) {
-        sourceId = pStrSourceId;
-    }
+	public void setTypeId(String pStrTypeId) {
+		typeId = pStrTypeId;
+	}
 
-    public String getTargetId() {
-        return targetId;
-    }
+	public String getSourceId() {
+		return sourceId;
+	}
 
-    public void setTargetId(String pStrTargetId) {
-        targetId = pStrTargetId;
-    }
-    
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
+	public void setSourceId(String pStrSourceId) {
+		sourceId = pStrSourceId;
+	}
+
+	public String getTargetId() {
+		return targetId;
+	}
+
+	public void setTargetId(String pStrTargetId) {
+		targetId = pStrTargetId;
+	}
+
+	@Override
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this);
+	}
 }

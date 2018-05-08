@@ -4,121 +4,121 @@ import java.util.Map;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-
 /**
  *
  * @author MAKE IT
  */
-public class DocumentBean {
+public class DocumentBean implements BaseData {
 
-    private String id;
+	private String id;
 
-    private String name;
-    
-    private String description;
+	private String name;
 
-    private String type;
+	private String description;
 
-    private String version;
+	private String type;
 
-    private java.sql.Timestamp created;
+	private String version;
 
-    private String createdBy;
+	private java.sql.Timestamp created;
 
-    private Map<String, DocumentPropertyBean> properties;
-    
-    private String uploadedFileName;
+	private String createdBy;
 
-    public DocumentBean() {
-    }
+	private Map<String, DocumentPropertyBean> properties;
 
-    public String getId() {
-        return id;
-    }
+	private String uploadedFileName;
 
-    public void setId(String pStrId) {
-        id = pStrId;
-    }
+	public DocumentBean() {
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setName(String pStrName) {
-        name = pStrName;
-    }
-    
-    public String getDescription() {
-        return description;
-    }
+	public void setId(String pStrId) {
+		id = pStrId;
+	}
 
-    public void setDescription(String pDescription) {
-    	description = pDescription;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getType() {
-        return type;
-    }
+	public void setName(String pStrName) {
+		name = pStrName;
+	}
 
-    public void setType(String pStrType) {
-        type = pStrType;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public String getVersion() {
-        return version;
-    }
+	public void setDescription(String pDescription) {
+		description = pDescription;
+	}
 
-    public void setVersion(String pStrVersion) {
-        version = pStrVersion;
-    }
+	public String getType() {
+		return type;
+	}
 
-    public java.sql.Timestamp getCreated() {
-        return created;
-    }
-    
-    public String getUploadedFileName(){
-    	return this.uploadedFileName;
-    }
-    
-    public void setUploadedFileName(String lString){
-    	this.uploadedFileName = lString;
-    }
+	public void setType(String pStrType) {
+		type = pStrType;
+	}
 
-    public void setCreated(java.sql.Timestamp pTimestampCreated) {
-        created = pTimestampCreated;
-    }
+	public String getVersion() {
+		return version;
+	}
 
-    public String getCreatedBy() {
-        return createdBy;
-    }
+	public void setVersion(String pStrVersion) {
+		version = pStrVersion;
+	}
 
-    public void setCreatedBy(String pStrCreatedBy) {
-        createdBy = pStrCreatedBy;
-    }
+	public java.sql.Timestamp getCreated() {
+		return created;
+	}
 
-    public Map<String, DocumentPropertyBean> getProperties() {
-    	return properties;
-    }
+	public String getUploadedFileName() {
+		return this.uploadedFileName;
+	}
 
-    public void setProperties(Map<String, DocumentPropertyBean> pProperties) {
-    	if (pProperties == null) {
-    		throw new IllegalArgumentException();
-    	}
-        properties = pProperties;
-    }
-    
-    public DocumentPropertyBean getProperty(String pPropertyName) {
-    	return properties.get(pPropertyName);
-    }
+	public void setUploadedFileName(String lString) {
+		this.uploadedFileName = lString;
+	}
 
-    public void setProperty(DocumentPropertyBean pProperty) {
-    	if (pProperty == null ||pProperty.getQueryName() == null) {
-    		throw new IllegalArgumentException();
-    	}
-        properties.put(pProperty.getQueryName(), pProperty);
-    }
+	public void setCreated(java.sql.Timestamp pTimestampCreated) {
+		created = pTimestampCreated;
+	}
 
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String pStrCreatedBy) {
+		createdBy = pStrCreatedBy;
+	}
+
+	public Map<String, DocumentPropertyBean> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(Map<String, DocumentPropertyBean> pProperties) {
+		if (pProperties == null) {
+			throw new IllegalArgumentException();
+		}
+		properties = pProperties;
+	}
+
+	public DocumentPropertyBean getProperty(String pPropertyName) {
+		return properties.get(pPropertyName);
+	}
+
+	public void setProperty(DocumentPropertyBean pProperty) {
+		if (pProperty == null || pProperty.getQueryName() == null) {
+			throw new IllegalArgumentException();
+		}
+		properties.put(pProperty.getQueryName(), pProperty);
+	}
+
+	@Override
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this);
+	}
 }
