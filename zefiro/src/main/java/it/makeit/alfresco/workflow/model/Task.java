@@ -19,7 +19,7 @@ public class Task {
 	private String assignee;
 	private String formResourceKey;
 	private String state;
-	private List<TaskVariable> variables;
+	private List<Variable> variables;
 
 	public String getId() {
 		return id;
@@ -141,11 +141,11 @@ public class Task {
 		this.state = state;
 	}
 
-	public List<TaskVariable> getVariables() {
+	public List<Variable> getVariables() {
 		return variables;
 	}
 
-	public void setVariables(List<TaskVariable> variables) {
+	public void setVariables(List<Variable> variables) {
 		this.variables = variables;
 	}
 }

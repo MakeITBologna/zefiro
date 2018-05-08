@@ -11,11 +11,11 @@ import it.makeit.zefiro.DecodedFieldNote.DecodingType;
 import it.makeit.zefiro.Util;
 import it.makeit.zefiro.dao.BaseData;
 
-public class AbstractServcie {
+public class ZefiroAbstractServcie {
 	protected HttpRequestFactory httpRequestFactory;
 	protected AlfrescoConfig alfrescoConfig;
 
-	public AbstractServcie(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
+	public ZefiroAbstractServcie(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
 		httpRequestFactory = pHttpRequestFactory;
 		alfrescoConfig = pConfig;
 	}

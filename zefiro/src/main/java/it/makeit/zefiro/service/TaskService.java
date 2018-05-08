@@ -18,6 +18,7 @@ import it.makeit.alfresco.restApi.AlfrescoRESTWhereQueryParamsFactory;
 import it.makeit.alfresco.restApi.AlfrescoWhereOperatorEnum;
 import it.makeit.alfresco.workflow.AlfrescoWorkflowHelper;
 import it.makeit.alfresco.workflow.model.Task;
+import it.makeit.alfresco.workflow.model.WorkflowProcess;
 import it.makeit.zefiro.DecodedFieldNote.DecodingType;
 import it.makeit.zefiro.Util;
 import it.makeit.zefiro.dao.TaskComplete;
@@ -28,19 +29,23 @@ import it.makeit.zefiro.dao.WorkFlowProcessComplete;
  * @author Alba Quarto
  *
  */
-public class TaskService extends AbstractServcie {
+public class TaskService extends ZefiroAbstractServcie {
 
 	public TaskService(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
 		super(pHttpRequestFactory, pConfig);
 	}
 
-	public List<TaskComplete> load() {
-		return load(new HashMap<String, Object>());
-	}
-
 	private List<TaskComplete> load(Map<String, Object> pParams) {
 		List<Task> tasks = AlfrescoWorkflowHelper.getTasks(httpRequestFactory, alfrescoConfig, pParams);
 		return buildTaskComplete(tasks);
+	}
+
+	private TaskComplete load(String id) {
+		return null;/*
+		Task task = AlfrescoWorkflowHelper.getTask(id, httpRequestFactory, alfrescoConfig);
+		WorkflowProcess workflowProcess = AlfrescoWorkflowHelper.getProcessDefinitionImage(task.getProcessId(),
+				httpRequestFactory, alfrescoConfig);
+		return buildTaskComplete(task, workflowProcess);*/
 	}
 
 	/**
@@ -79,9 +84,7 @@ public class TaskService extends AbstractServcie {
 		List<TaskComplete> entities = new ArrayList<TaskComplete>();
 		Map<String, Person> people = new HashMap<String, Person>();
 		for (Task task : tasks) {
-			TaskComplete taskComplete = buildTask(task, processMap.get(task.getProcessId()));
-
-			String assignee = task.getAssignee();
+			TaskComplete taskComplete = buildTaskComplete(task, processMap.get(task.getProcessId()));
 			addPersonDecoding(task.getAssignee(), taskComplete, people, DecodingType.ASSIGNEE);
 			addPersonDecoding(task.getOwner(), taskComplete, people, DecodingType.OWNER);
 			entities.add(taskComplete);
@@ -98,7 +101,7 @@ public class TaskService extends AbstractServcie {
 		return processMap;
 	}
 
-	private TaskComplete buildTask(Task task, WorkFlowProcessComplete workflowProcess) {
+	private TaskComplete buildTaskComplete(Task task, WorkFlowProcessComplete workflowProcess) {
 		TaskComplete taskComplete;
 
 		Gson gson = new Gson();

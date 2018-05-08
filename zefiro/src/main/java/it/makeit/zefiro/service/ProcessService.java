@@ -21,7 +21,7 @@ import it.makeit.zefiro.DecodedFieldNote.DecodingType;
 import it.makeit.zefiro.Util;
 import it.makeit.zefiro.dao.WorkFlowProcessComplete;
 
-public class ProcessService extends AbstractServcie {
+public class ProcessService extends ZefiroAbstractServcie {
 
 	public ProcessService(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
 		super(pHttpRequestFactory, pConfig);
