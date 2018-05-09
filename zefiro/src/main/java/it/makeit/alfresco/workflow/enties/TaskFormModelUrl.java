@@ -11,9 +11,14 @@ import it.makeit.alfresco.restApi.AlfrescoBaseUrl;
 import it.makeit.alfresco.restApi.AlfrescoRESTQueryParamsEnum;
 import it.makeit.alfresco.restApi.AlfrescoUrlException;
 
+/**
+ *
+ * @author Alba Quarto
+ *
+ */
 public class TaskFormModelUrl extends GenericUrl implements AlfrescoBaseUrl {
 
-	private static final String PATH = "/start-form-model";
+	private static final String PATH = "/task-form-model";
 	private Set<String> params;
 
 	public TaskFormModelUrl(URL pHostUrl) {

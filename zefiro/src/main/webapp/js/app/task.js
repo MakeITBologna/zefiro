@@ -1,25 +1,58 @@
+/**
+ * Task module
+ */
 angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter'])
 
 .factory('TaskResource', ['$resource', '$log', function($resource, $log) {
-	$log.log("ProcessResource", $resource);
-	return $resource('a/Task/:id', {id:'@id'});
+	$log.log("TaskResource", $resource);
+	return $resource('a/Task/:id', {id:'@id'},{
+		getFormModel : {
+			isArray: true,
+			url:'a/Task/:id/formModel',
+			method: 'GET'
+		}
+	});
 }])
 
-.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', '$log',
-	function($scope, TaskResource,  NgTableParams, jbMessages, $log) {
+.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', 'jbWorkflowUtil', '$log',
+	function($scope, TaskResource,  NgTableParams, jbMessages, jbWorkflowUtil, $log) {
 
-	$scope.taskes = {};
-	$scope.documentTable = new NgTableParams({count: 25, group: "processName"}, {});
+	$scope.taskTable = new NgTableParams({count: 25, group: "processName"}, {});
 	$scope.isGroupHeaderRowVisible = false;
 	$scope.jbMessages = jbMessages;
+	$scope.jbWorkflowUtil = jbWorkflowUtil;
+	$scope.editing = false;
+	$scope.currentRownum = -1;
+	$scope.breadCrumbIndex = -1;
+	$scope.documentBreadcrumbs = [];
+	$scope.documentEditing = {};
+	
 	
 	//Ricerca documenti a partire dalla form di ricerca
 	$scope.search = function() {
-		var documentPromise = TaskResource.query($scope.documentTemplate, function() {
-			$log.log(documentPromise)
-			$scope.documentTable.settings({dataset: documentPromise});
+		var taskPromise = TaskResource.query($scope.taskEditing, function() {
+			$log.log(taskPromise)
+			$scope.taskTable.settings({dataset: taskPromise});
 		});
-		return documentPromise;
+		
+		return taskPromise;
+	}
+	
+	$scope.startEdit = function(i) {
+		$log.log("Editing: "+ i);
+		$scope.currentRownum = i;
+		$scope.breadCrumbIndex = 0;
+		$scope.taskEditing = {};
+		$scope.taskEditing.id = $scope.taskTable.data[$scope.currentRownum].id;
+		var taskPromise = $scope.search();
+//		formModelPromise = TaskResource.getFormModel({id:currentTask.id}, function(){
+//			$log.log("form-model", formModelPromise);
+//			$scope.editing = true;
+//			$scope.currentTask=currentTask;
+//			$scope.currentTaskFormModel = formModelPromise;
+//		})
+//		
+//		return formModelPromise;
 	}
 	
 	$scope.decodePriority = function(priority) {
@@ -33,53 +66,9 @@ angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter
 		return priorityName;
 	}
 	
+	//TODO CANCELLARE ALLA FINE
+	$scope.log = function(id){
+		$log.log("log id: " +id);
+	}
 	
-		//Ricerca documenti a partire dalla form di ricerca
-		/*$scope.search = function() {
-			var documentPromise = ProcessResource.query(null, function() {	
-				var processes = {};
-				let results = documentPromise;
-				if(typeof(documentPromise.toJSON) === "function"){
-					results = documentPromise.toJSON();
-				}
-				results.forEach((d)=> {
-					var processName = d.name;
-					if(!processes[processName]){
-						 processes[processName] = [];
-					}
-					processes[processName].push(d);
-				});
-				for(key in processes){
-					$scope.processes[key] = new NgTableParams({count: 25}, {});
-					$scope.processes[key].settings({dataset: processes[key]});
-				}
-			//$scope.documentTable.settings({dataset: documentPromise});
-			//	$scope.updateSummaries(documentPromise);
-			});
-			return documentPromise;
-		}*/
-	//Ricerca documenti a partire dalla form di ricerca
-	/*$scope.search = function() {
-		var documentPromise = ProcessResource.query(null, function() {	
-			var processes = {};
-			let results = documentPromise;
-			if(typeof(documentPromise.toJSON) === "function"){
-				results = documentPromise.toJSON();
-			}
-			results.forEach((d)=> {
-				var processName = d.name;
-				if(!processes[processName]){
-					 processes[processName] = [];
-				}
-				processes[processName].push(d);
-			});
-			for(key in processes){
-				$scope.processes[key] = new NgTableParams({count: 25}, {});
-				$scope.processes[key].settings({dataset: processes[key]});
-			}
-		//$scope.documentTable.settings({dataset: documentPromise});
-		//	$scope.updateSummaries(documentPromise);
-		});
-		return documentPromise;
-	}*/
 }])

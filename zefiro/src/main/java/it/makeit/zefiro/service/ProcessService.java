@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.api.client.http.HttpRequestFactory;
 import com.google.gson.Gson;
 
 import it.makeit.alfresco.AlfrescoConfig;
@@ -23,8 +22,8 @@ import it.makeit.zefiro.dao.WorkFlowProcessComplete;
 
 public class ProcessService extends ZefiroAbstractServcie {
 
-	public ProcessService(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
-		super(pHttpRequestFactory, pConfig);
+	public ProcessService(AlfrescoConfig pConfig) {
+		super(pConfig);
 	}
 
 	public List<WorkFlowProcessComplete> load() {
@@ -59,6 +58,13 @@ public class ProcessService extends ZefiroAbstractServcie {
 		return this.load(params);
 	}
 
+	public WorkFlowProcessComplete load(String id) {
+		WorkflowProcess workflowProcess = AlfrescoWorkflowHelper.getProcess(id, httpRequestFactory, alfrescoConfig);
+		ProcessDefinition processDefinition = AlfrescoWorkflowHelper
+				.getProcessDefinition(workflowProcess.getProcessDefinitionId(), httpRequestFactory, alfrescoConfig);
+		return buildProcess(workflowProcess, processDefinition);
+	}
+
 	private Map<String, ProcessDefinition> buildDefinitionsMap(List<ProcessDefinition> definitions) {
 		Map<String, ProcessDefinition> processMap = new HashMap<String, ProcessDefinition>();
 
@@ -69,10 +75,8 @@ public class ProcessService extends ZefiroAbstractServcie {
 	}
 
 	private WorkFlowProcessComplete buildProcess(WorkflowProcess workflowProcess, ProcessDefinition processDefinition) {
-		WorkFlowProcessComplete process = null;
-
 		Gson gson = new Gson();
-		process = gson.fromJson(gson.toJson(workflowProcess), WorkFlowProcessComplete.class);
+		WorkFlowProcessComplete process = gson.fromJson(gson.toJson(workflowProcess), WorkFlowProcessComplete.class);
 		Util.decodeField(process, processDefinition, DecodingType.DEFINITION);
 
 		return process;

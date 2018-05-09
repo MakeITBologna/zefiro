@@ -303,14 +303,14 @@ public class AlfrescoWorkflowHelper {
 		return loadList(pHttpRequestFactory, url, Candidate.class);
 	}
 
-	public static List<Candidate> getTaskFormModel(String taskId, HttpRequestFactory pHttpRequestFactory,
+	public static List<FormModel> getTaskFormModel(String taskId, HttpRequestFactory pHttpRequestFactory,
 			AlfrescoConfig pConfig) {
 		mLog.info("Start");
 
 		return getTaskFormModel(taskId, pHttpRequestFactory, pConfig, null);
 	}
 
-	public static List<Candidate> getTaskFormModel(String taskId, HttpRequestFactory pHttpRequestFactory,
+	public static List<FormModel> getTaskFormModel(String taskId, HttpRequestFactory pHttpRequestFactory,
 			AlfrescoConfig pConfig, Map<String, Object> pParams) {
 		mLog.info("Start");
 
@@ -320,7 +320,7 @@ public class AlfrescoWorkflowHelper {
 		TaskFormModelUrl taskFormModelUrl = new TaskFormModelUrl(host);
 		GenericUrl url = (new GenericUrlFactory(taskUrl)).add(taskFormModelUrl).build(buildParams(pParams));
 
-		return loadList(pHttpRequestFactory, url, Candidate.class);
+		return loadList(pHttpRequestFactory, url, FormModel.class);
 	}
 
 	// UTILS METHODS BELOW

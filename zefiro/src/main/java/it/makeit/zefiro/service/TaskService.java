@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import com.google.api.client.http.HttpRequestFactory;
 import com.google.gson.Gson;
 
 import it.makeit.alfresco.AlfrescoConfig;
@@ -17,8 +16,8 @@ import it.makeit.alfresco.restApi.AlfrescoRESTQueryParamsEnum;
 import it.makeit.alfresco.restApi.AlfrescoRESTWhereQueryParamsFactory;
 import it.makeit.alfresco.restApi.AlfrescoWhereOperatorEnum;
 import it.makeit.alfresco.workflow.AlfrescoWorkflowHelper;
+import it.makeit.alfresco.workflow.model.FormModel;
 import it.makeit.alfresco.workflow.model.Task;
-import it.makeit.alfresco.workflow.model.WorkflowProcess;
 import it.makeit.zefiro.DecodedFieldNote.DecodingType;
 import it.makeit.zefiro.Util;
 import it.makeit.zefiro.dao.TaskComplete;
@@ -31,25 +30,17 @@ import it.makeit.zefiro.dao.WorkFlowProcessComplete;
  */
 public class TaskService extends ZefiroAbstractServcie {
 
-	public TaskService(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
-		super(pHttpRequestFactory, pConfig);
+	public TaskService(AlfrescoConfig pConfig) {
+		super(pConfig);
 	}
 
-	private List<TaskComplete> load(Map<String, Object> pParams) {
-		List<Task> tasks = AlfrescoWorkflowHelper.getTasks(httpRequestFactory, alfrescoConfig, pParams);
-		return buildTaskComplete(tasks);
-	}
-
-	private TaskComplete load(String id) {
-		return null;/*
+	public TaskComplete load(String id) {
 		Task task = AlfrescoWorkflowHelper.getTask(id, httpRequestFactory, alfrescoConfig);
-		WorkflowProcess workflowProcess = AlfrescoWorkflowHelper.getProcessDefinitionImage(task.getProcessId(),
-				httpRequestFactory, alfrescoConfig);
-		return buildTaskComplete(task, workflowProcess);*/
+		ProcessService service = new ProcessService(alfrescoConfig);
+		return buildTaskComplete(task, service.load(task.getProcessId()));
 	}
 
 	/**
-	 * @author Alba Quarto
 	 * @return a list of task assigned to logger user or to which the user is a
 	 *         candidate
 	 */
@@ -76,8 +67,12 @@ public class TaskService extends ZefiroAbstractServcie {
 		return buildTaskComplete((List<Task>) CollectionUtils.union(tasksAssigned, tasksCandidated));
 	}
 
+	public List<FormModel> loadFormModel(String id) {
+		return AlfrescoWorkflowHelper.getTaskFormModel(id, httpRequestFactory, alfrescoConfig);
+	}
+
 	private List<TaskComplete> buildTaskComplete(List<Task> tasks) {
-		ProcessService processService = new ProcessService(httpRequestFactory, alfrescoConfig);
+		ProcessService processService = new ProcessService(alfrescoConfig);
 		List<WorkFlowProcessComplete> processes = processService.load();
 
 		Map<String, WorkFlowProcessComplete> processMap = buildProcessMap(processes);

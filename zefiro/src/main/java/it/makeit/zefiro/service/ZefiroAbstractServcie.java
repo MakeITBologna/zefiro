@@ -15,8 +15,8 @@ public class ZefiroAbstractServcie {
 	protected HttpRequestFactory httpRequestFactory;
 	protected AlfrescoConfig alfrescoConfig;
 
-	public ZefiroAbstractServcie(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
-		httpRequestFactory = pHttpRequestFactory;
+	public ZefiroAbstractServcie(AlfrescoConfig pConfig) {
+		httpRequestFactory = AlfrescoHelper.getRequestFactory(pConfig);
 		alfrescoConfig = pConfig;
 	}
 

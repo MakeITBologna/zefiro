@@ -24,7 +24,14 @@ public class TaskEndpoint extends AbstractEndpoint {
 	@Path("/{id}")
 	public Response getProcess(@PathParam("id") String id) {
 		TaskService service = (TaskService) getServiceInstance(TaskService.class);
-		return Response.ok().build();
+		return Response.ok(service.load(id)).build();
+	}
+
+	@GET
+	@Path("/{id}/formModel")
+	public Response getFormModel(@PathParam("id") String id) {
+		TaskService service = (TaskService) getServiceInstance(TaskService.class);
+		return Response.ok(service.loadFormModel(id)).build();
 	}
 
 }

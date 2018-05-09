@@ -23,6 +23,5 @@ public class AbstractEndpoint {
 				| NoSuchMethodException | SecurityException e) {
 			throw new JBrickException(e, JBrickException.REFLECTION_EXCEPTION);
 		}
-
 	}
 }

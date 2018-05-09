@@ -6,11 +6,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.google.api.client.http.HttpRequestFactory;
-
-import it.makeit.alfresco.AlfrescoConfig;
-import it.makeit.alfresco.AlfrescoHelper;
-import it.makeit.zefiro.Util;
 import it.makeit.zefiro.service.ProcessService;
 
 @Path("/Process")
@@ -20,9 +15,7 @@ public class ProcessEndpoint extends AbstractEndpoint {
 	@GET
 	@Path("/processes")
 	public Response getProcess() {
-		AlfrescoConfig pConfig = Util.getUserAlfrescoConfig(httpRequest);
-		HttpRequestFactory pHttpRequestFactory = AlfrescoHelper.getRequestFactory(pConfig);
-		ProcessService service = new ProcessService(pHttpRequestFactory, pConfig);
+		ProcessService service = (ProcessService) getServiceInstance(ProcessService.class);
 
 		return Response.ok(service.load()).build();
 	}
@@ -30,9 +23,7 @@ public class ProcessEndpoint extends AbstractEndpoint {
 	@GET
 	@Path("/startedProcesses")
 	public Response getStartedProcess() {
-		AlfrescoConfig pConfig = Util.getUserAlfrescoConfig(httpRequest);
-		HttpRequestFactory pHttpRequestFactory = AlfrescoHelper.getRequestFactory(pConfig);
-		ProcessService service = new ProcessService(pHttpRequestFactory, pConfig);
+		ProcessService service = (ProcessService) getServiceInstance(ProcessService.class);
 
 		return Response.ok(service.loadStarted()).build();
 	}

@@ -235,6 +235,23 @@ function($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePick
 	}
 })
 
+.factory('jbWorkflowUtil', function() {
+	return {
+		decodeType: function(type){
+			switch(type){
+				case "d:text": return "STRING";
+				case "d:int": return "INTEGER";
+				case "d:long": return "INTEGER";
+				case "d:float":return "DECIMAL";
+				case "d:double":return "DECIMAL";
+				case "d:boolean": return "BOOLEAN";
+				case "d:date":  return "DATE";
+				case "d:datetime": return "DATETIME";
+			}
+		}
+	}
+})
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //CONTROLLER
 
