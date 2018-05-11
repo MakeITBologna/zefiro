@@ -18,7 +18,14 @@ angular.module("jbLocale", ["ngLocale"])
 
 "high": "Alta",
 "low": "Bassa",
-"medium": "Media"
+"medium": "Media",
+	
+"task" : {
+	"expired": "Attività scaduta",
+	"expiring": "Attività in scadenza",
+	"assignedUser": "Attività assegnata ad un utente",
+	"assignedUsers": "Attività assegnata ad un pool"
+}	
 
 })
 

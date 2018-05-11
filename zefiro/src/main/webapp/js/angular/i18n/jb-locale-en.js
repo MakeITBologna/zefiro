@@ -18,7 +18,14 @@ angular.module("jbLocale", ["ngLocale"])
 
 "high": "High",
 "low": "Low",
-"medium": "Medium"
+"medium": "Medium",
+
+"task" : {
+	"expired": "Task expired",
+	"expiring": "Task expirng",
+		"assignedUser": "Task assigned to one user",
+		"assignedUsers": "Task assigned to a pool"
+}
 })
 
 .factory('jbPatterns', ['$locale', function($locale) {

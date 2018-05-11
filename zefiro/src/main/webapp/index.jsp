@@ -26,7 +26,7 @@
 <link rel="stylesheet" href="css/dashgum/style.css" />
 <link rel="stylesheet" href="css/dashgum/style-responsive.css" />
 <link rel="stylesheet" href="css/promise-buttons.css" />
-<link rel="stylesheet" href="css/jbrick.css" />
+<link rel="stylesheet" href="css/jbrick.css?version=${version}" />
 
 <script type="text/javascript" src="js/angular/angular.js?version=${version}"></script>
 <script type="text/javascript" src="js/angular/angular-route.js?version=${version}"></script>

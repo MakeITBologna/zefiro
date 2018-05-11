@@ -57,13 +57,13 @@ function($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePick
 	
 	//Pagina processi avviati da te	
 	.when('/process', {
-		templateUrl: 'views/process/processBrowser.jsp',
+		templateUrl: 'views/process/processBrowser.html',
 		controller: 'ProcessController'
 	})
 	
 	//Pagina attività assegante a te
 	.when('/task', {
-		templateUrl: 'views/process/taskBrowser.jsp',
+		templateUrl: 'views/process/taskBrowser.html',
 		controller: 'TaskController'
 	})
 
@@ -206,6 +206,34 @@ function($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePick
 				}
 			}
 			return null;
+		},
+		stringToDate: function(string) {
+			var R_ISO8601_STR = /^(\d{4})-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)(?::?(\d\d)(?:\.(\d+))?)?)?(Z|([+-])(\d\d):?(\d\d))?)?$/;
+				// 1        2       3         4          5          6          7          8  9     10      11
+			var match;
+			if (!(match = string.match(R_ISO8601_STR))) {
+				return null;
+			}
+			var toInt = function(str){
+				return parseInt(str, 10);
+			}
+			var date = new Date(0),
+							tzHour = 0,
+							tzMin  = 0,
+							dateSetter = match[8] ? date.setUTCFullYear : date.setFullYear,
+							timeSetter = match[8] ? date.setUTCHours : date.setHours;
+			if (match[9]) {
+				tzHour = toInt(match[9] + match[10]);
+				tzMin = toInt(match[9] + match[11]);
+			}
+
+			dateSetter.call(date, toInt(match[1]), toInt(match[2]) - 1, toInt(match[3]));
+			var h = toInt(match[4] || 0) - tzHour;
+			var m = toInt(match[5] || 0) - tzMin;
+			var s = toInt(match[6] || 0);
+			var ms = Math.round(parseFloat('0.' + (match[7] || 0)) * 1000);
+			timeSetter.call(date, h, m, s, ms);
+			return date;
 		}
 	}
 })

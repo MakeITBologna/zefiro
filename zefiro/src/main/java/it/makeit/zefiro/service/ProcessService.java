@@ -62,7 +62,11 @@ public class ProcessService extends ZefiroAbstractServcie {
 		WorkflowProcess workflowProcess = AlfrescoWorkflowHelper.getProcess(id, httpRequestFactory, alfrescoConfig);
 		ProcessDefinition processDefinition = AlfrescoWorkflowHelper
 				.getProcessDefinition(workflowProcess.getProcessDefinitionId(), httpRequestFactory, alfrescoConfig);
-		return buildProcess(workflowProcess, processDefinition);
+		WorkFlowProcessComplete workflowProcessComplete = buildProcess(workflowProcess, processDefinition);
+		addPersonDecoding(workflowProcess.getStartUserId(), workflowProcessComplete, new HashMap<String, Person>(),
+				DecodingType.STARTER);
+		return workflowProcessComplete;
+
 	}
 
 	private Map<String, ProcessDefinition> buildDefinitionsMap(List<ProcessDefinition> definitions) {
