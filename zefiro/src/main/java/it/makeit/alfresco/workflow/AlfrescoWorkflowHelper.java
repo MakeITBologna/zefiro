@@ -323,6 +323,26 @@ public class AlfrescoWorkflowHelper {
 		return loadList(pHttpRequestFactory, url, FormModel.class);
 	}
 
+	public static List<Item> getTaskItems(String taskId, HttpRequestFactory pHttpRequestFactory,
+			AlfrescoConfig pConfig) {
+		mLog.info("Start");
+
+		return getTaskItems(taskId, pHttpRequestFactory, pConfig, null);
+	}
+
+	public static List<Item> getTaskItems(String taskId, HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig,
+			Map<String, Object> pParams) {
+		mLog.info("Start");
+
+		URL host = pConfig.getHost();
+		TasksUrl taskUrl = new TasksUrl(host);
+		taskUrl.addStringPathParam(taskId);
+		ItemsUrl itemsUrl = new ItemsUrl(host);
+		GenericUrl url = (new GenericUrlFactory(taskUrl)).add(itemsUrl).build(buildParams(pParams));
+
+		return loadList(pHttpRequestFactory, url, Item.class);
+	}
+
 	// UTILS METHODS BELOW
 	private static <T> T loadObject(HttpRequestFactory pHttpRequestFactory, GenericUrl url, Class<T> clz) {
 		return parse(load(pHttpRequestFactory, url), "entry", clz);

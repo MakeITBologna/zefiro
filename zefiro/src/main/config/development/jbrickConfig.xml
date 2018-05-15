@@ -12,7 +12,7 @@
 		<dataTypeConverter dataType="java.lang.Integer" pattern="pattern.integer" converter="org.apache.commons.beanutils.locale.converters.IntegerLocaleConverter"/>
 	</dataTypeConverters>
 
- <alfresco baseTypeId="D:myca:calcio" host="http://127.0.0.1:8080" rootFolderId="41f43af3-7894-4a65-bde0-9a86142429c5"/> 	
+ <alfresco baseTypeId="D:myca:calcio" host="http://127.0.0.1:8080" rootFolderId="5a556f1c-dce6-42bd-aea1-3d918660dbba"/> 	
 <!--<alfresco baseTypeId="D:mio:mioDocument" host="http://10.232.1.210:8080" rootFolderId="dd44465f-7563-4130-b672-b49dfb254e06"/>-->
 
 	<propertyBlacklist>

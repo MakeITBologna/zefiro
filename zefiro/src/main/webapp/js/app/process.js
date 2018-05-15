@@ -16,7 +16,9 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 	function($scope, ProcessResource,  NgTableParams, $log) {
 
 	$scope.processes = {};
-	$scope.documentTable = new NgTableParams({count: 5, group: "name"}, {});
+	$scope.documentTable = new NgTableParams({group: "name"},{counts: [],groupOptions: {
+        isExpanded: false
+    }});
 	$scope.isGroupHeaderRowVisible = false;
 	
 	//Ricerca documenti a partire dalla form di ricerca

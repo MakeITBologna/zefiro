@@ -1,59 +1,101 @@
 /**
  * Task module
+ * @author Alba Quarto
  */
 angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter'])
 
-.factory('TaskResource', ['$resource', '$log', function($resource, $log) {
-	$log.log("TaskResource", $resource);
+.factory('TaskResource', ['$resource', function($resource) {
 	return $resource('a/Task/:id', {id:'@id'},{
 		getFormModel : {
 			isArray: true,
 			url:'a/Task/:id/formModel',
 			method: 'GET'
+		},
+		getVariables: {
+			isArray: true,
+			url:'a/Task/:id/variables',
+			method: 'GET'
+		},
+		getItems:  {
+			isArray: true,
+			url:'a/Task/:id/items',
+			method: 'GET'
 		}
 	});
 }])
 
-.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', 'jbWorkflowUtil', 'jbUtil', '$log',
-	function($scope, TaskResource,  NgTableParams, jbMessages, jbWorkflowUtil, jbUtil, $log) {
+.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', 'jbWorkflowUtil', 'jbUtil', 'jbValidate',
+	function($scope, TaskResource,  NgTableParams, jbMessages, jbWorkflowUtil, jbUtil, jbValidate) {
 
 	$scope.taskTable = new NgTableParams({group: "processName"}, {counts: [],groupOptions: {
         isExpanded: false
     }});
-	$scope.isGroupHeaderRowVisible = false;
+	var TASK_LIST = 'taskList';
+	
 	$scope.jbMessages = jbMessages;
 	$scope.jbWorkflowUtil = jbWorkflowUtil;
+	$scope.jbUtil = jbUtil;
+	$scope.jbValidate = jbValidate;
+	
+	$scope.isGroupHeaderRowVisible = false;
 	$scope.editing = false;
-	$scope.currentRownum = -1;
+	$scope.readOnly = false;
+	$scope.currentRowNum = -1;
+	$scope.currentGroupNum=-1;
+	$scope.taskEditing = {};
 	$scope.breadCrumbIndex = -1;
-	$scope.documentBreadcrumbs = [];
-	$scope.documentEditing = {};
+	$scope.breadcrumbs = [];
+	$scope.currentTaskForm = [];
+	$scope.currentTaskItems = [];
+	$scope.updatedVariables = {}
 	
 	//Ricerca documenti a partire dalla form di ricerca
 	$scope.search = function() {
 		var taskPromise = TaskResource.query($scope.taskEditing, function() {
-			$log.log(taskPromise)
+			console.log(taskPromise)
 			$scope.taskTable.settings({dataset: taskPromise, });
 		});
 		
 		return taskPromise;
 	}
 	
-	$scope.startEdit = function(i) {
-		$log.log("Editing: "+ i);
-//		$scope.currentRownum = i;
-//		$scope.breadCrumbIndex = 0;
-//		$scope.taskEditing = {};
-//		$scope.taskEditing.id = $scope.taskTable.data[$scope.currentRownum].id;
-//		var taskPromise = $scope.search();
-//		formModelPromise = TaskResource.getFormModel({id:currentTask.id}, function(){
-//			$log.log("form-model", formModelPromise);
-//			$scope.editing = true;
-//			$scope.currentTask=currentTask;
-//			$scope.currentTaskFormModel = formModelPromise;
-//		})
-//		
-//		return formModelPromise;
+	$scope.startEdit = function(group_i, row_i) {
+		console.log("Editing: "+ group_i+ " "+ row_i, $scope.taskTable);
+		$scope.currentRowNum = row_i;
+		$scope.currentGroupNum = group_i;
+		$scope.breadCrumbIndex = 0;
+		$scope.taskEditing = {};
+		$scope.currentTaskForm = [];
+		$scope.breadcrumbs = [];
+		$scope.currentTaskItems = [];
+		$scope.updatedVariables = {};
+		$scope.taskEditing.id = $scope.taskTable.data[$scope.currentGroupNum].data[$scope.currentRowNum].id;
+		var taskPromise = TaskResource.get($scope.taskEditing, function() {
+			$scope.taskEditing = taskPromise;
+			$scope.breadcrumbs.push({		
+				id: $scope.taskEditing.id,
+				name: $scope.taskEditing.name,
+				description: $scope.taskEditing.description,
+				businessKey: $scope.taskEditing.processBusinessKey,
+				rownum: row_i,
+				groupnum: group_i
+			});
+			var formPromise = TaskResource.getFormModel({id:$scope.taskEditing.id}, function() {
+				console.log("-----formPromise", formPromise);
+				$scope.currentTaskForm = formPromise;
+				var itemsPromise = TaskResource.getItems({id:$scope.taskEditing.id}, function() {
+					console.log("-----itemsPromise", itemsPromise);
+					$scope.currentTaskItems = itemsPromise;
+				})
+				var variablesPromise = TaskResource.getVariables({id:$scope.taskEditing.id}, function(){
+						console.log("-----varPromise", variablesPromise);
+						variablesPromise.forEach(function(variable) {
+							$scope.updatedVariables[variable.name] = variable;
+						});
+					$scope.editing = true;
+				});
+			});
+		});
 	}
 	
 	$scope.decodePriority = function(priority) {
@@ -67,13 +109,7 @@ angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter
 		return priorityName;
 	}
 	
-	//TODO CANCELLARE ALLA FINE
-	$scope.log = function(id){
-		$log.log("log id: " +id);
-	}
-	
 	$scope.deadlineProximity = function(date) {
-		$log.log("deadlineProximity: ", date)
 		if(!date){
 			return 3;
 		}
@@ -97,7 +133,6 @@ angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter
 	}
 	
 	$scope.deadlineTMessag = function(date) {
-		$log.log("deadlineTMessag: "+date)
 		dlProx = $scope.deadlineProximity(date);
 		var msg = "";
 		switch(dlProx){
@@ -110,9 +145,52 @@ angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter
 	
 	$scope.assignedTMessage = function(candidates){
 		var msg = jbMessages.task.assignedUser;
-		if(candidates && candidates.length >= 0){
+		if(candidates && candidates.length > 0){
 			msg = jbMessages.task.assignedUsers;
 		}
 		return msg;
 	}
+	
+	$scope.getValidClass = function(el){
+		if(el){
+			return jbValidate.getClass(el);
+		}
+	}
+	
+	$scope.gotoTaskBreadcrumb = function(i, form) {
+		if (i < 0) {
+			$scope.breadcrumbs = [];
+			$scope.closeDetail(form);
+			return;
+		}
+		var shortDocument = $scope.breadcrumbs[i];
+		$scope.breadCrumbIndex = i-1;
+		if (i == 0) {
+			$scope.startEdit(shortDocument.rownum);
+		} else {
+			$scope.breadcrumbs = $scope.breadcrumbs.slice(0, i);
+			$scope.showDocument(shortDocument);
+		}
+	}
+	
+	//Chiude la pagina di dettaglio
+	$scope.closeDetail = function(form) {
+		$scope.editing = false;
+		$scope.readOnly = false;
+		if (form) $scope.clearDetail(form);
+	}
+	
+	//Pulisce il form della pagina di dettaglio
+	$scope.clearDetail = function(form) {
+		jbValidate.clearForm(form);
+		$scope.taskEditing = {};
+	}
+	
+	//Gestione anteprima nel dettaglio
+	$scope.getDocumentObjectHTML = function(document){
+		console.log("--------documentHTML", document);
+		return "<object data=\"" + "a/Document/" + document.id + "/preview" + "\" width=\"100%\" style=\"height: 100vh;\" ></object>";
+	}
+	
+	
 }])

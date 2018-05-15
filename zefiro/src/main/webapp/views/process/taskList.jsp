@@ -1,4 +1,5 @@
 <%@ include file="/include/directive.jsp" %>
+<div class="container">
 <div ng-init="search()" hidden></div>
 <div class="page-header jb-header-bar">
   <div class="pull-right">
@@ -26,7 +27,7 @@
     </div>
     <table ng-table="taskTable" class="table table-condensed ng-table-responsive workflow-list" show-filter="false" show-group="isGroupHeaderRowVisible">
       <tbody>
-        <tr class="ng-table-group group-header" ng-repeat-start="group in $groups">
+        <tr class="ng-table-group group-header" ng-repeat-start="($g_index, group) in $groups">
           <td colspan="3">
             <h4>
               <a ng-click="group.$hideRows = !group.$hideRows">
@@ -37,10 +38,10 @@
             </h4>
           </td>
         </tr>
-        <tr ng-hide="group.$hideRows" ng-repeat="row in group.data track by $index" ng-dblclick="startEdit($index)" ng-repeat-end>
+        <tr ng-hide="group.$hideRows" ng-repeat="($index, row) in group.data track by row.id" ng-dblclick="startEdit($g_index, $index)" ng-repeat-end>
           <td class="">
             <h5 class="text-center" ng-class="(deadlineProximity(row.dueAt) <=2)  ? 'jb-text-danger' : 'jb-text-success'">
-          	  <i class="fa fa-circle" uib-tooltip="{{deadlineTMessag(row.dueAt)}}" tooltip-placement="right-top" tooltip-class="jb-tooltip"></i>
+          	  <i class="fa fa-clock-o" uib-tooltip="{{deadlineTMessag(row.dueAt)}}" tooltip-placement="right-top" tooltip-class="jb-tooltip"></i>
           	</h5>
           	<h5 class="text-center jb-text-primary">
           	  <i ng-class="(!row.candidates || row.candidates.length==0)? 'fa fa-user' : 'fa fa-users'" uib-tooltip="{{assignedTMessage(row.candidates)}}" tooltip-placement="right-top"  tooltip-class="jb-tooltip"></i>
@@ -48,7 +49,7 @@
           </td>
           <td>
             <h5  class="jb-clickable">
-              <a ng-click="startEdit($index)">
+              <a ng-click="startEdit($g_index, $index)">
                 <span ng-if="row.processBusinessKey">{{row.processBusinessKey}}</span>
                 <span ng-if="!row.processBusinessKey">(Nessun Messaggio)</span>
               </a>
@@ -105,4 +106,5 @@
       </tbody>
     </table>
   </div>
+</div>
 </div>

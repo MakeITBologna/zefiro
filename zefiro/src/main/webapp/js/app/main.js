@@ -57,13 +57,13 @@ function($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePick
 	
 	//Pagina processi avviati da te	
 	.when('/process', {
-		templateUrl: 'views/process/processBrowser.html',
+		templateUrl: 'views/process/processBrowser.jsp',
 		controller: 'ProcessController'
 	})
 	
 	//Pagina attività assegante a te
 	.when('/task', {
-		templateUrl: 'views/process/taskBrowser.html',
+		templateUrl: 'views/process/taskBrowser.jsp',
 		controller: 'TaskController'
 	})
 
@@ -129,7 +129,7 @@ function($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePick
 	return {
 		isEmptyObject: function(obj) {
 			if (obj instanceof Array) {
-				return obj.length == 0;
+				return obj.length === 0;
 			}
 			
 			for (var p in obj) {
@@ -275,6 +275,7 @@ function($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePick
 				case "d:boolean": return "BOOLEAN";
 				case "d:date":  return "DATE";
 				case "d:datetime": return "DATETIME";
+				default: return "STRING";
 			}
 		}
 	}

@@ -17,7 +17,9 @@ import it.makeit.alfresco.restApi.AlfrescoRESTWhereQueryParamsFactory;
 import it.makeit.alfresco.restApi.AlfrescoWhereOperatorEnum;
 import it.makeit.alfresco.workflow.AlfrescoWorkflowHelper;
 import it.makeit.alfresco.workflow.model.FormModel;
+import it.makeit.alfresco.workflow.model.Item;
 import it.makeit.alfresco.workflow.model.Task;
+import it.makeit.alfresco.workflow.model.Variable;
 import it.makeit.zefiro.DecodedFieldNote.DecodingType;
 import it.makeit.zefiro.Util;
 import it.makeit.zefiro.dao.TaskComplete;
@@ -69,6 +71,14 @@ public class TaskService extends ZefiroAbstractServcie {
 
 	public List<FormModel> loadFormModel(String id) {
 		return AlfrescoWorkflowHelper.getTaskFormModel(id, httpRequestFactory, alfrescoConfig);
+	}
+
+	public List<Variable> loadVariables(String id) {
+		return AlfrescoWorkflowHelper.getTaskVariables(id, httpRequestFactory, alfrescoConfig);
+	}
+
+	public List<Item> loadItems(String id) {
+		return AlfrescoWorkflowHelper.getTaskItems(id, httpRequestFactory, alfrescoConfig);
 	}
 
 	private List<TaskComplete> buildTaskComplete(List<Task> tasks) {

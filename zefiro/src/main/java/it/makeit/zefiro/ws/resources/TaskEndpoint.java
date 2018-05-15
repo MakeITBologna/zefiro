@@ -34,4 +34,18 @@ public class TaskEndpoint extends AbstractEndpoint {
 		return Response.ok(service.loadFormModel(id)).build();
 	}
 
+	@GET
+	@Path("/{id}/variables")
+	public Response getVariables(@PathParam("id") String id) {
+		TaskService service = (TaskService) getServiceInstance(TaskService.class);
+		return Response.ok(service.loadVariables(id)).build();
+	}
+
+	@GET
+	@Path("/{id}/items")
+	public Response getItems(@PathParam("id") String id) {
+		TaskService service = (TaskService) getServiceInstance(TaskService.class);
+		return Response.ok(service.loadItems(id)).build();
+	}
+
 }
