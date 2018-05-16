@@ -1,5 +1,6 @@
 package it.makeit.alfresco.workflow.model;
 
+import java.util.Date;
 import java.util.List;
 
 public class Task {
@@ -10,9 +11,9 @@ public class Task {
 	private String activityDefinitionId;
 	private String name;
 	private String description;
-	private String dueAt;
-	private String startedAt;
-	private String endedAt;
+	private Date dueAt;
+	private Date startedAt;
+	private Date endedAt;
 	private String durationInMs;
 	private String priority;
 	private String owner;
@@ -69,27 +70,27 @@ public class Task {
 		this.description = description;
 	}
 
-	public String getDueAt() {
+	public Date getDueAt() {
 		return dueAt;
 	}
 
-	public void setDueAt(String dueAt) {
+	public void setDueAt(Date dueAt) {
 		this.dueAt = dueAt;
 	}
 
-	public String getStartedAt() {
+	public Date getStartedAt() {
 		return startedAt;
 	}
 
-	public void setStartedAt(String startedAt) {
+	public void setStartedAt(Date startedAt) {
 		this.startedAt = startedAt;
 	}
 
-	public String getEndedAt() {
+	public Date getEndedAt() {
 		return endedAt;
 	}
 
-	public void setEndedAt(String endedAt) {
+	public void setEndedAt(Date endedAt) {
 		this.endedAt = endedAt;
 	}
 

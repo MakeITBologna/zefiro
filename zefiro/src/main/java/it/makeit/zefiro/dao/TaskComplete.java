@@ -1,5 +1,6 @@
 package it.makeit.zefiro.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import it.makeit.alfresco.workflow.model.Candidate;
@@ -7,6 +8,9 @@ import it.makeit.alfresco.workflow.model.Task;
 import it.makeit.zefiro.DecodedFieldNote;
 import it.makeit.zefiro.DecodedFieldNote.DecodingType;
 
+/**
+ * @author Alba Quarto
+ */
 public class TaskComplete extends Task implements BaseData {
 	private String processName;
 	private String processTitle;
@@ -20,6 +24,7 @@ public class TaskComplete extends Task implements BaseData {
 	private String ownerFirstName;
 	private String ownerLastName;
 	private List<Candidate> candidates;
+	private Date processStartedAt;
 
 	public String getProcessName() {
 		return processName;
@@ -126,5 +131,14 @@ public class TaskComplete extends Task implements BaseData {
 
 	public void setCandidates(List<Candidate> candidates) {
 		this.candidates = candidates;
+	}
+
+	public Date getProcessStartedAt() {
+		return processStartedAt;
+	}
+
+	@DecodedFieldNote(decodingType = DecodingType.PROCESS, value = "startedAt")
+	public void setProcessStartedAt(Date processStartedAt) {
+		this.processStartedAt = processStartedAt;
 	}
 }

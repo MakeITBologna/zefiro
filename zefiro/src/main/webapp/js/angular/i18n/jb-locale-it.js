@@ -24,7 +24,12 @@ angular.module("jbLocale", ["ngLocale"])
 	"expired": "Attività scaduta",
 	"expiring": "Attività in scadenza",
 	"assignedUser": "Attività assegnata ad un utente",
-	"assignedUsers": "Attività assegnata ad un pool"
+	"assignedUsers": "Attività assegnata ad un pool",
+	"processType": "Tipo processo",
+	"assignment": "Assegnazione",
+	"deadline": "Scadenza",
+	"priority": "Priorità",
+	"deadlineProssimity": "In scadenza"
 }	
 
 })

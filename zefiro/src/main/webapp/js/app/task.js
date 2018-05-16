@@ -48,6 +48,7 @@ angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter
 	$scope.currentTaskForm = [];
 	$scope.currentTaskItems = [];
 	$scope.updatedVariables = {}
+	$scope.orderCriteria  = "";
 	
 	//Ricerca documenti a partire dalla form di ricerca
 	$scope.search = function() {
@@ -192,5 +193,53 @@ angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter
 		return "<object data=\"" + "a/Document/" + document.id + "/preview" + "\" width=\"100%\" style=\"height: 100vh;\" ></object>";
 	}
 	
+	$scope.test = function(e){
+		angular.element(document).find('#orderSelect').text("pippo");
 	
+		console.log("---------test");
+	}
+	
+	//Sorting select 
+	$scope.sortingSelectTitle = "";
+	$scope.sortingSelectData =  [{
+				title: jbMessages.task.processType,
+				value: "processName",
+				items: [{
+					title:	jbMessages.task.assignment,
+					value:	"startedAt",
+				},{
+					title: jbMessages.task.deadline,
+					value: "dueAt",
+				},{
+					title: jbMessages.task.priority,
+					value: "priority",
+				}]
+			},{
+				title: jbMessages.task.priority,
+				value: "prioriry",
+				items: [{
+					title: jbMessages.task.processType,
+					value: "processName",
+				},{
+					title: jbMessages.task.assignment,
+					value: "startedAt"
+				},{
+					title: jbMessages.task.deadline,
+					value: "dueAt"
+				}]
+			}, {
+				title: jbMessages.task.deadlineProssimity,
+				value: "deadlineProssimity",
+				items: [{
+					title: jbMessages.task.processType,
+					value: "processName",
+				},{
+					title: jbMessages.task.assignment,
+					value: "startedAt"
+				}]
+			}];
+	
+	$scope.sortingTaskList = function(group, item){
+		$scope.sortingSelectTitle = group.title + " - " +item.title;
+	}
 }])

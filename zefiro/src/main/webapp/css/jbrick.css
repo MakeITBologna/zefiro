@@ -119,4 +119,32 @@ table.workflow-list > thead {
 	opacity: 1;
 }
 
-.
+.jb-fa-md {
+	font-size: 1.3em;
+}
+
+.jb-full-area {
+    width: -webkit-fill-available;
+}
+
+.jb-button-label {
+	padding: 6px 12px;
+}
+
+.jb-panel-body {
+	padding-top: 5px;	
+}
+
+.jb-button-label {
+	    padding-top: 8px;
+    padding-right: 5px;
+}
+
+.jb-dropdown-header {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.jb-dropdown-subitems {
+	padding-left: 5%;
+}

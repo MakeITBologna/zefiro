@@ -24,8 +24,13 @@ angular.module("jbLocale", ["ngLocale"])
 	"expired": "Task expired",
 	"expiring": "Task expirng",
 		"assignedUser": "Task assigned to one user",
-		"assignedUsers": "Task assigned to a pool"
-}
+		"assignedUsers": "Task assigned to a pool",
+		"processType": "Process type",
+		"assignment": "Assignement date",
+		"deadline": "Deadline",
+		"priority": "Priority",
+		"deadlineProssimity": "Maturing"
+			}
 })
 
 .factory('jbPatterns', ['$locale', function($locale) {

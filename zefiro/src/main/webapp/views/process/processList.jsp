@@ -17,7 +17,8 @@
 </div>
 <div>
   <div class="panel jb-header-bar">
-    <div class="panel-body">
+  </div>
+   <div class="panel-body">
 
       <!--<div class="row jb-toolbar">
    <div class="col-sm-12">
@@ -52,13 +53,13 @@
             </h5>
             <h6 ng-if="row.startedAt">
               <span>
-                <strong><fmt:message key="jsp.process.process.startedAt" />: </strong>
+                <strong><fmt:message key="jsp.process.startedAt" />: </strong>
               </span>
               <span>{{row.startedAt | date: '${localePatternTimestamp}'}}</span>
             </h6>
             <h6 ng-if="row.endedAt">
               <span>
-                <strong><fmt:message key="jsp.process.process.endedAt" />: </strong>
+                <strong><fmt:message key="jsp.process.endedAt" />: </strong>
               </span>
               <span>{{row.endedAt | date: '${localePatternTimestamp}'}}</span>
             </h6>
