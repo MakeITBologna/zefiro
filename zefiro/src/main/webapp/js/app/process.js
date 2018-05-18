@@ -16,16 +16,16 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 	function($scope, ProcessResource,  NgTableParams, $log) {
 
 	$scope.processes = {};
-	$scope.documentTable = new NgTableParams({group: "name"},{counts: [],groupOptions: {
+	$scope.processTable = new NgTableParams({group: "name"},{counts: [],groupOptions: {
         isExpanded: false
     }});
 	$scope.isGroupHeaderRowVisible = false;
 	
 	//Ricerca documenti a partire dalla form di ricerca
-	$scope.search = function() {
+	$scope.initList = function() {
 		var documentPromise = ProcessResource.startedProcesses($scope.documentTemplate, function() {
 			$log.log(documentPromise)
-			$scope.documentTable.settings({dataset: documentPromise});
+			$scope.processTable.settings({dataset: documentPromise});
 		});
 		return documentPromise;
 	}
@@ -50,7 +50,7 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 					$scope.processes[key] = new NgTableParams({count: 25}, {});
 					$scope.processes[key].settings({dataset: processes[key]});
 				}
-			//$scope.documentTable.settings({dataset: documentPromise});
+			//$scope.processTable.settings({dataset: documentPromise});
 			//	$scope.updateSummaries(documentPromise);
 			});
 			return documentPromise;
@@ -74,7 +74,7 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 				$scope.processes[key] = new NgTableParams({count: 25}, {});
 				$scope.processes[key].settings({dataset: processes[key]});
 			}
-		//$scope.documentTable.settings({dataset: documentPromise});
+		//$scope.processTable.settings({dataset: documentPromise});
 		//	$scope.updateSummaries(documentPromise);
 		});
 		return documentPromise;

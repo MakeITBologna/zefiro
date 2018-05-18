@@ -39,6 +39,7 @@
 <script type="text/javascript" src="js/angular/ng-table.js?version=${version}"></script>
 <script type="text/javascript" src="js/angular/ngRemoteValidate.js"></script>
 <script type="text/javascript" src="js/angular/angular-promise-buttons.js?version=${version}"></script>
+<script type="text/javascript" src="js/angular/elif.js?version=${version}"></script>
 <script type="text/javascript" src="js/angular/i18n/angular-locale-${language}.js?version=${version}"></script>
 <script type="text/javascript" src="js/angular/i18n/jb-locale-${language}.js?version=${version}"></script>
 <script type="text/javascript" src="js/angular/angular-filter.js?version=${version}"></script>

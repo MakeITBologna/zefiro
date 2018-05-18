@@ -16,9 +16,13 @@ angular.module("jbLocale", ["ngLocale"])
 "date" : "Data",
 "time" : "Ora",
 
-"high": "Alta",
-"low": "Bassa",
-"medium": "Media",
+"priorityHigh": "Priorità alta",
+"priorityLow": "Priorità bassa",
+"priorityMedium": "Priorità media",
+
+"expired": "Scaduto",
+"maturing": "In scadenza",
+"other": "Altro",
 	
 "task" : {
 	"expired": "Attività scaduta",
@@ -29,7 +33,8 @@ angular.module("jbLocale", ["ngLocale"])
 	"assignment": "Assegnazione",
 	"deadline": "Scadenza",
 	"priority": "Priorità",
-	"deadlineProssimity": "In scadenza"
+	"deadlineProssimity": "In scadenza",
+	"unassigned" : "Non presa in carico"
 }	
 
 })

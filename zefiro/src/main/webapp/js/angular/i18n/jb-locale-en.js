@@ -16,9 +16,13 @@ angular.module("jbLocale", ["ngLocale"])
 "date" : "Date",
 "time" : "Time",
 
-"high": "High",
-"low": "Low",
-"medium": "Medium",
+"priorityHigh": "High priority",
+"priorityLow": "Low priority",
+"priorityMedium": "Medium priority",
+
+"expired": "Expired",
+"maturing": "Maturing",
+"other": "Other",
 
 "task" : {
 	"expired": "Task expired",
@@ -29,7 +33,8 @@ angular.module("jbLocale", ["ngLocale"])
 		"assignment": "Assignement date",
 		"deadline": "Deadline",
 		"priority": "Priority",
-		"deadlineProssimity": "Maturing"
+		"deadlineProssimity": "Maturing",
+		"unassigned" : "Unssigned"
 			}
 })
 

@@ -10,6 +10,7 @@ angular.module('main', [
   'ui.bootstrap.datetimepicker',
   'angular-confirm',
   'angularPromiseButtons',
+  'elif',
   'jbLocale',
   'documentType',
   'document',
@@ -263,6 +264,10 @@ function($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePick
 	}
 })
 
+/**
+ * Utility service for workflow
+ * @author Alba Quarto
+ */
 .factory('jbWorkflowUtil', function() {
 	return {
 		decodeType: function(type){
@@ -277,6 +282,20 @@ function($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePick
 				case "d:datetime": return "DATETIME";
 				default: return "STRING";
 			}
+		}, 
+		/**
+		 * @param acepted: "PROCESS_NAME" | "STARTED_AT" | "DUE_AT" | "PRIORITY" | "DEADLINE_PROX".Default return given argument.
+		 * */
+		taskFieldName: function(field) {
+			switch(field) {
+				case "PROCESS_NAME": return "processName";
+				case "STARTED_AT": return "startedAt";
+				case "DUE_AT": return "dueAt";
+				case "PRIORITY": return "priority";
+				case "DEADLINE_PROX": return "deadlineProximity";
+				default: return field;
+			}
+			
 		}
 	}
 })
