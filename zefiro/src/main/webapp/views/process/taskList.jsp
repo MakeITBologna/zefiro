@@ -12,7 +12,7 @@
         </button>
       </div>
       <h1>
-        <fmt:message key="jsp.task.label" />
+        <fmt:message key="jsp.task.myTask.label" />
       </h1>
     </div>
 

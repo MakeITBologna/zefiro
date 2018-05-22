@@ -1,6 +1,5 @@
 /**
  *  main module
- * 
  */
 angular.module('main', [
   'ngRoute',
@@ -14,9 +13,11 @@ angular.module('main', [
   'jbLocale',
   'documentType',
   'document',
+  'workflow',
   'process',
   'task'
 ])
+
 
 //Contiene provider e costanti
 .config(['$routeProvider', '$httpProvider', 'uibDatepickerPopupConfig', 'uiDatetimePickerConfig', 'jbMessages',
@@ -264,41 +265,6 @@ function($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePick
 	}
 })
 
-/**
- * Utility service for workflow
- * @author Alba Quarto
- */
-.factory('jbWorkflowUtil', function() {
-	return {
-		decodeType: function(type){
-			switch(type){
-				case "d:text": return "STRING";
-				case "d:int": return "INTEGER";
-				case "d:long": return "INTEGER";
-				case "d:float":return "DECIMAL";
-				case "d:double":return "DECIMAL";
-				case "d:boolean": return "BOOLEAN";
-				case "d:date":  return "DATE";
-				case "d:datetime": return "DATETIME";
-				default: return "STRING";
-			}
-		}, 
-		/**
-		 * @param acepted: "PROCESS_NAME" | "STARTED_AT" | "DUE_AT" | "PRIORITY" | "DEADLINE_PROX".Default return given argument.
-		 * */
-		taskFieldName: function(field) {
-			switch(field) {
-				case "PROCESS_NAME": return "processName";
-				case "STARTED_AT": return "startedAt";
-				case "DUE_AT": return "dueAt";
-				case "PRIORITY": return "priority";
-				case "DEADLINE_PROX": return "deadlineProximity";
-				default: return field;
-			}
-			
-		}
-	}
-})
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //CONTROLLER

@@ -3,7 +3,6 @@
   -->
 <%@ include file="/include/directive.jsp" %>
   <div class="container">
-
     <div class="page-header jb-header-bar">
       <div class="pull-right">
         <button ng-hide="relation" type="button" class="btn btn-success" title="<fmt:message key=" jsp.process.new "/>" ng-click="search()">
@@ -12,7 +11,7 @@
         </button>
       </div>
       <h1>
-        <fmt:message key="jsp.process.label" />
+        <fmt:message key="jsp.process.myProcesses.label" />
       </h1>
     </div>
 

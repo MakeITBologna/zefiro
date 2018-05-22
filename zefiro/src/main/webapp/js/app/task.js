@@ -2,7 +2,7 @@
  * Task module
  * @author Alba Quarto
  */
-angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter'])
+angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter'])
 
 	.factory('TaskResource', ['$resource', function ($resource) {
 		return $resource('a/Task/:id', { id: '@id' }, {
@@ -21,6 +21,11 @@ angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter
 				url: 'a/Task/:id/items',
 				method: 'GET'
 			},
+			updateTask: {
+				url: 'a/Task/:id',
+				method: 'PUT'
+			},
+			//ToDO spostare in documentresource
 			getDocumentPreview: {
 				url: 'a/Document/:id/preview',
 				method: 'GET',
@@ -35,8 +40,8 @@ angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter
 		});
 	}])
 
-	.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', 'jbWorkflowUtil', 'jbUtil', 'jbValidate',
-		function ($scope, TaskResource, NgTableParams, jbMessages, jbWorkflowUtil, jbUtil, jbValidate) {
+	.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', 'jbWorkflowUtil', 'jbUtil', 'jbValidate', 'workflowFormBlacklist', 'OUTCOME_PROPERTY_NAME',
+		function ($scope, TaskResource, NgTableParams, jbMessages, jbWorkflowUtil, jbUtil, jbValidate, workflowFormBlacklist, OUTCOME_PROPERTY_NAME) {
 
 			//Utilities
 			$scope.jbMessages = jbMessages;
@@ -47,63 +52,9 @@ angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter
 			$scope.editing = false;
 			$scope.readOnly = false;
 
-			$scope.currentRowNum = -1;
-			$scope.currentGroupNum = -1;
-			$scope.taskEditing = {};
 			$scope.breadCrumbIndex = -1;
 			$scope.breadcrumbs = [];
-			$scope.currentTaskForm = [];
-			$scope.currentTaskItems = [];
-			$scope.updatedVariables = {}
 			$scope.orderCriteria = "";
-
-			$scope.showDocument = false;
-
-			$scope.tabhtml = "";
-
-			$scope.startEdit = function (group_i, row_i) {
-				console.log("Editing: " + group_i + " " + row_i, $scope.taskTable);
-				$scope.currentRowNum = row_i;
-				$scope.currentGroupNum = group_i;
-				$scope.breadCrumbIndex = 0;
-				$scope.taskEditing = {};
-				$scope.currentTaskForm = [];
-				$scope.breadcrumbs = [];
-				$scope.currentTaskItems = [];
-				$scope.updatedVariables = {};
-				$scope.showDocument = false;
-				$scope.taskEditing.id = $scope.taskTable.data[$scope.currentGroupNum].data[$scope.currentRowNum].id;
-				var taskPromise = TaskResource.get($scope.taskEditing, function () {
-					$scope.taskEditing = taskPromise;
-					$scope.breadcrumbs.push({
-						id: $scope.taskEditing.id,
-						name: $scope.taskEditing.name,
-						description: $scope.taskEditing.description,
-						businessKey: $scope.taskEditing.processBusinessKey,
-						rownum: row_i,
-						groupnum: group_i
-					});
-					var formPromise = TaskResource.getFormModel({ id: $scope.taskEditing.id }, function () {
-						console.log("-----formPromise", formPromise);
-						$scope.currentTaskForm = formPromise;
-						var itemsPromise = TaskResource.getItems({ id: $scope.taskEditing.id }, function () {
-							console.log("-----itemsPromise", itemsPromise);
-							$scope.currentTaskItems = itemsPromise;
-							if ($scope.currentTaskItems.length > 0) {
-								$scope.getDocumentObjectHTML($scope.currentTaskItems);
-								$scope.showDocument = true;
-							}
-						})
-						var variablesPromise = TaskResource.getVariables({ id: $scope.taskEditing.id }, function () {
-							console.log("-----varPromise", variablesPromise);
-							variablesPromise.forEach(function (variable) {
-								$scope.updatedVariables[variable.name] = variable;
-							});
-							$scope.editing = true;
-						});
-					});
-				});
-			}
 
 			$scope.deadlineProximity = function (date) {
 				if (!date) {
@@ -146,8 +97,128 @@ angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter
 					$scope.startEdit(shortDocument.rownum);
 				} else {
 					$scope.breadcrumbs = $scope.breadcrumbs.slice(0, i);
-					$scope.showDocument(shortDocument);
 				}
+			}
+
+
+			$scope.currentRowNum = -1;
+			$scope.taskEditing = {};
+			$scope.outcomeButtons = [];
+			$scope.updatedVariables = {}
+			$scope.currentTaskForm = [];
+			$scope.currentTaskItems = [];
+
+			$scope.startEdit = function (group_i, row_i) {
+				console.log("Editing: " + group_i + " " + row_i, $scope.taskTable);
+				$scope.currentRowNum = row_i;
+				var currentGroupNum = group_i;
+				$scope.breadCrumbIndex = 0;
+				$scope.taskEditing = {};
+				$scope.currentTaskForm = [];
+				$scope.breadcrumbs = [];
+				$scope.currentTaskItems = [];
+				$scope.updatedVariables = {};
+				$scope.taskEditing.id = $scope.taskTable.data[currentGroupNum].data[$scope.currentRowNum].id;
+				var taskPromise = TaskResource.get($scope.taskEditing, function () {
+					$scope.taskEditing = taskPromise;
+					$scope.breadcrumbs.push({
+						id: $scope.taskEditing.id,
+						name: $scope.taskEditing.name,
+						description: $scope.taskEditing.description,
+						businessKey: $scope.taskEditing.processBusinessKey,
+						rownum: row_i,
+						groupnum: group_i
+					});
+					var formPromise = TaskResource.getFormModel({ id: $scope.taskEditing.id }, function () {
+						console.log("-----formPromise", formPromise);
+						var variablesPromise = TaskResource.getVariables({ id: $scope.taskEditing.id }, function () {
+							console.log("-----varPromise", variablesPromise);
+							variablesPromise.forEach(function (variable) {
+								buildTaskForm(formPromise, variablesPromise);
+							});
+							$scope.editing = true;
+						});
+						var itemsPromise = TaskResource.getItems({ id: $scope.taskEditing.id }, function () {
+							console.log("-----itemsPromise", itemsPromise);
+							$scope.currentTaskItems = itemsPromise;
+							if ($scope.currentTaskItems.length > 0) {
+								$scope.getDocumentObjectHTML($scope.currentTaskItems);
+							}
+						})
+
+					});
+				});
+			}
+
+			currentTaskVariables = {};
+
+			buildTaskForm = function (formModel, variables) {
+				//create map of current task variables
+				currentTaskVariables = {};
+				for (var i = 0; i < variables.length; i++) {
+					var variable = variables[i];
+					var variableName = variable.name;
+					currentTaskVariables[variableName] = variable;
+				}
+				outcomeButton = "";
+				if (currentTaskVariables[OUTCOME_PROPERTY_NAME]) {
+					outcomeButton = jbUtil.sanitize(currentTaskVariables[OUTCOME_PROPERTY_NAME].value);
+				}
+				//create the form and the relative variable map
+				$scope.updatedVariables = {};
+				$scope.currentTaskForm = [];
+				for (var i = 0; i < formModel.length; i++) {
+					var model = formModel[i];
+					var modelName = model.name;
+					if (workflowFormBlacklist.includes(modelName)) {
+						continue;
+					}
+					var variable = currentTaskVariables[modelName];
+					if(!variable){
+						currentTaskVariables[modelName] = jbWorkflowUtil.getVoidVariable(modelName, model.dataType);
+						variable = currentTaskVariables[modelName];
+					}
+					$scope.updatedVariables[modelName] = variable;
+					if (modelName === outcomeButton) {
+						button = buildOutcomButton(model, currentTaskVariables[modelName]);
+						if (button) {
+							continue;
+						}
+					}
+					$scope.currentTaskForm.push(model)
+				}
+			}
+
+			buildOutcomButton = function (outcomeButton, variable) {
+				value = outcomeButton.allowedValues;
+				if (!outcomeButton || jbUtil.isEmptyObject(value)) {
+					return false;
+				}
+				$scope.outcomeButtons = [];
+				$scope.outcomeButtons.$$variable = variable;
+				for (var i = 0; i < value.length; i++) {
+					$scope.outcomeButtons.push(value[i]);
+				}
+				return true;
+			}
+			
+			$scope.completeTask = function(outcome, outcomeValue){
+				if(outcome){
+					$scope.outcomeButtons.$$variable.value = outcomeValue;
+				}
+				$scope.saveTask();
+			}
+			
+			$scope.saveTask = function() {
+				variables = [];
+				for(variable in $scope.updatedVariables){
+					console.log("----completeTask", variable)
+					variables.push($scope.updatedVariables[variable]);
+				}
+				$scope.taskEditing[jbWorkflowUtil.taskFieldName("VARIABLES")] = variables;
+				updatePromise = TaskResource.updateTask($scope.taskEditing, function() {
+					console.log(updatePromise);
+				});
 			}
 
 			//Chiude la pagina di dettaglio
@@ -182,7 +253,7 @@ angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter
 			$scope.initList = function () {
 				var taskPromise = TaskResource.query($scope.taskEditing, function () {
 					console.log(taskPromise)
-					for(var i = 0; i<taskPromise.length; i++){
+					for (var i = 0; i < taskPromise.length; i++) {
 						item = taskPromise[i];
 						item.deadlineProximity = $scope.deadlineProximity(item[jbWorkflowUtil.taskFieldName("DUE_AT")]);
 					}
@@ -192,7 +263,6 @@ angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter
 				return taskPromise;
 			}
 
-			
 			$scope.sortingSelectTitle = "";
 			ASC = 'asc';
 			$scope.sortingSelectData = [{
@@ -237,16 +307,16 @@ angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter
 			$scope.sortingTaskList = function (group, item) {
 				$scope.sortingSelectTitle = group.title + " - " + item.title;
 				$scope.groupType = {};
-				if(group.value === jbWorkflowUtil.taskFieldName("PRIORITY")){
+				if (group.value === jbWorkflowUtil.taskFieldName("PRIORITY")) {
 					$scope.groupType['PRIORITY'] = true;
-				} else if (group.value === jbWorkflowUtil.taskFieldName("DEADLINE_PROX")){
+				} else if (group.value === jbWorkflowUtil.taskFieldName("DEADLINE_PROX")) {
 					$scope.groupType['DEADLINE_PROX'] = true;
 				}
 				$scope.groupType[group.value] = true;
-				sortingtaskTable(group.value,ASC, item.value, ASC);
+				sortingtaskTable(group.value, ASC, item.value, ASC);
 			}
-			
-			sortingtaskTable = function(group, gDirection, item, iDirection){
+
+			sortingtaskTable = function (group, gDirection, item, iDirection) {
 				$scope.taskTable.group(group, gDirection);
 				$scope.taskTable.sorting(item, iDirection);
 			}
@@ -254,21 +324,21 @@ angular.module('task', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter
 
 			//MESSAGES | STATIC STRING
 			$scope.taskPriority = {
-					"1": jbMessages.priorityHigh, 
-					"2": jbMessages.priorityMedium, 
-					"3": jbMessages.priorityLow 
-				}
-			$scope.deadlineProxVal = {
-					"1": jbMessages.expired,
-					"2": jbMessages.maturing,
-					"3": jbMessages.other
+				"1": jbMessages.priorityHigh,
+				"2": jbMessages.priorityMedium,
+				"3": jbMessages.priorityLow
 			}
-			
-			
+			$scope.deadlineProxVal = {
+				"1": jbMessages.expired,
+				"2": jbMessages.maturing,
+				"3": jbMessages.other
+			}
+
+
 			$scope.deadlineTMessag = {
-					"1": jbMessages.task.expired,
-					"2": jbMessages.task.expiring
-				}
+				"1": jbMessages.task.expired,
+				"2": jbMessages.task.expiring
+			}
 
 			$scope.assignedTMessage = function (task) {
 				var msg = jbMessages.task.assignedUser;

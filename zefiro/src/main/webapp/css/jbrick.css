@@ -136,7 +136,7 @@ table.workflow-list > thead {
 }
 
 .jb-button-label {
-	    padding-top: 8px;
+	padding-top: 8px;
     padding-right: 5px;
 }
 
@@ -146,5 +146,16 @@ table.workflow-list > thead {
 }
 
 .jb-dropdown-subitems {
-	padding-left: 5%;
+	padding-left: 5%;.
+}
+
+.nav-pills > .uib-tab.active.tab-mock > div, .nav-pills > .uib-tab.active > div:focus, .nav-pills > .uib-tab.active > div:hover {
+	background-color: transparent;
+}
+
+.jb-btn-primary {
+	color: #337ab7;
+    background-color: #f5f5f5;
+    border-color: #337ab7;
+    margin-left: 2px;
 }

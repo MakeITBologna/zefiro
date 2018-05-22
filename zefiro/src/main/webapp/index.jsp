@@ -46,6 +46,7 @@
 <script type="text/javascript" src="js/app/main.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/documentType.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/document.js?version=${version}"></script>
+<script type="text/javascript" src="js/app/workflow.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/process.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/task.js?version=${version}"></script>
 
@@ -67,8 +68,8 @@
    	<li class="dropdown" uib-dropdown>
           <a class="dropdown-toggle" href uib-dropdown-toggle><fmt:message key="jsp.process.label"/><span class="caret"></span></a>
           <ul class="dropdown-menu" uib-dropdown-menu>
-    		<li><a href="#process"><fmt:message key="jsp.process.label"/></a></li>
-    		<li><a href="#task"><fmt:message key="jsp.task.label"/></a></li>
+    		<li><a href="#process"><fmt:message key="jsp.process.myProcesses.label"/></a></li>
+    		<li><a href="#task"><fmt:message key="jsp.task.myTask.label"/></a></li>
     	  </ul>
         </li>
    	</ul>
