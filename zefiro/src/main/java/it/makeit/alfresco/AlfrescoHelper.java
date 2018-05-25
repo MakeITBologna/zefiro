@@ -1,14 +1,5 @@
 package it.makeit.alfresco;
 
-import it.makeit.alfresco.publicapi.entities.PeopleUrl;
-import it.makeit.alfresco.publicapi.model.MultipleEntry;
-import it.makeit.alfresco.publicapi.model.Person;
-import it.makeit.alfresco.publicapi.model.SingleEntry;
-import it.makeit.alfresco.webscriptsapi.entities.GroupsUrl;
-import it.makeit.alfresco.webscriptsapi.model.GroupsList;
-import it.makeit.alfresco.webscriptsapi.services.NodeService;
-import it.makeit.jbrick.Log;
-
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -71,26 +62,31 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import it.makeit.alfresco.publicapi.entities.PeopleUrl;
+import it.makeit.alfresco.publicapi.model.MultipleEntry;
+import it.makeit.alfresco.publicapi.model.Person;
+import it.makeit.alfresco.publicapi.model.SingleEntry;
+import it.makeit.alfresco.webscriptsapi.entities.GroupsUrl;
+import it.makeit.alfresco.webscriptsapi.model.GroupsList;
+import it.makeit.alfresco.webscriptsapi.services.NodeService;
+import it.makeit.jbrick.Log;
 
 public class AlfrescoHelper {
 
 	public static enum VersioningMode {
-		OVERWRITE,
-		MINOR,
-		MAJOR
+		OVERWRITE, MINOR, MAJOR
 	}
 
 	public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-	public static final JsonFactory JSON_FACTORY = new JacksonFactory();
+	public static final JsonFactory JSON_FACTORY = new GsonFactory();
 
 	private static Log mLog = Log.getInstance(AlfrescoHelper.class);
 
-	private static final String ATOMPUB_CMIS11_URL_TEMPLATE =
-	        "%1$s/alfresco/api/-default-/public/cmis/versions/1.1/atom";
+	private static final String ATOMPUB_CMIS11_URL_TEMPLATE = "%1$s/alfresco/api/-default-/public/cmis/versions/1.1/atom";
 
 	private static final String LOGIN_URL_TEMPLATE = "%1$s/alfresco/service/api/login";
 
@@ -110,15 +106,16 @@ public class AlfrescoHelper {
 
 			@Override
 			public void initialize(HttpRequest request) {
-				request
-		                .setParser(new JsonObjectParser(JSON_FACTORY))
-		                .setInterceptor(new BasicAuthentication(pConfig.getUsername(), pConfig.getPassword()));
+				request.setParser(new JsonObjectParser(JSON_FACTORY))
+						.setInterceptor(new BasicAuthentication(pConfig.getUsername(), pConfig.getPassword()));
 			}
 		});
 	}
 
 	/*
-	 * ------ Non CMIS -----------------------------------------------------------------------------
+	 * ------ Non CMIS
+	 * -------------------------------------------------------------------------
+	 * ----
 	 */
 	@Deprecated
 	public static String getLoginTicket(AlfrescoConfig pConfig) {
@@ -139,8 +136,8 @@ public class AlfrescoHelper {
 			lHttpClient.executeMethod(lPostMethod);
 
 			if (lPostMethod.getStatusCode() == HttpStatus.SC_OK) {
-				JsonObject lJsonObjectResponse =
-				        mGson.fromJson(lPostMethod.getResponseBodyAsString(), JsonObject.class);
+				JsonObject lJsonObjectResponse = mGson.fromJson(lPostMethod.getResponseBodyAsString(),
+						JsonObject.class);
 				lStrLoginTicket = lJsonObjectResponse.getAsJsonObject("data").get("ticket").getAsString();
 				mLog.debug("Login ticket: ", lStrLoginTicket);
 
@@ -166,9 +163,9 @@ public class AlfrescoHelper {
 		try {
 			HttpRequest lRequest = pHttpRequestFactory.buildGetRequest(lPeopleUrl);
 			@SuppressWarnings("unchecked")
-			MultipleEntry<Person> lResponse =
-			        (MultipleEntry<Person>) lRequest.execute().parseAs(
-			                (new TypeReference<MultipleEntry<Person>>() {}).getType());
+			MultipleEntry<Person> lResponse = (MultipleEntry<Person>) lRequest.execute()
+					.parseAs((new TypeReference<MultipleEntry<Person>>() {
+					}).getType());
 			mLog.debug("END getUsers()");
 			return lResponse.getEntries();
 
@@ -188,9 +185,9 @@ public class AlfrescoHelper {
 			HttpRequest lRequest = pHttpRequestFactory.buildGetRequest(lPeopleUrl);
 
 			@SuppressWarnings("unchecked")
-			SingleEntry<Person> lResponse =
-			        (SingleEntry<Person>) lRequest.execute().parseAs(
-			                (new TypeReference<SingleEntry<Person>>() {}).getType());
+			SingleEntry<Person> lResponse = (SingleEntry<Person>) lRequest.execute()
+					.parseAs((new TypeReference<SingleEntry<Person>>() {
+					}).getType());
 			mLog.debug("END getUser(String)");
 			return lResponse.getEntry();
 
@@ -218,7 +215,7 @@ public class AlfrescoHelper {
 	}
 
 	public static boolean addChildToGroup(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig,
-	        String pStrGroupId, String pStrChildId) {
+			String pStrGroupId, String pStrChildId) {
 		mLog.debug("START addChildToGroup(String, String)");
 
 		boolean lRet = false;
@@ -226,14 +223,17 @@ public class AlfrescoHelper {
 		GroupsUrl lUrl = new GroupsUrl(pConfig.getHost());
 		lUrl.addChild(pStrGroupId, pStrChildId);
 		try {
-			// FIXME (Alessio): bisognerebbe trasferire altrove questo codice ripetitivo
+			// FIXME (Alessio): bisognerebbe trasferire altrove questo codice
+			// ripetitivo
 			HttpHeaders lRequestHeaders = new HttpHeaders().setContentType("application/json");
-			HttpRequest lRequest =
-			        pHttpRequestFactory.buildPostRequest(lUrl, new EmptyContent()).setHeaders(lRequestHeaders);
+			HttpRequest lRequest = pHttpRequestFactory.buildPostRequest(lUrl, new EmptyContent())
+					.setHeaders(lRequestHeaders);
 
-			// TODO (Alessio): la risposta è completamente ignorata! Vanno gestiti i diversi casi
+			// TODO (Alessio): la risposta è completamente ignorata! Vanno
+			// gestiti i diversi casi
 			// possibili.
-			// L'implementazione dovrebbe prima controllare se l'utente è già parte del gruppo,
+			// L'implementazione dovrebbe prima controllare se l'utente è già
+			// parte del gruppo,
 			// quindi eventualmente effettuare l'aggiunta.
 			int lStatusCode = lRequest.execute().getStatusCode();
 			if (200 <= lStatusCode && lStatusCode < 300) {
@@ -251,10 +251,10 @@ public class AlfrescoHelper {
 	}
 
 	public static InputStream getThumbnail(AlfrescoConfig pConfig, String pStrDocumentId,
-	        String pStrThumbnailDefinition, boolean pBlnForceCreate) {
+			String pStrThumbnailDefinition, boolean pBlnForceCreate) {
 		mLog.debug("START getThumbnail(String, String, boolean)");
 		mLog.debug("Recupero thumbnail '{}' per il documento {} (creazione forzata {})", pStrThumbnailDefinition,
-		        pStrDocumentId, pBlnForceCreate);
+				pStrDocumentId, pBlnForceCreate);
 
 		NodeService lNodeService = new NodeService(pConfig);
 		InputStream lIS;
@@ -279,10 +279,12 @@ public class AlfrescoHelper {
 	}
 
 	/*
-	 * ------ CMIS ---------------------------------------------------------------------------------
+	 * ------ CMIS
+	 * -------------------------------------------------------------------------
+	 * --------
 	 */
 	private static void updatePropertiesWithAspects(Session pSession, Map<String, Object> pMapProperties,
-	        String pStrDocTypeId, Collection<String> pCollectionAspects) {
+			String pStrDocTypeId, Collection<String> pCollectionAspects) {
 		// Creazione mappa proprietà secondo la versione CMIS del repository
 		if (pSession.getRepositoryInfo().getCmisVersion() == CmisVersion.CMIS_1_1) {
 			pMapProperties.put(PropertyIds.SECONDARY_OBJECT_TYPE_IDS, pCollectionAspects);
@@ -295,8 +297,10 @@ public class AlfrescoHelper {
 			}
 			mLog.debug("[CMIS 1.0] Aspetti del documento: {}", lSBAspects.toString());
 
-			// XXX (Alessio): funziona senza usare l'estensione Chemistry per Alfresco? In generale,
-			// bisognerebbe prevedere la gestione secondo la versione CMIS in tutto l'AlfrescoHelper,
+			// XXX (Alessio): funziona senza usare l'estensione Chemistry per
+			// Alfresco? In generale,
+			// bisognerebbe prevedere la gestione secondo la versione CMIS in
+			// tutto l'AlfrescoHelper,
 			// per supportare le diverse versioni di Alfresco.
 			pMapProperties.put(PropertyIds.OBJECT_TYPE_ID, lSBAspects.toString());
 		}
@@ -308,7 +312,8 @@ public class AlfrescoHelper {
 
 		Map<String, String> lMapParameter = new HashMap<String, String>();
 
-		// I parametri di connessione vengono impostati per usare il binding AtomPub CMIS 1.1
+		// I parametri di connessione vengono impostati per usare il binding
+		// AtomPub CMIS 1.1
 		lMapParameter.put(SessionParameter.USER, config.getUsername());
 		lMapParameter.put(SessionParameter.PASSWORD, config.getPassword());
 		lMapParameter.put(SessionParameter.ATOMPUB_URL, buildUrl(ATOMPUB_CMIS11_URL_TEMPLATE, config));
@@ -328,7 +333,7 @@ public class AlfrescoHelper {
 	 * Crea un nuovo documento in Alfresco.
 	 * <p>
 	 * Lo stream in {@code pInputStream} sarà concumato ma non chiuso.
-	 * 
+	 *
 	 * @param pSession
 	 *            La sessione da utilizzare.
 	 * @param pStrParentFolderId
@@ -345,21 +350,23 @@ public class AlfrescoHelper {
 	 * @param pMapProperties
 	 *            L'eventuale mappa delle proprietà del nuovo documento.
 	 * @param pCollectionAspects
-	 *            L'eventuale lista degli aspetti da applicare al nuovo documento.
+	 *            L'eventuale lista degli aspetti da applicare al nuovo
+	 *            documento.
 	 * @param pStrObjectType
-	 *            L'eventuale tipo documento da utizzare (predefinito: {@code cmis:document}.
+	 *            L'eventuale tipo documento da utizzare (predefinito:
+	 *            {@code cmis:document}.
 	 * @return Il documento creato.
 	 */
 	// XXX (Alessio): ha senso consentire già qui di impostare gli aspetti?
 	public static Document createDocument(Session pSession, String pStrParentFolderId, String pStrFileName,
-	        long pLngFileLength, String pStrContentType, InputStream pInputStream, Map<String, Object> pMapProperties,
-	        Collection<String> pCollectionAspects, String pStrObjectType) {
+			long pLngFileLength, String pStrContentType, InputStream pInputStream, Map<String, Object> pMapProperties,
+			Collection<String> pCollectionAspects, String pStrObjectType) {
 
 		mLog.debug("START createDocument(String, String, String, long, InputStream)");
 
 		String lStrEffectiveContentType = pStrContentType != null ? pStrContentType : "application/octet-stream";
 		mLog.debug("Creazione documento '{}'({} - {} B)  nella cartella '{}')", pStrFileName, pStrContentType,
-		        pLngFileLength, pStrParentFolderId);
+				pLngFileLength, pStrParentFolderId);
 
 		// recupero la cartella padre
 		// TODO (Alessio): gestire CmisObjectNotFoundException
@@ -368,9 +375,8 @@ public class AlfrescoHelper {
 		// creo il content stream, se necessario
 		ContentStream lContentStream = null;
 		if (pInputStream != null) {
-			lContentStream =
-			        pSession.getObjectFactory().createContentStream(pStrFileName, pLngFileLength,
-			                lStrEffectiveContentType, pInputStream);
+			lContentStream = pSession.getObjectFactory().createContentStream(pStrFileName, pLngFileLength,
+					lStrEffectiveContentType, pInputStream);
 		}
 
 		if (pMapProperties == null) {
@@ -395,45 +401,51 @@ public class AlfrescoHelper {
 
 	/**
 	 * Aggiorna le proprietà di un documento.
-	 * 
+	 *
 	 * @param pSession
 	 *            La sessione da utilizzare.
 	 * @param pStrDocumentId
 	 *            L'id del documento da aggiornare.
 	 * @param pMapProperties
 	 *            La mappa delle proprietà da aggiornare.
-	 * 
+	 *
 	 * @return Il documento aggiornato.
 	 */
 	public static Document updateDocumentProperties(Session pSession, String pStrDocumentId,
-	        Map<String, Object> pMapProperties) {
+			Map<String, Object> pMapProperties) {
 
 		// TODO (Alessio): gestione CmisObjectNotFoundException
 		Document lDocument = (Document) pSession.getObject(pStrDocumentId);
 
 		if (pMapProperties == null) {
-			// Nessuna nuova proprietà impostata: si restituisce il documento immutato
+			// Nessuna nuova proprietà impostata: si restituisce il documento
+			// immutato
 			mLog.info("pMapProperties nulla: nessuna proprietà modificata, il documento è immutato");
 			return lDocument;
 		}
 
-		// TODO: al momento in aggiornamento gli aspetti vengono ignorati (si assumono immutati)
-//		if (pCollectionAspects != null) {
-//			AlfrescoDocument lAlfrescoDocument = (AlfrescoDocument) lDocument;
-//			// Aggiornamento degli aspetti
-//			HashSet<String> lSetCurrentAspects = new HashSet<String>();
-//			for (ObjectType objectType : lAlfrescoDocument.getAspects()) {
-//				lSetCurrentAspects.add(objectType.getId());
-//			}
-//			HashSet<String> lSetAspectsToAdd = new HashSet<String>(pCollectionAspects);
-//			HashSet<String> lSetAspectsToRemove = new HashSet<String>(lSetCurrentAspects);
-//			lSetCurrentAspects.retainAll(pCollectionAspects);
-//			lSetAspectsToAdd.removeAll(lSetCurrentAspects);
-//			lSetAspectsToRemove.removeAll(lSetCurrentAspects);
-//
-//			lAlfrescoDocument.addAspect(lSetAspectsToAdd.toArray(new String[lSetAspectsToAdd.size()]));
-//			lAlfrescoDocument.removeAspect(lSetAspectsToRemove.toArray(new String[lSetAspectsToRemove.size()]));
-//		}
+		// TODO: al momento in aggiornamento gli aspetti vengono ignorati (si
+		// assumono immutati)
+		// if (pCollectionAspects != null) {
+		// AlfrescoDocument lAlfrescoDocument = (AlfrescoDocument) lDocument;
+		// // Aggiornamento degli aspetti
+		// HashSet<String> lSetCurrentAspects = new HashSet<String>();
+		// for (ObjectType objectType : lAlfrescoDocument.getAspects()) {
+		// lSetCurrentAspects.add(objectType.getId());
+		// }
+		// HashSet<String> lSetAspectsToAdd = new
+		// HashSet<String>(pCollectionAspects);
+		// HashSet<String> lSetAspectsToRemove = new
+		// HashSet<String>(lSetCurrentAspects);
+		// lSetCurrentAspects.retainAll(pCollectionAspects);
+		// lSetAspectsToAdd.removeAll(lSetCurrentAspects);
+		// lSetAspectsToRemove.removeAll(lSetCurrentAspects);
+		//
+		// lAlfrescoDocument.addAspect(lSetAspectsToAdd.toArray(new
+		// String[lSetAspectsToAdd.size()]));
+		// lAlfrescoDocument.removeAspect(lSetAspectsToRemove.toArray(new
+		// String[lSetAspectsToRemove.size()]));
+		// }
 
 		lDocument = (Document) lDocument.updateProperties(pMapProperties);
 
@@ -443,11 +455,12 @@ public class AlfrescoHelper {
 	/**
 	 * Aggiorna il contenuto binario del documento.
 	 * <p>
-	 * Consente di sostituire il documento con una nuova versione, con la possibilità di specificare
-	 * se questa debba essere <i>minor</i> o <i>major</i>.
+	 * Consente di sostituire il documento con una nuova versione, con la
+	 * possibilità di specificare se questa debba essere <i>minor</i> o
+	 * <i>major</i>.
 	 * <p>
 	 * Lo stream in {@code pInputStream} sarà concumato ma non chiuso.
-	 * 
+	 *
 	 * @param pSession
 	 *            La sessione da utilizzare.
 	 * @param pStrDocumentId
@@ -462,37 +475,40 @@ public class AlfrescoHelper {
 	 * @param pInputStream
 	 *            Lo {@code InputStream} del nuovo contenuto.
 	 * @param pVersioningMode
-	 *            Definisce se la modifica al contenuto del documento debba crerare una nuova
-	 *            versione <i>minor</i> o <i>major</i>. Si tenga presente che Alfresco creerà in
-	 *            ogni caso una nuova versione del documento, pertanto pur specificando
-	 *            {@code VersioningMode.OVERWRITE} si avrà comunque una nuova versione <i>minor</i>.
+	 *            Definisce se la modifica al contenuto del documento debba
+	 *            crerare una nuova versione <i>minor</i> o <i>major</i>. Si
+	 *            tenga presente che Alfresco creerà in ogni caso una nuova
+	 *            versione del documento, pertanto pur specificando
+	 *            {@code VersioningMode.OVERWRITE} si avrà comunque una nuova
+	 *            versione <i>minor</i>.
 	 * @param pStrCheckinComment
-	 *            Il commento associato alla sostituzione del contenuto. Sarà ignorato in caso di
-	 *            {@code VersioningMode.OVERWRITE}.
-	 * 
+	 *            Il commento associato alla sostituzione del contenuto. Sarà
+	 *            ignorato in caso di {@code VersioningMode.OVERWRITE}.
+	 *
 	 * @return Il documento aggiornato.
 	 */
 	public static Document updateDocumentContent(Session pSession, String pStrDocumentId, String pStrFileName,
-	        long pLngFileLength, String pStrContentType, InputStream pInputStream, VersioningMode pVersioningMode,
-	        String pStrCheckinComment) {
+			long pLngFileLength, String pStrContentType, InputStream pInputStream, VersioningMode pVersioningMode,
+			String pStrCheckinComment) {
 
 		// TODO (Alessio): gestione CmisObjectNotFoundException
 		Document lDocument = getDocumentById(pSession, pStrDocumentId, false);
 
 		if (pInputStream == null) {
-			// Nessun nuovo content stream impostato: si restituisce il documento immutato
+			// Nessun nuovo content stream impostato: si restituisce il
+			// documento immutato
 			mLog.info("pInputStream nullo: nessun nuovo content stream impostato, il documento è immutato");
 			return lDocument;
 		}
 
-		ContentStream lContentStream =
-		        pSession.getObjectFactory().createContentStream(pStrFileName, pLngFileLength, pStrContentType,
-		                pInputStream);
+		ContentStream lContentStream = pSession.getObjectFactory().createContentStream(pStrFileName, pLngFileLength,
+				pStrContentType, pInputStream);
 
 		// verifico se il documento è versionabile
 		if (((DocumentType) (lDocument.getType())).isVersionable()
-		        && !pVersioningMode.equals(VersioningMode.OVERWRITE)) {
-			// il documento è versionabile e non va sovrascritto: aggiorno la versione
+				&& !pVersioningMode.equals(VersioningMode.OVERWRITE)) {
+			// il documento è versionabile e non va sovrascritto: aggiorno la
+			// versione
 
 			Document lDocumentPWC = (Document) pSession.getObject(lDocument.checkOut());
 			ObjectId lNewVersionId;
@@ -506,13 +522,15 @@ public class AlfrescoHelper {
 				throw new AlfrescoException(t, AlfrescoException.GENERIC_EXCEPTION);
 			}
 
-			// rileggo il documento per avere l'id aggiornato con la nuova versione
+			// rileggo il documento per avere l'id aggiornato con la nuova
+			// versione
 			lDocument = (Document) pSession.getObject(lNewVersionId);
 
 		} else {
-			// il documento non è versionabile o va sovrascritto: aggiorno il contenuto
+			// il documento non è versionabile o va sovrascritto: aggiorno il
+			// contenuto
 			if (!pSession.getRepositoryInfo().getCapabilities().getContentStreamUpdatesCapability()
-			        .equals(CapabilityContentStreamUpdates.ANYTIME)) {
+					.equals(CapabilityContentStreamUpdates.ANYTIME)) {
 				// FIXME: probabilmente si dovrebbe lanciare un'eccezione
 				mLog.error("update without checkout not supported in this repository");
 
@@ -527,7 +545,7 @@ public class AlfrescoHelper {
 	}
 
 	public static Document setDocumentAspects(Session pSession, String pStrDocumentId,
-	        Collection<String> pCollectionAspects) {
+			Collection<String> pCollectionAspects) {
 		mLog.debug("START setDocumentAspects(String, Collection)");
 
 		// TODO (Alessio): gestione CmisObjectNotFoundException
@@ -537,7 +555,8 @@ public class AlfrescoHelper {
 		updatePropertiesWithAspects(pSession, lMapProperties, lDocument.getType().getId(), pCollectionAspects);
 
 		// Effettivo aggiornamento del documento
-		// TODO (Alessio): gestione del fallimento (dovrebbe essere una regola di vita...)
+		// TODO (Alessio): gestione del fallimento (dovrebbe essere una regola
+		// di vita...)
 		lDocument = (Document) lDocument.updateProperties(lMapProperties);
 
 		mLog.debug("END setDocumentAspects(String, Collection)");
@@ -548,7 +567,8 @@ public class AlfrescoHelper {
 
 		Document lDocument = null;
 
-		mLog.debug("Start getDocumentById(Session, String, Boolean); id: ", pStrId, " - includeRelations: ", pIncludeRelations);
+		mLog.debug("Start getDocumentById(Session, String, Boolean); id: ", pStrId, " - includeRelations: ",
+				pIncludeRelations);
 
 		try {
 			OperationContext lOperationContext = pSession.createOperationContext();
@@ -559,7 +579,7 @@ public class AlfrescoHelper {
 				lOperationContext.setIncludeRelationships(IncludeRelationships.NONE);
 				lDocument = (Document) pSession.getObject(pStrId, lOperationContext);
 			}
-			
+
 		} catch (CmisObjectNotFoundException e) {
 			mLog.debug("Documento non trovato");
 		}
@@ -568,7 +588,7 @@ public class AlfrescoHelper {
 
 		return lDocument;
 	}
-	
+
 	public static Document getDocumentById(Session pSession, String pStrId) {
 		return getDocumentById(pSession, pStrId, false);
 	}
@@ -612,7 +632,6 @@ public class AlfrescoHelper {
 		return lDocument;
 	}
 
-
 	public static String createFolder(Session pSession, String pStrParentFolderId, String pStrFolderName) {
 
 		String lStrFolderId = null;
@@ -637,7 +656,7 @@ public class AlfrescoHelper {
 		}
 
 		mLog.debug("End createFolder(", pSession, ",", pStrParentFolderId, ",", pStrFolderName, "): return ",
-		        lStrFolderId);
+				lStrFolderId);
 
 		return lStrFolderId;
 	}
@@ -660,7 +679,6 @@ public class AlfrescoHelper {
 		mLog.debug("EXIT renameFolder(<Session>, " + pStrNodeRef + ", " + pStrNewName + ")");
 	}
 
-
 	public static void deleteTree(Session pSession, String pStrFolderId) {
 
 		mLog.debug("Start deleteTree(", pStrFolderId, ")");
@@ -670,25 +688,27 @@ public class AlfrescoHelper {
 
 		mLog.debug("End deleteTree()");
 	}
-	
-	public static Relationship createRelation(Session pSession, String pStrRelationTypeId, String pStrSourceId, String pStrTargetId) {
 
-		mLog.debug("Start createRelation(<Session>, " + pStrRelationTypeId + ", " + pStrSourceId + ", " + pStrTargetId + ")");
-		
-		Map<String, Serializable> lRelationProperties = new HashMap<String, Serializable>(); 
-		lRelationProperties.put(PropertyIds.SOURCE_ID, pStrSourceId); 
+	public static Relationship createRelation(Session pSession, String pStrRelationTypeId, String pStrSourceId,
+			String pStrTargetId) {
+
+		mLog.debug("Start createRelation(<Session>, " + pStrRelationTypeId + ", " + pStrSourceId + ", " + pStrTargetId
+				+ ")");
+
+		Map<String, Serializable> lRelationProperties = new HashMap<String, Serializable>();
+		lRelationProperties.put(PropertyIds.SOURCE_ID, pStrSourceId);
 		lRelationProperties.put(PropertyIds.TARGET_ID, pStrTargetId);
 		lRelationProperties.put(PropertyIds.OBJECT_TYPE_ID, pStrRelationTypeId);
 		ObjectId lRelationId = pSession.createRelationship(lRelationProperties);
-		
+
 		mLog.debug("End createRelation()");
 		return (Relationship) pSession.getObject(lRelationId);
 	}
-	
+
 	public static void deleteObject(Session pSession, String pStrObjectId) {
 
 		mLog.debug("Start deleteObject(", pStrObjectId, ")");
-		
+
 		ObjectId lObjectId = pSession.createObjectId(pStrObjectId);
 		pSession.delete(lObjectId);
 
@@ -722,7 +742,6 @@ public class AlfrescoHelper {
 		mLog.debug("End getFolderByPath(Session, String)");
 		return lFolder;
 	}
-
 
 	public static long getFolderTreeSize(Session pSession, String pStrNodeRef) {
 		mLog.debug("ENTER getFolderSize(pFolder)");
@@ -771,7 +790,8 @@ public class AlfrescoHelper {
 
 		ItemIterable<CmisObject> lResult = pSession.queryObjects(pTypeId, pWhereClause, false, lOperationContext);
 		for (CmisObject cmisObject : lResult) {
-			// TODO (Alessio) gestione paginazione (in entrata e in uscita, anche se probabilmente è
+			// TODO (Alessio) gestione paginazione (in entrata e in uscita,
+			// anche se probabilmente è
 			// già gestita internamente in queryObjects)
 			lHashMapResults.put(cmisObject.getId(), (Document) cmisObject);
 		}
@@ -783,31 +803,32 @@ public class AlfrescoHelper {
 	public static List<Document> searchDocuments(Session pSession, String pQuery) {
 		mLog.debug("START searchDocuments(String");
 		mLog.debug("CMIS query: {}", pQuery);
-		
+
 		// per evitare il problema dei documenti duplicati
 		LinkedHashMap<String, Document> lHashMapResults = new LinkedHashMap<String, Document>();
 
 		ItemIterable<QueryResult> lResults = pSession.query(pQuery, false);
 		// XXX (Alessio): sarà il modo giusto? Prestazioni?
-		
+
 		if (lResults != null) {
 			int i = 0;
 			//
-			for (Iterator<QueryResult> iterator = lResults.iterator(); i < ((CollectionIterator<QueryResult>)iterator).getTotalNumItems();) {
-				QueryResult qResult  =  iterator.next();
-				
-			//} (QueryResult qResult : lResults) {
+			for (Iterator<QueryResult> iterator = lResults.iterator(); i < ((CollectionIterator<QueryResult>) iterator)
+					.getTotalNumItems();) {
+				QueryResult qResult = iterator.next();
+
+				// } (QueryResult qResult : lResults) {
 				if (qResult != null) {
 					PropertyData<?> lPropData = qResult.getPropertyById("cmis:objectId");
-					
+
 					if (lPropData != null) {
 						String lObjectId = (String) lPropData.getFirstValue();
 						CmisObject lObj = pSession.getObject(pSession.createObjectId(lObjectId));
-			
+
 						lHashMapResults.put(lObjectId, (Document) lObj);
 					}
 				}
-				
+
 				i++;
 			}
 		}
@@ -823,8 +844,8 @@ public class AlfrescoHelper {
 
 		mLog.debug("Start fullTextQuery(String) - ", pStrText);
 
-		ItemIterable<QueryResult> lItemIterableQueryResult =
-		        lSession.query("SELECT cmis:objectId FROM cmis:document where CONTAINS('" + pStrText + "')", false);
+		ItemIterable<QueryResult> lItemIterableQueryResult = lSession
+				.query("SELECT cmis:objectId FROM cmis:document where CONTAINS('" + pStrText + "')", false);
 
 		lListResults = new ArrayList<String>();
 		for (QueryResult lQueryResult : lItemIterableQueryResult) {
@@ -843,33 +864,35 @@ public class AlfrescoHelper {
 	}
 
 	/**
-	 * Recupera l'albero dei tipi documento a partire da un determinato tipo base.
+	 * Recupera l'albero dei tipi documento a partire da un determinato tipo
+	 * base.
 	 * <p>
 	 * Il recupero dei tipi può essere limitato nella profondità.
 	 * <p>
-	 * L'albero è senza radice, perciò di fatto è una lista di alberi (ovvero gli alberi sottostanti
-	 * i figli diretti del tipo base).
-	 * 
+	 * L'albero è senza radice, perciò di fatto è una lista di alberi (ovvero
+	 * gli alberi sottostanti i figli diretti del tipo base).
+	 *
 	 * @param pSession
 	 *            la sessione da usare.
 	 * @param pStrBaseType
 	 *            il tipo base da cui far partire la ricerca.
 	 * @param pIntDepth
-	 *            la profondità massima dell'albero. Deve essere un valore maggiore di 0, o -1 per
-	 *            una profondità illimitata.
+	 *            la profondità massima dell'albero. Deve essere un valore
+	 *            maggiore di 0, o -1 per una profondità illimitata.
 	 * @param pBlnIncludeProperties
-	 *            se {@code true} il risultato comprenderà anche il dettaglio della definizione
-	 *            delle proprietà.
-	 * 
+	 *            se {@code true} il risultato comprenderà anche il dettaglio
+	 *            della definizione delle proprietà.
+	 *
 	 * @return L'albero dei tipi documento.
 	 */
 	public static List<Tree<ObjectType>> getTypesTree(Session pSession, String pStrBaseType, int pIntDepth,
-	        boolean pBlnIncludeProperties) {
+			boolean pBlnIncludeProperties) {
 		mLog.debug("START getTypesTree(String, int, boolean)");
 
 		List<Tree<ObjectType>> lTypeTree = null;
 		try {
-			// XXX: Sono dati tendenzialmente stabili, si usa la cache: corretto?
+			// XXX: Sono dati tendenzialmente stabili, si usa la cache:
+			// corretto?
 			lTypeTree = pSession.getTypeDescendants(pStrBaseType, pIntDepth, pBlnIncludeProperties);
 
 		} catch (CmisObjectNotFoundException e) {
@@ -882,69 +905,70 @@ public class AlfrescoHelper {
 	}
 
 	/**
-	 * Recupera l'albero dei tipi documento a partire da un determinato tipo base.
+	 * Recupera l'albero dei tipi documento a partire da un determinato tipo
+	 * base.
 	 * <p>
-	 * L'albero è senza radice, perciò di fatto è una lista di alberi (ovvero gli alberi sottostanti
-	 * i figli diretti del tipo base).
-	 * 
+	 * L'albero è senza radice, perciò di fatto è una lista di alberi (ovvero
+	 * gli alberi sottostanti i figli diretti del tipo base).
+	 *
 	 * @param pSession
 	 *            la sessione da usare
 	 * @param pStrBaseType
 	 *            il tipo base da cui far partire la ricerca
 	 * @param pBlnIncludeProperties
-	 *            se {@code true} il risultato comprenderà anche il dettaglio della definizione
-	 *            delle proprietà.
-	 * 
+	 *            se {@code true} il risultato comprenderà anche il dettaglio
+	 *            della definizione delle proprietà.
+	 *
 	 * @return L'albero dei tipi documento
-	 * 
+	 *
 	 * @see #getTypesTree(Session, String, int, boolean)
 	 */
 	public static List<Tree<ObjectType>> getTypesTree(Session pSession, String pStrBaseType,
-	        boolean pBlnIncludeProperties) {
+			boolean pBlnIncludeProperties) {
 
 		return getTypesTree(pSession, pStrBaseType, -1, pBlnIncludeProperties);
 	}
 
 	/**
-	 * Recupera l'albero dei tipi documento a partire dal tipo documento predefinito
-	 * ({@code cmis:document}).
+	 * Recupera l'albero dei tipi documento a partire dal tipo documento
+	 * predefinito ({@code cmis:document}).
 	 * <p>
-	 * L'albero è senza radice, perciò di fatto è una lista di alberi (ovvero gli alberi sottostanti
-	 * i figli diretti del tipo base).
-	 * 
+	 * L'albero è senza radice, perciò di fatto è una lista di alberi (ovvero
+	 * gli alberi sottostanti i figli diretti del tipo base).
+	 *
 	 * @param lSession
 	 *            la sessione da usare
 	 * @param pBlnIncludeProperties
-	 *            se {@code true} il risultato comprenderà anche il dettaglio della definizione
-	 *            delle proprietà.
-	 * 
+	 *            se {@code true} il risultato comprenderà anche il dettaglio
+	 *            della definizione delle proprietà.
+	 *
 	 * @return L'albero dei tipi documento
-	 * 
+	 *
 	 * @see #getTypesTree(Session, String, int, boolean)
 	 */
 	public static List<Tree<ObjectType>> getTypesTree(Session lSession, boolean pBlnIncludeProperties) {
 		return getTypesTree(lSession, DEFAULT_BASE_DOC_TYPE, pBlnIncludeProperties);
 	}
 
-
 	/**
-	 * Recupera la lista dei tipi documento finali a partire da un determinato tipo base.
+	 * Recupera la lista dei tipi documento finali a partire da un determinato
+	 * tipo base.
 	 * <p>
-	 * I tipi documento restituiti sono le foglie dell'albero dei tipi discendenti dal tipo base
-	 * specificato, ovvero i suoi ultimi discendenti.
-	 * 
+	 * I tipi documento restituiti sono le foglie dell'albero dei tipi
+	 * discendenti dal tipo base specificato, ovvero i suoi ultimi discendenti.
+	 *
 	 * @param pSession
 	 *            la sessione da usare.
 	 * @param pStrBaseType
 	 *            il tipo base da cui far partire la ricerca.
 	 * @param pBlnIncludeProperties
-	 *            se {@code true} il risultato comprenderà anche il dettaglio della definizione
-	 *            delle proprietà.
-	 * 
+	 *            se {@code true} il risultato comprenderà anche il dettaglio
+	 *            della definizione delle proprietà.
+	 *
 	 * @return La lista dei tipi documento.
 	 */
 	public static List<ObjectType> getTypesTreeLeaves(Session pSession, String pStrBaseType,
-	        boolean pBlnIncludeProperties) {
+			boolean pBlnIncludeProperties) {
 		mLog.debug("START getTypesTreeLeaves(String, int, boolean)");
 
 		List<ObjectType> lLeaves = new LinkedList<ObjectType>();
@@ -984,26 +1008,26 @@ public class AlfrescoHelper {
 		mLog.debug("END getDocumentType(String)");
 		return lType;
 	}
-	
+
 	public static List<RelationshipType> getRelationshipTypes(Session pSession, String pRelationsRootId) {
 		mLog.debug("START getRelationshipTypes(Session, String)");
-		
+
 		List<RelationshipType> lRelationTypes = new ArrayList<RelationshipType>();
-		
+
 		for (ObjectType lObjectType : pSession.getTypeChildren(pRelationsRootId, true)) {
 			lRelationTypes.add((RelationshipType) lObjectType);
 		}
-		
+
 		mLog.debug("END getRelationshipTypes(Session, String)");
 		return lRelationTypes;
 	}
-	
+
 	private static List<String> getTypeAspectIds(Session pSession, String pStrTypeId) {
-		
+
 		List<String> lFoundAspectIds = new ArrayList<String>();
-		
+
 		ObjectType lObjectType = getTypeDefinition(pSession, pStrTypeId);
-		
+
 		// cerco gli eventuali mandatoryAspect del tipo
 		List<CmisExtensionElement> lExtensions = lObjectType.getExtensions();
 		for (CmisExtensionElement lExtension : lExtensions) {
@@ -1013,37 +1037,38 @@ public class AlfrescoHelper {
 				}
 			}
 		}
-		
+
 		return lFoundAspectIds;
 	}
-	
-	public static List<RelationshipType> getAllowedRelationshipTypes(Session pSession, String pRelationsRootId, String pStrTypeId) {
+
+	public static List<RelationshipType> getAllowedRelationshipTypes(Session pSession, String pRelationsRootId,
+			String pStrTypeId) {
 		mLog.debug("START getAllowedRelationshipTypes(Session, String, String)");
-		
+
 		List<RelationshipType> lAllowedRelationTypes = new ArrayList<RelationshipType>();
-		
+
 		List<String> lTypeAspectIds = getTypeAspectIds(pSession, pStrTypeId);
-		
+
 		for (RelationshipType lRelationType : getRelationshipTypes(pSession, pRelationsRootId)) {
-			
+
 			boolean lIsAllowed = false;
-			
+
 			List<ObjectType> lRelationAllowedTypes = new ArrayList<ObjectType>();
 			lRelationAllowedTypes.addAll(lRelationType.getAllowedSourceTypes());
 			lRelationAllowedTypes.addAll(lRelationType.getAllowedTargetTypes());
-			
+
 			for (ObjectType lObjectType : lRelationAllowedTypes) {
 				if (lObjectType.getId().equals(pStrTypeId) || lTypeAspectIds.contains(lObjectType.getId())) {
 					lIsAllowed = true;
 					break;
 				}
 			}
-			
+
 			if (lIsAllowed) {
 				lAllowedRelationTypes.add(lRelationType);
 			}
 		}
-				
+
 		mLog.debug("END getAllowedRelationshipTypes(Session, String, String)");
 		return lAllowedRelationTypes;
 	}
@@ -1051,7 +1076,8 @@ public class AlfrescoHelper {
 	/**
 	 * Recupera l'elenco delle versioni di un documento.
 	 * <p>
-	 * La lista dei documenti restituiti ha solo un sottoinsieme delle loro proprietà, ovvero:
+	 * La lista dei documenti restituiti ha solo un sottoinsieme delle loro
+	 * proprietà, ovvero:
 	 * <ul>
 	 * <li>{@code cmis:objectId}</li>
 	 * <li>{@code cmis:name}</li>
@@ -1063,12 +1089,12 @@ public class AlfrescoHelper {
 	 * <li>{@code cmis:lastModificationDate}</li>
 	 * <li>{@code cmis:lastModififiedBy}</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param pSession
 	 *            La sessione da utilizzare.
 	 * @param pStrDocumentId
 	 *            L'id del documento di cui recuperare le versioni.
-	 * 
+	 *
 	 * @return La lista delle versioni del documento.
 	 */
 	public static List<Document> getDocumentVersions(Session pSession, String pStrDocumentId) {
@@ -1079,8 +1105,8 @@ public class AlfrescoHelper {
 		OperationContext lOperationContext = pSession.createOperationContext();
 		Set<String> lPropertyFilter = new HashSet<>();
 		lPropertyFilter.addAll(Arrays.asList(PropertyIds.OBJECT_ID, PropertyIds.NAME, PropertyIds.VERSION_LABEL,
-		        PropertyIds.IS_LATEST_VERSION, PropertyIds.IS_MAJOR_VERSION, PropertyIds.CREATION_DATE,
-		        PropertyIds.CREATED_BY, PropertyIds.LAST_MODIFICATION_DATE, PropertyIds.LAST_MODIFIED_BY));
+				PropertyIds.IS_LATEST_VERSION, PropertyIds.IS_MAJOR_VERSION, PropertyIds.CREATION_DATE,
+				PropertyIds.CREATED_BY, PropertyIds.LAST_MODIFICATION_DATE, PropertyIds.LAST_MODIFIED_BY));
 		lOperationContext.setFilter(lPropertyFilter);
 		lOperationContext.setIncludeAllowableActions(false);
 		lOperationContext.setIncludePathSegments(false);

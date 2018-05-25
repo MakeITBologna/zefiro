@@ -55,10 +55,9 @@
             <uib-tab-heading>
               <span>&nbsp;</span>
             </uib-tab-heading>
-            <!-- Informazioni di dettaglio -->
+            
+            <!-- ]##### Form ##### -->
             <form name="jbTaskForm" class="form-horizontal" novalidate>
-
-              <!-- ##### Proprietà aggiuntive ##### -->
               <div class="row jb-form-group" ng-repeat="(i, p) in currentTaskForm">
                 <label for="jbTaskForm-p.name" class="control-label col-sm-4" title="{{p.name}}">{{p.title}}</label>
                 <div class="col-sm-8">
@@ -182,16 +181,16 @@
 
                 </div>
               </div>
-              <!-- ##### Fine Proprietà aggiuntive ##### -->
             </form>
-            <!-- ##### Fine informazioni di dettaglio ##### -->
+            <!-- ##### End Form ##### -->
+            
             <div ng-if="outcomeButtons.length > 0" class="jb-panel-body pull-right">
-              <button ng-repeat="button in outcomeButtons" class="btn jb-btn-primary" type="button" ng-click="completeTask(true, button)">
+              <button ng-repeat="button in outcomeButtons" class="btn jb-btn-primary" type="button" ng-click="completeTask( jbTaskForm, true, button)">
                 <span>{{button}}</span>
               </button>
             </div>
             <div ng-else class="jb-panel-body pull-right">
-              <button class="btn jb-btn-primary" type="button" ng-click="completeTask()">
+              <button class="btn jb-btn-primary" type="button" ng-click="completeTask(jbTaskForm)">
                 <span><fmt:message key="jsp.task.completeTask" /></span>
               </button>
             </div>

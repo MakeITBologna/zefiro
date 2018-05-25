@@ -3,6 +3,8 @@ package it.makeit.zefiro.service;
 import java.util.Map;
 
 import com.google.api.client.http.HttpRequestFactory;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import it.makeit.alfresco.AlfrescoConfig;
 import it.makeit.alfresco.AlfrescoHelper;
@@ -14,6 +16,8 @@ import it.makeit.zefiro.dao.BaseData;
 public class ZefiroAbstractServcie {
 	protected HttpRequestFactory httpRequestFactory;
 	protected AlfrescoConfig alfrescoConfig;
+	protected String dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+	protected Gson gson = new GsonBuilder().setDateFormat(dateFormat).create();
 
 	public ZefiroAbstractServcie(AlfrescoConfig pConfig) {
 		httpRequestFactory = AlfrescoHelper.getRequestFactory(pConfig);

@@ -5,7 +5,7 @@
   <div class="container">
     <div class="page-header jb-header-bar">
       <div class="pull-right">
-        <button ng-hide="relation" type="button" class="btn btn-success" title="<fmt:message key=" jsp.process.new "/>" ng-click="search()">
+        <button ng-hide="relation" type="button" class="btn btn-success" title="<fmt:message key=" jsp.process.new "/>" ng-click="startProcess()">
           <i class="fa fa-plus"></i>
           <fmt:message key="jsp.process.new" />
         </button>

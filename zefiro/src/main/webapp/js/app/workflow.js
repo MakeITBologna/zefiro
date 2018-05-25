@@ -18,6 +18,8 @@ angular.module('workflow', [])
 	"bpm_priority",
 	"bpm_percentComplete",
 	"bpm_pooledActors",
+	"bpm_comment",
+	"bpm_status",
 	//WORKFLOW TASK
 	"bpm_context",
 	"bpm_outcome",
@@ -60,6 +62,8 @@ angular.module('workflow', [])
 	"COMPLETED": "completed"
 })
 
+.constant("processFieldName")
+
 .constant("OUTCOME_PROPERTY_NAME","bpm_outcomePropertyName")
 
 /**
@@ -92,6 +96,7 @@ angular.module('workflow', [])
 				case "PRIORITY": return "priority";
 				case "DEADLINE_PROX": return "deadlineProximity";
 				case "VARIABLES": return "variables";
+				case "STATE": return "state";
 				default: return field;
 			}
 			

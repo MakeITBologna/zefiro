@@ -61,6 +61,13 @@
   	<appender-ref ref="errors"/>
   	<appender-ref ref="console"/>
   </category>
+    <category name="com.google" additivity="false">
+  	<level value="debug"/>
+  	<appender-ref ref="zefiro"/>
+  	<appender-ref ref="errors"/>
+  	<appender-ref ref="console"/>
+  </category>
+
   <root>
     <priority value ="off"/>
   </root>

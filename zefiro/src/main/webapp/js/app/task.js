@@ -5,44 +5,48 @@
 angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter'])
 
 	.factory('TaskResource', ['$resource', function ($resource) {
-		return $resource('a/Task/:id', { id: '@id' }, {
-			getFormModel: {
-				isArray: true,
-				url: 'a/Task/:id/formModel',
-				method: 'GET'
-			},
-			getVariables: {
-				isArray: true,
-				url: 'a/Task/:id/variables',
-				method: 'GET'
-			},
-			getItems: {
-				isArray: true,
-				url: 'a/Task/:id/items',
-				method: 'GET'
-			},
-			updateTask: {
-				url: 'a/Task/:id',
-				method: 'PUT'
-			},
-			//ToDO spostare in documentresource
-			getDocumentPreview: {
-				url: 'a/Document/:id/preview',
-				method: 'GET',
-				responseType: 'arraybuffer',
-				cache: false,
-				transformResponse: function (data, header) {
-					return {
-						response: new Blob([data], { type: header("Content-Type") })
-					};
+		return function (customHeaders) {
+			return $resource('a/Task/:id', { id: '@id' }, {
+				getFormModel: {
+					isArray: true,
+					url: 'a/Task/:id/formModel',
+					method: 'GET'
+				},
+				getVariables: {
+					isArray: true,
+					url: 'a/Task/:id/variables',
+					method: 'GET'
+				},
+				getItems: {
+					isArray: true,
+					url: 'a/Task/:id/items',
+					method: 'GET'
+				},
+				updateTask: {
+					url: 'a/Task/:id',
+					method: 'PUT',
+					headers: customHeaders
+				},
+				//ToDO spostare in documentresource
+				getDocumentPreview: {
+					url: 'a/Document/:id/preview',
+					method: 'GET',
+					responseType: 'arraybuffer',
+					cache: false,
+					transformResponse: function (data, header) {
+						return {
+							response: new Blob([data], { type: header("Content-Type") })
+						};
+					}
 				}
-			}
-		});
+
+			});
+		}
 	}])
 
-	.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', 'jbWorkflowUtil', 'jbUtil', 'jbValidate', 'workflowFormBlacklist', 'OUTCOME_PROPERTY_NAME',
-		function ($scope, TaskResource, NgTableParams, jbMessages, jbWorkflowUtil, jbUtil, jbValidate, workflowFormBlacklist, OUTCOME_PROPERTY_NAME) {
-
+	.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', 'jbWorkflowUtil', 'jbUtil', 'jbValidate', 'workflowFormBlacklist', 'OUTCOME_PROPERTY_NAME', 'taskState',
+		function ($scope, TaskResource, NgTableParams, jbMessages, jbWorkflowUtil, jbUtil, jbValidate, workflowFormBlacklist, OUTCOME_PROPERTY_NAME, taskState) {
+$scope.testnestedcontroller = "task";
 			//Utilities
 			$scope.jbMessages = jbMessages;
 			$scope.jbWorkflowUtil = jbWorkflowUtil;
@@ -55,6 +59,7 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 			$scope.breadCrumbIndex = -1;
 			$scope.breadcrumbs = [];
 			$scope.orderCriteria = "";
+			
 
 			$scope.deadlineProximity = function (date) {
 				if (!date) {
@@ -100,13 +105,26 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 				}
 			}
 
+			//NEW PROCESS
+			$scope.startNewProcess=false;
+			$scope.startProcess = function(){
+				$scope.startNewProcess=true;
+			}
+			
+			$scope.$on('StartedNewProcess', function(event){
+				$scope.startNewProcess=false;
+			});
 
+			//FORM TASK
 			$scope.currentRowNum = -1;
 			$scope.taskEditing = {};
 			$scope.outcomeButtons = [];
 			$scope.updatedVariables = {}
 			$scope.currentTaskForm = [];
 			$scope.currentTaskItems = [];
+			SEPARATOR = ",";
+			$scope.BPM_COMMENT = "bpm_comment";
+			$scope.BPM_STATUS = "bpm_status";
 
 			$scope.startEdit = function (group_i, row_i) {
 				console.log("Editing: " + group_i + " " + row_i, $scope.taskTable);
@@ -119,7 +137,7 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 				$scope.currentTaskItems = [];
 				$scope.updatedVariables = {};
 				$scope.taskEditing.id = $scope.taskTable.data[currentGroupNum].data[$scope.currentRowNum].id;
-				var taskPromise = TaskResource.get($scope.taskEditing, function () {
+				var taskPromise = TaskResource().get($scope.taskEditing, function () {
 					$scope.taskEditing = taskPromise;
 					$scope.breadcrumbs.push({
 						id: $scope.taskEditing.id,
@@ -129,23 +147,20 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 						rownum: row_i,
 						groupnum: group_i
 					});
-					var formPromise = TaskResource.getFormModel({ id: $scope.taskEditing.id }, function () {
+					var formPromise = TaskResource().getFormModel({ id: $scope.taskEditing.id }, function () {
 						console.log("-----formPromise", formPromise);
-						var variablesPromise = TaskResource.getVariables({ id: $scope.taskEditing.id }, function () {
+						var variablesPromise = TaskResource().getVariables({ id: $scope.taskEditing.id }, function () {
 							console.log("-----varPromise", variablesPromise);
-							variablesPromise.forEach(function (variable) {
 								buildTaskForm(formPromise, variablesPromise);
-							});
-							$scope.editing = true;
+								$scope.editing = true;
 						});
-						var itemsPromise = TaskResource.getItems({ id: $scope.taskEditing.id }, function () {
+						var itemsPromise = TaskResource().getItems({ id: $scope.taskEditing.id }, function () {
 							console.log("-----itemsPromise", itemsPromise);
 							$scope.currentTaskItems = itemsPromise;
 							if ($scope.currentTaskItems.length > 0) {
 								$scope.getDocumentObjectHTML($scope.currentTaskItems);
 							}
 						})
-
 					});
 				});
 			}
@@ -170,11 +185,11 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 				for (var i = 0; i < formModel.length; i++) {
 					var model = formModel[i];
 					var modelName = model.name;
-					if (workflowFormBlacklist.includes(modelName)) {
+					if (workflowFormBlacklist.includes(modelName) && modelName !== $scope.BPM_COMMENT && modelName !== $scope.BPM_STATUS) {
 						continue;
 					}
 					var variable = currentTaskVariables[modelName];
-					if(!variable){
+					if (!variable) {
 						currentTaskVariables[modelName] = jbWorkflowUtil.getVoidVariable(modelName, model.dataType);
 						variable = currentTaskVariables[modelName];
 					}
@@ -201,31 +216,38 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 				}
 				return true;
 			}
-			
-			$scope.completeTask = function(outcome, outcomeValue){
-				if(outcome){
+
+			$scope.completeTask = function ( jbTaskForm, outcome, outcomeValue) {
+				if (outcome) {
 					$scope.outcomeButtons.$$variable.value = outcomeValue;
 				}
-				$scope.saveTask();
+				var state = jbWorkflowUtil.taskFieldName("STATE");
+				$scope.taskEditing[state] = taskState.COMPLETED;
+				var updated = [state];
+				$scope.saveTask(jbTaskForm, updated);
 			}
-			
-			$scope.saveTask = function() {
+
+			$scope.saveTask = function (jbTaskForm,updated) {
 				variables = [];
-				for(variable in $scope.updatedVariables){
+				for (variable in $scope.updatedVariables) {
 					console.log("----completeTask", variable)
 					variables.push($scope.updatedVariables[variable]);
 				}
+				updated = updated || [];
+				updated.push(jbWorkflowUtil.taskFieldName("VARIABLES"));
 				$scope.taskEditing[jbWorkflowUtil.taskFieldName("VARIABLES")] = variables;
-				updatePromise = TaskResource.updateTask($scope.taskEditing, function() {
-					console.log(updatePromise);
+				updatePromise = TaskResource({ updated: updated }).updateTask($scope.taskEditing, function () {
+					
+					$scope.initList($scope.closeDetail);
 				});
 			}
 
 			//Chiude la pagina di dettaglio
 			$scope.closeDetail = function (form) {
+				if (form) $scope.clearDetail(form);
 				$scope.editing = false;
 				$scope.readOnly = false;
-				if (form) $scope.clearDetail(form);
+				
 			}
 
 			//Pulisce il form della pagina di dettaglio
@@ -244,14 +266,14 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 
 			//LIST
 			$scope.isGroupHeaderRowVisible = false;
-			$scope.taskTable = new NgTableParams({ group: "processName" }, {
+			$scope.taskTable =  new NgTableParams({ group: "processName" }, {
 				counts: [], groupOptions: {
 					isExpanded: false
 				}
 			});
-
-			$scope.initList = function () {
-				var taskPromise = TaskResource.query($scope.taskEditing, function () {
+			
+			$scope.initList = function (resolveFunction) {
+				var taskPromise = TaskResource().query({}, function () {
 					console.log(taskPromise)
 					for (var i = 0; i < taskPromise.length; i++) {
 						item = taskPromise[i];
@@ -259,8 +281,10 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 					}
 					$scope.taskTable.settings({ dataset: taskPromise });
 					sortingtaskTable(jbWorkflowUtil.taskFieldName("PROCESS_NAME"), ASC, jbWorkflowUtil.taskFieldName("DUE_AT"), ASC);
+					if(resolveFunction && typeof resolveFunction==="function"){
+						resolveFunction();
+					}
 				});
-				return taskPromise;
 			}
 
 			$scope.sortingSelectTitle = "";

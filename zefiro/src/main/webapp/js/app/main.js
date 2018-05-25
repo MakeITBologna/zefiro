@@ -15,7 +15,8 @@ angular.module('main', [
   'document',
   'workflow',
   'process',
-  'task'
+  'task',
+  'newProcess'
 ])
 
 

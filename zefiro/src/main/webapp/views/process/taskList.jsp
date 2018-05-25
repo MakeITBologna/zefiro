@@ -6,7 +6,7 @@
 
     <div class="page-header jb-header-bar">
       <div class="pull-right">
-        <button ng-hide="relation" type="button" class="btn btn-success" title="<fmt:message key=" jsp.process.new " />" ng-click="search()">
+        <button ng-hide="relation" type="button" class="btn btn-success" title="<fmt:message key=" jsp.process.new " />" ng-click="startProcess()">
           <i class="fa fa-plus"></i>
           <fmt:message key="jsp.process.new" />
         </button>
@@ -19,7 +19,7 @@
     <div>
       <div class="panel jb-header-bar">
 
-        <!-- #####  Sorting dropdown ##### -->
+        <!-- ##### Sorting dropdown ##### -->
         <div class="panel-body jb-panel-body">
           <div class="row">
             <div class="col-lg-4 col-md-12 col-sm-12"></div>

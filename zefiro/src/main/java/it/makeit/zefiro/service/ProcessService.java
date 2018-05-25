@@ -14,6 +14,7 @@ import it.makeit.alfresco.restApi.AlfrescoRESTQueryParamsEnum;
 import it.makeit.alfresco.restApi.AlfrescoRESTWhereQueryParamsFactory;
 import it.makeit.alfresco.restApi.AlfrescoWhereOperatorEnum;
 import it.makeit.alfresco.workflow.AlfrescoWorkflowHelper;
+import it.makeit.alfresco.workflow.model.FormModel;
 import it.makeit.alfresco.workflow.model.ProcessDefinition;
 import it.makeit.alfresco.workflow.model.WorkflowProcess;
 import it.makeit.zefiro.DecodedFieldNote.DecodingType;
@@ -67,6 +68,29 @@ public class ProcessService extends ZefiroAbstractServcie {
 				DecodingType.STARTER);
 		return workflowProcessComplete;
 
+	}
+
+	public List<ProcessDefinition> loadDefinitions() {
+		List<ProcessDefinition> processDefinition = AlfrescoWorkflowHelper.getProcessDefinitions(httpRequestFactory,
+				alfrescoConfig);
+
+		Map<String, ProcessDefinition> lastesVersions = new HashMap<String, ProcessDefinition>();
+		for (ProcessDefinition process : processDefinition) {
+			String key = process.getKey();
+			ProcessDefinition mapProcess = lastesVersions.get(key);
+			if (mapProcess == null) {
+				lastesVersions.put(key, process);
+				continue;
+			}
+			if (mapProcess.getVersion() < process.getVersion()) {
+				lastesVersions.put(key, process);
+			}
+		}
+		return new ArrayList<ProcessDefinition>(lastesVersions.values());
+	}
+
+	public List<FormModel> loadStartForm(String id) {
+		return AlfrescoWorkflowHelper.getProcessDefinitionStartFormModel(id, httpRequestFactory, alfrescoConfig);
 	}
 
 	private Map<String, ProcessDefinition> buildDefinitionsMap(List<ProcessDefinition> definitions) {

@@ -1,11 +1,18 @@
 angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter'])
 
-.factory('ProcessResource', ['$resource', '$log', function($resource, $log) {
-	$log.log("ProcessResource", $resource);
-	return $resource('a/Process/processes:id', {id:'@id'},
+.factory('ProcessResource', ['$resource', function($resource) {
+	return $resource('a/Process/processes/:id', {id:'@id'},
 			{
 				startedProcesses: {
 					url:'a/Process/startedProcesses',
+					method: 'GET',
+					isArray: true
+				}, processDefinitions: {
+					url:'a/Process/definitions',
+					method: 'GET',
+					isArray: true
+				}, startForm: {
+					url:'a/Process/definitions/:id/startForm',
 					method: 'GET',
 					isArray: true
 				}
@@ -30,53 +37,14 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 		return documentPromise;
 	}
 	
+	//NEW PROCESS
+	$scope.startNewProcess=false;
+	$scope.startProcess = function(){
+		$scope.startNewProcess=true;
+	}
 	
-		//Ricerca documenti a partire dalla form di ricerca
-		/*$scope.search = function() {
-			var documentPromise = ProcessResource.query(null, function() {	
-				var processes = {};
-				let results = documentPromise;
-				if(typeof(documentPromise.toJSON) === "function"){
-					results = documentPromise.toJSON();
-				}
-				results.forEach((d)=> {
-					var processName = d.name;
-					if(!processes[processName]){
-						 processes[processName] = [];
-					}
-					processes[processName].push(d);
-				});
-				for(key in processes){
-					$scope.processes[key] = new NgTableParams({count: 25}, {});
-					$scope.processes[key].settings({dataset: processes[key]});
-				}
-			//$scope.processTable.settings({dataset: documentPromise});
-			//	$scope.updateSummaries(documentPromise);
-			});
-			return documentPromise;
-		}*/
-	//Ricerca documenti a partire dalla form di ricerca
-	/*$scope.search = function() {
-		var documentPromise = ProcessResource.query(null, function() {	
-			var processes = {};
-			let results = documentPromise;
-			if(typeof(documentPromise.toJSON) === "function"){
-				results = documentPromise.toJSON();
-			}
-			results.forEach((d)=> {
-				var processName = d.name;
-				if(!processes[processName]){
-					 processes[processName] = [];
-				}
-				processes[processName].push(d);
-			});
-			for(key in processes){
-				$scope.processes[key] = new NgTableParams({count: 25}, {});
-				$scope.processes[key].settings({dataset: processes[key]});
-			}
-		//$scope.processTable.settings({dataset: documentPromise});
-		//	$scope.updateSummaries(documentPromise);
-		});
-		return documentPromise;
-	}*/
+	$scope.$on('StartedNewProcess', function(event){
+		$scope.startNewProcess=false;
+	});
+
 }])

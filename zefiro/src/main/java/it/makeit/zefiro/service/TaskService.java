@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
-
-import com.google.gson.Gson;
+import org.apache.commons.lang.StringUtils;
 
 import it.makeit.alfresco.AlfrescoConfig;
 import it.makeit.alfresco.publicapi.model.Person;
@@ -31,6 +30,11 @@ import it.makeit.zefiro.dao.WorkFlowProcessComplete;
  *
  */
 public class TaskService extends ZefiroAbstractServcie {
+
+	private final String STATE = "state";
+	private final String VARIABLES = "variables";
+	private final String ASSIGNEE = "assignee";
+	private final String SEPARATOR = ",";
 
 	public TaskService(AlfrescoConfig pConfig) {
 		super(pConfig);
@@ -81,6 +85,54 @@ public class TaskService extends ZefiroAbstractServcie {
 		return AlfrescoWorkflowHelper.getTaskItems(id, httpRequestFactory, alfrescoConfig);
 	}
 
+	public TaskComplete update(String id, TaskComplete task, String updatedProperties) {
+		Task alfrescoTask = toTask(task);
+		String updated[] = {};
+		if (StringUtils.isNotBlank(updatedProperties)) {
+			updated = StringUtils.splitByWholeSeparator(updatedProperties, SEPARATOR);
+		}
+		List<String> updatedList = new ArrayList<String>();
+		for (int i = 0; i < updated.length; i++) {
+			updatedList.add(updated[i]);
+		}
+
+		// faccio la'update prima delle variabili
+		if (updatedList.contains(VARIABLES)) {
+			List<Variable> variables = task.getVariables();
+			if (variables != null && variables.size() > 0) {
+				AlfrescoWorkflowHelper.insertTaskVariable(id, variables, httpRequestFactory, alfrescoConfig);
+			}
+			updatedList.remove(updatedList.indexOf(VARIABLES));
+		}
+		// veifico se è stato fatto l'update dello state
+		boolean updatedState = false;
+		if (updatedList.contains(STATE)) {
+			updatedState = true;
+			updatedList.remove(updatedList.indexOf(STATE));
+		}
+		// fa l'update di tutte le altre proprietà
+		String updatedString = updatedList.size() > 0 ? String.join(SEPARATOR, updatedList) : "";
+		Map<String, Object> params = new HashMap<String, Object>();
+		if (StringUtils.isNotBlank(updatedString)) {
+			params.put(AlfrescoRESTQueryParamsEnum.SELECT.getName(),
+					updatedProperties != null ? updatedProperties : "");
+		}
+		Task updatedTask = AlfrescoWorkflowHelper.updateTask(id, alfrescoTask, httpRequestFactory, alfrescoConfig,
+				params);
+		// fa per ultimo l'update dello state
+		if (updatedState) {
+			updatedTask = updateTaskSate(id, alfrescoTask);
+		}
+		ProcessService service = new ProcessService(alfrescoConfig);
+		return buildTaskComplete(updatedTask, service.load(updatedTask.getProcessId()));
+	}
+
+	private Task updateTaskSate(String id, Task task) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put(AlfrescoRESTQueryParamsEnum.SELECT.getName(), String.format("%s%s%s", ASSIGNEE, SEPARATOR, STATE));
+		return AlfrescoWorkflowHelper.updateTask(id, task, httpRequestFactory, alfrescoConfig, params);
+	}
+
 	private List<TaskComplete> buildTaskComplete(List<Task> tasks) {
 		ProcessService processService = new ProcessService(alfrescoConfig);
 		List<WorkFlowProcessComplete> processes = processService.load();
@@ -113,12 +165,13 @@ public class TaskService extends ZefiroAbstractServcie {
 	}
 
 	private TaskComplete buildTaskComplete(Task task, WorkFlowProcessComplete workflowProcess) {
-		TaskComplete taskComplete;
-
-		Gson gson = new Gson();
-		taskComplete = gson.fromJson(gson.toJson(task), TaskComplete.class);
+		TaskComplete taskComplete = gson.fromJson(gson.toJson(task), TaskComplete.class);
 		Util.decodeField(taskComplete, workflowProcess, DecodingType.PROCESS);
 
 		return taskComplete;
+	}
+
+	private Task toTask(TaskComplete taskComplete) {
+		return gson.fromJson(gson.toJson(taskComplete), Task.class);
 	}
 }

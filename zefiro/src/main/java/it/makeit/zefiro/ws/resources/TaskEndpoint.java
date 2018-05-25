@@ -53,7 +53,8 @@ public class TaskEndpoint extends AbstractEndpoint {
 	@PUT
 	@Path("/{id}")
 	public Response updateTask(@PathParam("id") String id, TaskComplete task) {
-		return Response.ok().build();
+		TaskService service = (TaskService) getServiceInstance(TaskService.class);
+		return Response.ok(service.update(id, task, httpRequest.getHeader("updated"))).build();
 	}
 
 }
