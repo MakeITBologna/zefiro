@@ -55,7 +55,7 @@
             <uib-tab-heading>
               <span>&nbsp;</span>
             </uib-tab-heading>
-            
+
             <!-- ]##### Form ##### -->
             <form name="jbTaskForm" class="form-horizontal" novalidate>
               <div class="row jb-form-group" ng-repeat="(i, p) in currentTaskForm">
@@ -183,7 +183,7 @@
               </div>
             </form>
             <!-- ##### End Form ##### -->
-            
+
             <div ng-if="outcomeButtons.length > 0" class="jb-panel-body pull-right">
               <button ng-repeat="button in outcomeButtons" class="btn jb-btn-primary" type="button" ng-click="completeTask( jbTaskForm, true, button)">
                 <span>{{button}}</span>
@@ -191,7 +191,9 @@
             </div>
             <div ng-else class="jb-panel-body pull-right">
               <button class="btn jb-btn-primary" type="button" ng-click="completeTask(jbTaskForm)">
-                <span><fmt:message key="jsp.task.completeTask" /></span>
+                <span>
+                  <fmt:message key="jsp.task.completeTask" />
+                </span>
               </button>
             </div>
           </uib-tab>

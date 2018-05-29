@@ -54,6 +54,7 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.api.client.http.BasicAuthentication;
 import com.google.api.client.http.EmptyContent;
+import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
@@ -67,15 +68,18 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import it.makeit.alfresco.publicapi.entities.PeopleUrl;
+import it.makeit.alfresco.publicapi.entities.QueriesUrl;
 import it.makeit.alfresco.publicapi.model.MultipleEntry;
 import it.makeit.alfresco.publicapi.model.Person;
 import it.makeit.alfresco.publicapi.model.SingleEntry;
+import it.makeit.alfresco.restApi.AlfrescoRESTQueryParamsEnum;
+import it.makeit.alfresco.restApi.GenericUrlFactory;
 import it.makeit.alfresco.webscriptsapi.entities.GroupsUrl;
 import it.makeit.alfresco.webscriptsapi.model.GroupsList;
 import it.makeit.alfresco.webscriptsapi.services.NodeService;
 import it.makeit.jbrick.Log;
 
-public class AlfrescoHelper {
+public class AlfrescoHelper extends BaseAlfrescoHelper {
 
 	public static enum VersioningMode {
 		OVERWRITE, MINOR, MAJOR
@@ -154,6 +158,37 @@ public class AlfrescoHelper {
 		return lStrLoginTicket;
 	}
 
+	/**
+	 * For Alfresco 5.2.* and next
+	 *
+	 * @author Alba Quarto
+	 * @param pHttpRequestFactory
+	 * @param pConfig
+	 * @param pParams
+	 * @return
+	 */
+	public static List<Person> getUsers(String charSeq, HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig,
+			Map<String, Object> pParams) {
+		mLog.debug("Start");
+
+		Map<String, Object> params = buildParams(pParams);
+		params.put(AlfrescoRESTQueryParamsEnum.TERM.getName(), charSeq);
+		QueriesUrl queriesUrl = new QueriesUrl(pConfig.getHost());
+		PeopleUrl peopleUrl = new PeopleUrl(pConfig.getHost());
+		GenericUrl url = (new GenericUrlFactory(queriesUrl)).add(peopleUrl).build(params);
+
+		return loadList(pHttpRequestFactory, url, Person.class);
+	}
+
+	/**
+	 * @deprecated Using getUsers(HttpRequestFactory pHttpRequestFactory,
+	 *             AlfrescoConfig pConfig, Map<String, Object> pParams) for
+	 *             Alfresco 5.2.* and next
+	 * @param pHttpRequestFactory
+	 * @param pConfig
+	 * @return
+	 */
+	@Deprecated
 	public static List<Person> getUsers(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
 		mLog.debug("START getUsers()");
 

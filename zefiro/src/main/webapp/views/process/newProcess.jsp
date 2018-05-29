@@ -2,70 +2,63 @@
   -- @author Alba Quarto
   -->
 <%@ include file="/include/directive.jsp" %>
-  <div class="container-fluid" ng-init="initStartNewProcess()">
+  <div class="container-fluid">
 
     <div class="page-header">
       <div class="pull-right">
-        <button ng-hide="relation" type="button" class="btn btn-success" title="<fmt:message key=" jsp.process.new " />" ng-click="startProcess()">
-          <i class="fa fa-plus"></i>
-          <fmt:message key="jsp.process.new" />
+        <button class="btn btn-default" type="button" ng-click="back(jbNewProcessForm)">
+          <i class="fa fa-times"></i>
+          <fmt:message key="js.dialog.back" />
         </button>
       </div>
       <h1>
-        <fmt:message key="jsp.task.myTask.label" />
+        <fmt:message key="jsp.process.newProcess" />
       </h1>
     </div>
+        <!-- ##### Form ##### -->
+        <form name="jbNewProcessForm" class="form-horizontal" >
 
-    <!-- #####  Process Type choise dropdown ##### -->
-    <div class="panel-body jb-panel-body">
-      <div class="row jb-form-group">
-        <div class="col-sm-4  text-right jb-button-label">
-          <strong class="control jb-button-label">
-            <fmt:message key="jsp.newProcess.processType" />
-          </strong>
-        </div>
-        <div class="btn-group control-label col-sm-8 " uib-dropdown is-open="status.isopen" id="sortingSelect"
-          style="padding-left: 12px;">
-          <button id="sortingSelect" type="button" class="btn dropdown-toggle btn-default jb-full-area" uib-dropdown-toggle ng-disabled="disabled"
-            aria-expanded="false">
-            <span class="col-sm-11 text-left">{{choiseSelectTitle}}</span>
-            <span>
-              <i class="fa fa-caret-down fa-sm"></i>
-            </span>
-          </button>
-          <!-- #####  Dropdown ##### -->
-          <ul class="dropdown-menu jb-full-area" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-            <li ng-repeat="definition in choiseSelectData" data-original-index="0" data-optgroup="1" class="selected jb-dropdown-subitems"
-              ng-repeat-end>
-              <a id="choise_{{definition.key}}" tabindex="0" class="opt jb-action" data-tokens="null" role="option" aria-disabled="false"
-                aria-selected="true" ng-click="choise(definition)">
-                <div class="row">
-                  <div class="col-sm-12" ng-if="definition.name">{{definition.name}}</div>
-                  <div class="col-sm-12" ng-if="!definition.name">{{definition.key}}</div>
-                  <div class="col-sm-12" ng-if="definition.description">{{definition.description}}</div>
-                </div>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <!-- #####  Process Type choise dropdown ##### -->
+          <!-- #####  Process Type choise dropdown ##### -->
+          <div class="row jb-form-group">
+            <label class="control-label col-sm-4">
+              <strong class="control jb-button-label">
+                <fmt:message key="jsp.newProcess.processType" />
+              </strong>
+            </label>
+            <div class="btn-group col-sm-8 jb-button-dropdown" uib-dropdown is-open="status.isopen" id="sortingSelect" style="display: -webkit-box;">
+              <button id="sortingSelect" type="button" class="btn dropdown-toggle btn-default jb-full-area" uib-dropdown-toggle ng-disabled="disabled"
+                aria-expanded="false">
+                <span class="pull-left">{{choiseSelectTitle}}</span>
+                <span class="pull-right">
+                  <i class="fa fa-caret-down fa-sm"></i>
+                </span>
+              </button>
+              <!-- #####  Dropdown ##### -->
+              <ul class="dropdown-menu jb-full-area jb-form-button-dropdown jb-button-dropdown" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                <li ng-repeat="definition in choiseSelectData" data-original-index="0" data-optgroup="1" class="selected jb-dropdown-subitems"
+                  ng-repeat-end>
+                  <a id="choise_{{definition.key}}" tabindex="0" class="opt jb-action" data-tokens="null" role="option" aria-disabled="false"
+                    aria-selected="true" ng-click="choise(definition)">
+                    <div class="row">
+                      <div class="col-sm-12" ng-if="definition.name">{{definition.name}}</div>
+                      <div class="col-sm-12" ng-if="!definition.name">{{definition.key}}</div>
+                      <div class="col-sm-12" ng-if="definition.description">{{definition.description}}</div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- #####  Process Type choise dropdown ##### -->
 
-    <div class="form-group">
-
-      <div ng-if="selectedType" class="form-group">
-        <!-- ]##### Form ##### -->
-        <form name="jbNewProcessForm" class="form-horizontal" novalidate>
-        
           <!-- ##### Process Properties ##### -->
-         <!-- <div class="row jb-form-group">
+          <!-- <div class="row jb-form-group">
             <label for="jbNewProcessForm-businessKey" class="control-label col-sm-4" title="{{p.name}}">{{p.title}}</label>
             <div class="col-sm-8">
               <div></div>
             </div>
           </div>
-          
+
           <div class="row jb-form-group">
             <label for="jbNewProcessForm-businessKey" class="control-label col-sm-4" title="{{p.name}}">{{p.title}}</label>
             <div class="col-sm-8">
@@ -76,12 +69,12 @@
             </div>
           </div>	-->
           <!-- ##### End Process Properties ##### -->
-        
+
           <!-- ##### Variables ##### -->
-          <div class="row jb-form-group" ng-repeat="(i, p) in currentTypeForm">
+          <div ng-if="selectedType" class="row jb-form-group" ng-repeat="(i, p) in currentTypeForm">
             <label for="jbNewProcessForm-p.name" class="control-label col-sm-4" title="{{p.name}}">{{p.title}}</label>
             <div class="col-sm-8">
-            
+
               <!-- ##### STRING ##### -->
               <div ng-if="jbWorkflowUtil.decodeType(p.dataType) == 'STRING'">
                 <div ng-if="!readOnly" ng-class="getValidClass(jbNewProcessForm[p.name])">
@@ -203,10 +196,25 @@
 
           </div>
           <!-- ##### End Variables ##### -->
-          
+
+          <!-- ###### Assignee Button ##### -->
+          <div ng-if="addingAssignee" class="row jb-form-group">
+            <label for="jbNewProcessForm-addingAssignee" class="control-label col-sm-4" title="addingAssignee">{{addingAssignee.title}}</label>
+            <div class="col-sm-8">
+              <div ng-repeat="assignee in addedAssignee">
+                <p class="form-control-static">{{assignee.firstName}}
+                  <span ng-if="assignee.lastName">&nbsp;{{assignee.lastName}}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div ng-if="addingAssignee" class="pull-right">
+            <button class="btn jb-btn-primary" type="button" ng-click="selectAssignee()">
+              <fmt:message key="jsp.selectAssignee" />
+            </button>
+          </div>
+          <!-- ###### End Assignee Button ##### -->
+
         </form>
         <!-- ##### End Form ##### -->
-      </div>
-      <!-- ##### Fine Dettaglio #####-->
-    </div>
   </div>

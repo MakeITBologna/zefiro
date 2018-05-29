@@ -54,6 +54,13 @@ angular.module('workflow', [])
 	"bpm_endAutomatically"
 ])
 
+.constant("workflowAssigneeAspects", [
+	"bpm_assignee",
+	"bpm_assignees",
+	"bpm_groupAssignee",
+	"bpm_groupAssignees",
+])
+
 .constant("taskState", {
 	"CLAIMED": "claimed",
 	"UNCLAIMED": "unclaimed",

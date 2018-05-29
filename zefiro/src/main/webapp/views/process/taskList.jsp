@@ -21,40 +21,42 @@
 
         <!-- ##### Sorting dropdown ##### -->
         <div class="panel-body jb-panel-body">
-          <div class="row">
-            <div class="col-lg-4 col-md-12 col-sm-12"></div>
-            <div class="col-lg-4  col-md-6 col-sm-6  col-xs-12 text-right jb-button-label">
-              <strong class="control jb-button-label">
-                <fmt:message key="jsp.orderBy" />
-              </strong>
+          <form name="sortingForm" class="form-horizontal" novalidate>
+
+            <div class="row jb-form-group">
+              <label class="control-label col-sm-4">
+                <strong class="control jb-button-label">
+                  <fmt:message key="jsp.orderBy" />
+                </strong>
+              </label>
+              <div class="btn-group col-sm-8 jb-button-dropdown" uib-dropdown is-open="status.isopen" id="sortingSelect" style="display: -webkit-box;">
+                <button id="sortingSelect" type="button" class="btn dropdown-toggle btn-default jb-full-area" uib-dropdown-toggle ng-disabled="disabled"
+                  aria-expanded="false">
+                  <span class="pull-left">{{sortingSelectTitle}}</span>
+                  <span class="pull-right">
+                    <i class="fa fa-caret-down fa-sm"></i>
+                  </span>
+                </button>
+                <!-- #####  Dropdown ##### -->
+                <ul class="dropdown-menu jb-full-area jb-button-dropdown" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                  <li class="dropdown-header jb-dropdown-header" ng-repeat-start="gr in sortingSelectData">
+                    <span class="text">{{gr.title}}</span>
+                  </li>
+                  <li ng-repeat="item in gr.items" data-original-index="0" data-optgroup="1" class="selected jb-dropdown-subitems" ng-repeat-end>
+                    <a tabindex="0" class="opt jb-action" data-tokens="null" role="option" aria-disabled="false" aria-selected="true" ng-click="sortingTaskList(gr, item)">
+                      <span class="text">{{item.title}}</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <div class="btn-group control-label col-lg-4 col-md-6 col-sm-6 col-xs-12" uib-dropdown is-open="status.isopen" id="sortingSelect"
-              style="padding: unset;">
-              <button id="sortingSelect" type="button" class="btn dropdown-toggle btn-default jb-full-area" uib-dropdown-toggle ng-disabled="disabled"
-                aria-expanded="false">
-                <span class="col-sm-11 text-left">{{sortingSelectTitle}}</span>
-                <span>
-                  <i class="fa fa-caret-down fa-sm"></i>
-                </span>
-              </button>
-              <!-- #####  Dropdown ##### -->
-              <ul class="dropdown-menu jb-full-area" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                <li class="dropdown-header jb-dropdown-header" ng-repeat-start="gr in sortingSelectData">
-                  <span class="text">{{gr.title}}</span>
-                </li>
-                <li ng-repeat="item in gr.items" data-original-index="0" data-optgroup="1" class="selected jb-dropdown-subitems" ng-repeat-end>
-                  <a tabindex="0" class="opt jb-action" data-tokens="null" role="option" aria-disabled="false" aria-selected="true" ng-click="sortingTaskList(gr, item)">
-                    <span class="text">{{item.title}}</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
+          </form>
         </div>
         <!-- #####  End sorting dropdown ##### -->
 
         <!-- #####  Task list ##### -->
-        <table ng-init="initList()" ng-table="taskTable" class="table table-condensed ng-table-responsive workflow-list" show-filter="false" show-group="isGroupHeaderRowVisible">
+        <table ng-init="initList()" ng-table="taskTable" class="table table-condensed ng-table-responsive workflow-list" show-filter="false"
+          show-group="isGroupHeaderRowVisible">
           <tbody>
 
             <!-- #####  Group header ##### -->

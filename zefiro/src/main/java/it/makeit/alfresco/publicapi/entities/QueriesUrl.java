@@ -12,17 +12,18 @@ import it.makeit.alfresco.restApi.AlfrescoRESTQueryParamsEnum;
 import it.makeit.alfresco.restApi.AlfrescoUrlException;
 
 /**
- * @modified from Alba Quarto, added implementation and methods overrides
+ *
+ * @author Alba Quarto
+ *
  */
-public class PeopleUrl extends GenericUrl implements AlfrescoBaseUrl {
+public class QueriesUrl extends GenericUrl implements AlfrescoBaseUrl {
 
-	private static final String PATH = "/people";
+	private static final String PATH = "/queries";
 	private Set<String> params;
 	private String pathParam;
 
-	public PeopleUrl(URL pHostUrl) {
+	public QueriesUrl(URL pHostUrl) {
 		super(pHostUrl);
-		populateParams();
 		this.appendRawPath(AlfrescoApiPath.ALFRESCO.getPath());
 		this.appendRawPath(PATH);
 	}
@@ -45,57 +46,21 @@ public class PeopleUrl extends GenericUrl implements AlfrescoBaseUrl {
 		}
 	}
 
-	/**
-	 * @author Alba Quarto
-	 */
 	@Override
 	public URL getCompletePath() {
 		return this.toURL();
 	}
 
-	/**
-	 * @author Alba Quarto
-	 */
 	@Override
 	public String getSpecificPath() {
-		GenericUrl url = new GenericUrl();
-		url.appendRawPath(PATH);
-		if (pathParam != null) {
-			url.getPathParts().add(pathParam);
-		}
-		return url.getRawPath();
+		throw new AlfrescoUrlException(AlfrescoUrlException.METHOD);
 	}
 
-	/**
-	 * @deprecated Using addStringPathParam
-	 * @param userId
-	 */
-	@Deprecated
-	public void setUserId(String userId) {
-		this.getPathParts().add(userId);
-	}
-
-	/**
-	 * @author Alba Quarto
-	 * @throws AlfrescoUrlException
-	 *             if a path parm has already been added or pathParam is null
-	 */
 	@Override
-	public void addStringPathParam(String pathParam) {
-		if (pathParam == null) {
-			throw new AlfrescoUrlException(AlfrescoUrlException.PATH_PARAM);
-		}
-		if (this.pathParam != null) {
-			throw new AlfrescoUrlException(AlfrescoUrlException.PATH_PARAM);
-		}
-		this.pathParam = pathParam;
-		this.getPathParts().add(pathParam);
+	public void addStringPathParam(String pathPart) {
+		throw new AlfrescoUrlException(AlfrescoUrlException.METHOD);
 	}
 
-	/**
-	 * @author Alba Quarto
-	 * @throw AlfrescoUrlException always
-	 */
 	@Override
 	public void addIntPathParam(int pathPart) {
 		throw new AlfrescoUrlException(AlfrescoUrlException.METHOD);
@@ -106,5 +71,4 @@ public class PeopleUrl extends GenericUrl implements AlfrescoBaseUrl {
 		return params;
 	}
 
-	// TODO (Alessio): definire i possibili parametri (@Key)
 }

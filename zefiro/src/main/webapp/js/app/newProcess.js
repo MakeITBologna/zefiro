@@ -1,12 +1,5 @@
 angular.module('newProcess',[])
 
-.constant("workflowAssigneeAspects", [
-	"bpm_assignee",
-	"bpm_assignees",
-	"bpm_groupAssignee",
-	"bpm_groupAssignees",
-])
-
 .constant("defaultWhiteList", [
 	"bpm_workflowDescription",
 	"bpm_workflowDueDate",
@@ -17,10 +10,44 @@ angular.module('newProcess',[])
 	"bpm_status",
 ])
 
-.controller('NewProcessController', ['$scope', 'ProcessResource', 'workflowAssigneeAspects', 'defaultWhiteList', function($scope, ProcessResource,workflowAssigneeAspects,defaultWhiteList){
+.controller('NewProcessController', ['$scope', 'ProcessResource', 'workflowAssigneeAspects', 'defaultWhiteList', 'workflowFormBlacklist', 'jbWorkflowUtil','jbValidate','$uibModal',
+	function($scope, ProcessResource,workflowAssigneeAspects,defaultWhiteList, workflowFormBlacklist, jbWorkflowUtil, jbValidate,$uibModal){
 
-	$scope.back = function(){
+	$scope.back = function(form){
+		$scope.$emit('NewProcessBack', false);
+		cleanController(form)
+	}
+	
+	
+	$scope.$on('AuthorityBack', function(event){
+		if(userModal){
+			userModal.dismiss();
+			userModal = undefined;
+		}
+	})
+	
+	$scope.$parent.$on('StartNewProcess', function() {
+		$scope.initStartNewProcess();
+	})
+	
+	$scope.startProcess = function(form){
 		$scope.$emit('StartedNewProcess', false);
+		cleanController(form);
+	}
+	
+	cleanController = function(form){
+		if(form) {
+			jbValidate.clearForm(form);
+		}
+		$scope.selectedType = false;
+		$scope.choiseSelectTitle = "";
+		$scope.choiseSelectData =  [];
+		$scope.groupType = {};
+		$scope.currentTypeForm = [];
+		$scope.addingAssignee = null;
+		$scope.addedAssignee = [];
+		$scope.updatedVariables = {};
+
 	}
 	
 	$scope.selectedType = false;	
@@ -50,7 +77,8 @@ angular.module('newProcess',[])
 		});
 	}
 	
-	$scope.addAssignee = null;
+	$scope.addingAssignee = null;
+	$scope.addedAssignee = [];
 	$scope.updatedVariables = {};
 	buildStartForm = function (formModel, fieldWhiteList) {
 		//create the form and the relative variable map
@@ -65,14 +93,41 @@ angular.module('newProcess',[])
 			if (workflowFormBlacklist.includes(modelName) && !assigneeAspect && !whiteList.includes(modelName)) {
 				continue;
 			}
-			$scope.updatedVariables[modelName] = null;
+			$scope.updatedVariables[modelName] = jbWorkflowUtil.getVoidVariable(modelName, model.dataType);
 			if(assigneeAspect){
-				$scope.addAssignee = assigneeAspect
+				if($scope.addAssignee!==null){
+					//TODO capire come mostrare a video l'errore
+					throw new Error("Ambiguità sul tipo di assegnatrio")
+				} 
+				$scope.addingAssignee = model;
 			} else {
 				$scope.currentTypeForm.push(model)
 			}
 		}
 		$scope.selectedType = item;
 	}
+	
+	$scope.selectAssignee = function(parent){
+		angular.element(document).find("script");
+		open('sm',parent)
+	}
+	
+	var userModal;
+	 open = function (size) {
+		    userModal = $uibModal.open({
+		      animation: true,
+		      ariaLabelledBy: 'modal-title',
+		      ariaDescribedBy: 'modal-body',
+		      templateUrl: 'views/process/selectUser.jsp',
+		      controller: 'AuthorityController',
+		      size: size,
+		      scope: $scope,
+		      resolve: {
+		    	  title: function () { return "TITOLO" },
+		    	  authArray: function () {return $scope.addedAssignee}
+		        }
+		    });
+		   
+	 }
 
 }])

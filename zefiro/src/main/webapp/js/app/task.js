@@ -4,6 +4,11 @@
  */
 angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter'])
 
+	.constant("defaultTaskWhiteList", [
+		"bpm_comment",
+		"bpm_status"
+	])
+
 	.factory('TaskResource', ['$resource', function ($resource) {
 		return function (customHeaders) {
 			return $resource('a/Task/:id', { id: '@id' }, {
@@ -44,9 +49,9 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 		}
 	}])
 
-	.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', 'jbWorkflowUtil', 'jbUtil', 'jbValidate', 'workflowFormBlacklist', 'OUTCOME_PROPERTY_NAME', 'taskState',
-		function ($scope, TaskResource, NgTableParams, jbMessages, jbWorkflowUtil, jbUtil, jbValidate, workflowFormBlacklist, OUTCOME_PROPERTY_NAME, taskState) {
-$scope.testnestedcontroller = "task";
+	.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', 'jbWorkflowUtil', 'jbUtil', 'jbValidate', 'workflowFormBlacklist', 'OUTCOME_PROPERTY_NAME', 'taskState', 'defaultTaskWhiteList', '$cookies',
+		function ($scope, TaskResource, NgTableParams, jbMessages, jbWorkflowUtil, jbUtil, jbValidate, workflowFormBlacklist, OUTCOME_PROPERTY_NAME, taskState, defaultTaskWhiteList, $cookies) {
+			$scope.testnestedcontroller = "task";
 			//Utilities
 			$scope.jbMessages = jbMessages;
 			$scope.jbWorkflowUtil = jbWorkflowUtil;
@@ -59,8 +64,7 @@ $scope.testnestedcontroller = "task";
 			$scope.breadCrumbIndex = -1;
 			$scope.breadcrumbs = [];
 			$scope.orderCriteria = "";
-			
-
+	
 			$scope.deadlineProximity = function (date) {
 				if (!date) {
 					return 3;
@@ -106,14 +110,20 @@ $scope.testnestedcontroller = "task";
 			}
 
 			//NEW PROCESS
-			$scope.startNewProcess=false;
-			$scope.startProcess = function(){
-				$scope.startNewProcess=true;
+			$scope.startNewProcess = false;
+			$scope.startProcess = function () {
+				$scope.$broadcast('StartNewProcess');
+				$scope.startNewProcess = true;
 			}
-			
-			$scope.$on('StartedNewProcess', function(event){
-				$scope.startNewProcess=false;
+
+			$scope.$on('StartedNewProcess', function (event) {
+				$scope.startNewProcess = false;
 			});
+
+			$scope.$on('NewProcessBack', function (event) {
+				$scope.startNewProcess = false;
+			});
+
 
 			//FORM TASK
 			$scope.currentRowNum = -1;
@@ -151,8 +161,8 @@ $scope.testnestedcontroller = "task";
 						console.log("-----formPromise", formPromise);
 						var variablesPromise = TaskResource().getVariables({ id: $scope.taskEditing.id }, function () {
 							console.log("-----varPromise", variablesPromise);
-								buildTaskForm(formPromise, variablesPromise);
-								$scope.editing = true;
+							buildTaskForm(formPromise, variablesPromise);
+							$scope.editing = true;
 						});
 						var itemsPromise = TaskResource().getItems({ id: $scope.taskEditing.id }, function () {
 							console.log("-----itemsPromise", itemsPromise);
@@ -185,7 +195,7 @@ $scope.testnestedcontroller = "task";
 				for (var i = 0; i < formModel.length; i++) {
 					var model = formModel[i];
 					var modelName = model.name;
-					if (workflowFormBlacklist.includes(modelName) && modelName !== $scope.BPM_COMMENT && modelName !== $scope.BPM_STATUS) {
+					if (workflowFormBlacklist.includes(modelName) && !defaultTaskWhiteList.includes(modelName)) {
 						continue;
 					}
 					var variable = currentTaskVariables[modelName];
@@ -217,7 +227,7 @@ $scope.testnestedcontroller = "task";
 				return true;
 			}
 
-			$scope.completeTask = function ( jbTaskForm, outcome, outcomeValue) {
+			$scope.completeTask = function (jbTaskForm, outcome, outcomeValue) {
 				if (outcome) {
 					$scope.outcomeButtons.$$variable.value = outcomeValue;
 				}
@@ -227,7 +237,7 @@ $scope.testnestedcontroller = "task";
 				$scope.saveTask(jbTaskForm, updated);
 			}
 
-			$scope.saveTask = function (jbTaskForm,updated) {
+			$scope.saveTask = function (jbTaskForm, updated) {
 				variables = [];
 				for (variable in $scope.updatedVariables) {
 					console.log("----completeTask", variable)
@@ -237,7 +247,7 @@ $scope.testnestedcontroller = "task";
 				updated.push(jbWorkflowUtil.taskFieldName("VARIABLES"));
 				$scope.taskEditing[jbWorkflowUtil.taskFieldName("VARIABLES")] = variables;
 				updatePromise = TaskResource({ updated: updated }).updateTask($scope.taskEditing, function () {
-					
+
 					$scope.initList($scope.closeDetail);
 				});
 			}
@@ -247,7 +257,7 @@ $scope.testnestedcontroller = "task";
 				if (form) $scope.clearDetail(form);
 				$scope.editing = false;
 				$scope.readOnly = false;
-				
+
 			}
 
 			//Pulisce il form della pagina di dettaglio
@@ -266,12 +276,12 @@ $scope.testnestedcontroller = "task";
 
 			//LIST
 			$scope.isGroupHeaderRowVisible = false;
-			$scope.taskTable =  new NgTableParams({ group: "processName" }, {
+			$scope.taskTable = new NgTableParams({ group: "processName" }, {
 				counts: [], groupOptions: {
 					isExpanded: false
 				}
 			});
-			
+
 			$scope.initList = function (resolveFunction) {
 				var taskPromise = TaskResource().query({}, function () {
 					console.log(taskPromise)
@@ -281,7 +291,7 @@ $scope.testnestedcontroller = "task";
 					}
 					$scope.taskTable.settings({ dataset: taskPromise });
 					sortingtaskTable(jbWorkflowUtil.taskFieldName("PROCESS_NAME"), ASC, jbWorkflowUtil.taskFieldName("DUE_AT"), ASC);
-					if(resolveFunction && typeof resolveFunction==="function"){
+					if (resolveFunction && typeof resolveFunction === "function") {
 						resolveFunction();
 					}
 				});

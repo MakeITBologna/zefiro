@@ -5,7 +5,7 @@ package it.makeit.alfresco.restApi;
  */
 public enum AlfrescoRESTQueryParamsEnum {
 	MAX_ITEMS("maxItems"), ORDER_BY("orderBy"), PROPERTIES("properties"), SKIP_COUNT("skipCount"), WHERE(
-			"where"), SELECT("select");
+			"where"), SELECT("select"), FIELDS("fields"), TERM("term");
 
 	private String name;
 
