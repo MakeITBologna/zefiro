@@ -1,6 +1,7 @@
 package it.makeit.alfresco.workflow.model;
 
 import java.util.Date;
+import java.util.Map;
 
 public class WorkflowProcess {
 
@@ -14,6 +15,24 @@ public class WorkflowProcess {
 	private String endActivityDefinitionId;
 	private String startUserId;
 	private String deleteReason;
+	private Map<String, Object> variables;
+	private String processDefinitionKey;
+
+	public String getProcessDefinitionKey() {
+		return processDefinitionKey;
+	}
+
+	public void setProcessDefinitionKey(String processDefinitionKey) {
+		this.processDefinitionKey = processDefinitionKey;
+	}
+
+	public Map<String, Object> getVariables() {
+		return variables;
+	}
+
+	public void setVariables(Map<String, Object> variables) {
+		this.variables = variables;
+	}
 
 	public String getId() {
 		return id;

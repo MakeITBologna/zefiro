@@ -17,6 +17,13 @@ public class AuthorityEndpoint extends AbstractEndpoint {
 	@Path("/users/{charsSeq}")
 	public Response getUsers(@PathParam("charsSeq") String charsSeq) {
 		AuthorityService service = (AuthorityService) getServiceInstance(AuthorityService.class);
-		return Response.ok(service.loadUsers(charsSeq, null)).build();
+		return Response.ok(service.loadUsers(charsSeq)).build();
+	}
+
+	@GET
+	@Path("/groups/{charsSeq}")
+	public Response getGroups(@PathParam("charsSeq") String charsSeq) {
+		AuthorityService service = (AuthorityService) getServiceInstance(AuthorityService.class);
+		return Response.ok(service.loadGroups(charsSeq)).build();
 	}
 }

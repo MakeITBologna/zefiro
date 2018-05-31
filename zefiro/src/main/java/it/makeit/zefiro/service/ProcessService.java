@@ -93,6 +93,14 @@ public class ProcessService extends ZefiroAbstractServcie {
 		return AlfrescoWorkflowHelper.getProcessDefinitionStartFormModel(id, httpRequestFactory, alfrescoConfig);
 	}
 
+	public WorkFlowProcessComplete startProcess(WorkFlowProcessComplete process) {
+		Gson gson = new Gson();
+		WorkflowProcess alProcess = gson.fromJson(gson.toJson(process), WorkflowProcess.class);
+		WorkflowProcess startedProcess = AlfrescoWorkflowHelper.startProcess(alProcess, httpRequestFactory,
+				alfrescoConfig);
+		return load(startedProcess.getId());
+	}
+
 	private Map<String, ProcessDefinition> buildDefinitionsMap(List<ProcessDefinition> definitions) {
 		Map<String, ProcessDefinition> processMap = new HashMap<String, ProcessDefinition>();
 

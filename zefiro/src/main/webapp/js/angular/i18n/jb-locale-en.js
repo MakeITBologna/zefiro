@@ -35,7 +35,22 @@ angular.module("jbLocale", ["ngLocale"])
 		"priority": "Priority",
 		"deadlineProssimity": "Maturing",
 		"unassigned" : "Unssigned"
-			}
+},
+
+"authority" : { 
+	"searchAuthority" : "No items searched",
+	"anySelected": "No items selected",
+	"anyFound": "No items found"
+},
+"workflow": {
+	"select": {
+		"assignee": "Select the assignee",
+		"bpm_assignee": "Select the assignee user",
+		"bpm_assignees": "Select the assignee users",
+		"bpm_groupAssignee": "Select the assignee group",
+		"bpm_groupAssignees": "Select the assignee groups"
+	}
+}
 })
 
 .factory('jbPatterns', ['$locale', function($locale) {

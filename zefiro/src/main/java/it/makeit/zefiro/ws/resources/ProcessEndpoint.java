@@ -1,12 +1,14 @@
 package it.makeit.zefiro.ws.resources;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import it.makeit.zefiro.dao.WorkFlowProcessComplete;
 import it.makeit.zefiro.service.ProcessService;
 
 @Path("/Process")
@@ -19,6 +21,14 @@ public class ProcessEndpoint extends AbstractEndpoint {
 		ProcessService service = (ProcessService) getServiceInstance(ProcessService.class);
 
 		return Response.ok(service.load()).build();
+	}
+
+	@POST
+	@Path("/processes")
+	public Response getProcess(WorkFlowProcessComplete process) {
+		ProcessService service = (ProcessService) getServiceInstance(ProcessService.class);
+
+		return Response.ok(service.startProcess(process)).build();
 	}
 
 	@GET

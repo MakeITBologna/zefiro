@@ -185,12 +185,12 @@
             <!-- ##### End Form ##### -->
 
             <div ng-if="outcomeButtons.length > 0" class="jb-panel-body pull-right">
-              <button ng-repeat="button in outcomeButtons" class="btn jb-btn-primary" type="button" ng-click="completeTask( jbTaskForm, true, button)">
+              <button ng-repeat="button in outcomeButtons" class="btn jb-btn-primary" type="button" ng-click="jbValidate.checkForm(jbTaskForm) && completeTask( jbTaskForm, true, button)">
                 <span>{{button}}</span>
               </button>
             </div>
             <div ng-else class="jb-panel-body pull-right">
-              <button class="btn jb-btn-primary" type="button" ng-click="completeTask(jbTaskForm)">
+              <button class="btn jb-btn-primary" type="button" ng-click="jbValidate.checkForm(jbTaskForm) && completeTask(jbTaskForm)">
                 <span>
                   <fmt:message key="jsp.task.completeTask" />
                 </span>

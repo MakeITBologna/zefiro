@@ -35,7 +35,23 @@ angular.module("jbLocale", ["ngLocale"])
 	"priority": "Priorità",
 	"deadlineProssimity": "In scadenza",
 	"unassigned" : "Non presa in carico"
-}	
+},
+
+"authority" : { 
+	"searchAuthority" : "Nessun elemento cercato",
+	"anySelected": "Nessun elemento selezionato",
+	"anyFound": "Nessun elemento trovato"
+},
+
+"workflow": {
+	"select": {
+		"assignee": "Seleziona l'assegnatario",
+		"bpm_assignee": "Seleziona l'utente assegnatario",
+		"bpm_assignees": "Seleziona gli utenti assegnatari",
+		"bpm_groupAssignee": "Seleziona il grouppo assegnatario",
+		"bpm_groupAssignees": "Seleziona i gruppi assegnatari"
+	}
+}
 
 })
 

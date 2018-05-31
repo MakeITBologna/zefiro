@@ -15,6 +15,10 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 					url:'a/Process/definitions/:id/startForm',
 					method: 'GET',
 					isArray: true
+				}, startProcess: {
+					url:'a/Process/processes/',
+					method: 'POST',
+					isArray: false
 				}
 			});
 }])

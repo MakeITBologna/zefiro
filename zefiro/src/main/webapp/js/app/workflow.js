@@ -69,6 +69,11 @@ angular.module('workflow', [])
 	"COMPLETED": "completed"
 })
 
+.constant('AUTHORITY_TYPE', {
+	'GROUP': 'group',
+	'PERSON': 'person'
+})
+
 .constant("processFieldName")
 
 .constant("OUTCOME_PROPERTY_NAME","bpm_outcomePropertyName")
@@ -77,7 +82,7 @@ angular.module('workflow', [])
  * Utility service for workflow
  * @author Alba Quarto
  */
-.factory('jbWorkflowUtil', function() {
+.factory('jbWorkflowUtil', ['AUTHORITY_TYPE', function(AUTHORITY_TYPE) {
 	return {
 		decodeType: function(type){
 			switch(type){
@@ -108,6 +113,15 @@ angular.module('workflow', [])
 			}
 			
 		},
+		processFieldName: function(field){
+			switch(field) {
+		case "PROCESS_DEFINITION_ID": return "processDefinitionId";
+		case "PROCESS_DEFINITION_KEY": return "processDefinitionKey";
+		case "VARIABLES": return "variables";
+		default: return field;
+
+			}
+		},
 		getVoidVariable: function(name, type){
 			return {
 				 scope: "local",
@@ -116,6 +130,15 @@ angular.module('workflow', [])
                  value: null
 				
 			}
+		},
+		getAssigneeType: function(assigneeAspect){
+			switch(assigneeAspect){
+			case "bpm_assignee": return {type: AUTHORITY_TYPE.PERSON, many:false};
+			case "bpm_assignees": return {type: AUTHORITY_TYPE.PERSON, many:true};
+			case "bpm_groupAssignee": return {type: AUTHORITY_TYPE.GROUP, many:false};
+			case "bpm_groupAssignees": return {type: AUTHORITY_TYPE.GROUP, many:true};
+			}
 		}
+		
 	}
-})
+}])

@@ -4,7 +4,7 @@
  */
 angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter'])
 
-	.constant("defaultTaskWhiteList", [
+	.constant('TASK_DEFAULT_WHITE_LIST', [
 		"bpm_comment",
 		"bpm_status"
 	])
@@ -49,8 +49,8 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 		}
 	}])
 
-	.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', 'jbWorkflowUtil', 'jbUtil', 'jbValidate', 'workflowFormBlacklist', 'OUTCOME_PROPERTY_NAME', 'taskState', 'defaultTaskWhiteList', '$cookies',
-		function ($scope, TaskResource, NgTableParams, jbMessages, jbWorkflowUtil, jbUtil, jbValidate, workflowFormBlacklist, OUTCOME_PROPERTY_NAME, taskState, defaultTaskWhiteList, $cookies) {
+	.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', 'jbWorkflowUtil', 'jbUtil', 'jbValidate', 'workflowFormBlacklist', 'OUTCOME_PROPERTY_NAME', 'taskState', 'TASK_DEFAULT_WHITE_LIST', '$cookies',
+		function ($scope, TaskResource, NgTableParams, jbMessages, jbWorkflowUtil, jbUtil, jbValidate, workflowFormBlacklist, OUTCOME_PROPERTY_NAME, taskState, TASK_DEFAULT_WHITE_LIST, $cookies) {
 			$scope.testnestedcontroller = "task";
 			//Utilities
 			$scope.jbMessages = jbMessages;
@@ -118,12 +118,12 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 
 			$scope.$on('StartedNewProcess', function (event) {
 				$scope.startNewProcess = false;
+				$scope.initList();
 			});
 
 			$scope.$on('NewProcessBack', function (event) {
 				$scope.startNewProcess = false;
 			});
-
 
 			//FORM TASK
 			$scope.currentRowNum = -1;
@@ -195,7 +195,7 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 				for (var i = 0; i < formModel.length; i++) {
 					var model = formModel[i];
 					var modelName = model.name;
-					if (workflowFormBlacklist.includes(modelName) && !defaultTaskWhiteList.includes(modelName)) {
+					if (workflowFormBlacklist.includes(modelName) && !TASK_DEFAULT_WHITE_LIST.includes(modelName)) {
 						continue;
 					}
 					var variable = currentTaskVariables[modelName];

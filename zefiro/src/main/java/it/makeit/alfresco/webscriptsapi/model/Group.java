@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.api.client.util.Key;
 
-
 public class Group {
 
 	@Key
@@ -25,4 +24,28 @@ public class Group {
 
 	@Key
 	private List<String> zones;
+
+	public String getAuthorityType() {
+		return authorityType;
+	}
+
+	public String getShortName() {
+		return shortName;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public List<String> getZones() {
+		return zones;
+	}
 }
