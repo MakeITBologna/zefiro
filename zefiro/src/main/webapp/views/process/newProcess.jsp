@@ -25,7 +25,7 @@
 
             <%-- #####  Process Type choise dropdown ##### --%>
             <div class="row jb-form-group">
-              <label class="control-label col-sm-4">
+              <label class="control-label col-sm-4" style="padding-left: 0pX;">
                 <fmt:message key="jsp.newProcess.processType" />
               </label>
               <div class="btn-group col-sm-8 jb-button-dropdown jb-form-control" uib-dropdown is-open="status.isopen" id="sortingSelect"
@@ -76,7 +76,7 @@
 
             <%-- ##### Variables ##### --%>
             <div ng-if="selectedType" class="row jb-form-group" ng-repeat="(i, p) in currentTypeForm">
-              <label for="jbNewProcessForm-p.name" class="control-label col-sm-4" title="{{p.name}}">{{p.title}}</label>
+              <label for="jbNewProcessForm-p.name" class="control-label col-sm-4" title="{{p.name}}" style="padding-left: 0px;">{{p.title}}</label>
               <div class="col-sm-8 jb-form-control">
 
                 <%-- ##### STRING ##### --%>
@@ -205,17 +205,25 @@
             <div ng-if="addingAssignee" class="row jb-form-group">
               <label for="jbNewProcessForm-addingAssignee" class="control-label col-sm-4" title="addingAssignee">{{addingAssignee.title}}</label>
               <div class="col-sm-8 jb-form-control">
-                <div class="form-control" readonly>
-                  <span ng-repeat="assignee in addedAssignee">
-                    <span>{{assignee.firstName}}</span>
-                    <span ng-if="assignee.lastName">&nbsp;{{assignee.lastName}}</span>
+                <div class="form-control" readonly  style="display: inherit;">
+                  <span ng-repeat="($index, assignee) in addedAssignee">
+                    <span ng-if="$index>0">,&nbsp;</span>
+                    <span ng-if="assigneeType === AUTHORITY_TYPE.PERSON">
+                      <span>{{assignee.firstName}}</span>
+                      <span ng-if="assignee.lastName">&nbsp;{{assignee.lastName}}</span>
+                      <span>({{assignee.id}})</span>
+                    </span>
+                    <span ng-if="assigneeType === AUTHORITY_TYPE.GROUP">
+                      <span>{{assignee.fullName}}</span>
+                    </span>
                   </span>
                 </div>
               </div>
             </div>
             <div ng-if="addingAssignee" class="text-right row jb-form-control">
               <button class="btn jb-btn-primary" type="button" ng-click="selectAssignee()">
-                <fmt:message key="jsp.selectAssignee" />
+                <div ng-show="!$scope.assigneeMany"><fmt:message key="jsp.selectAssignee" /></div>
+                <div ng-show="$scope.assigneeMany"><fmt:message key="jsp.selectAssignees" /></div>
               </button>
             </div>
             <%-- ###### End Assignee Button ##### --%>

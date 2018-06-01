@@ -74,6 +74,9 @@ angular.module('authority', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentT
 	}
 	
 	$scope.saveSelected = function () {
+		while(authArray.length > 0) {
+			authArray.pop();
+		}
 		for(var i = 0; i<$scope.selectedAuthorities.length; i++){
 			if(!authArray.includes($scope.selectedAuthorities[i])){
 			authArray.push($scope.selectedAuthorities[i]);

@@ -12,7 +12,8 @@ angular.module('newProcess', [])
 
 	.controller('NewProcessController', ['$scope', 'ProcessResource', 'workflowAssigneeAspects', 'NEW_PROCESS_DEFAULT_WHITELIST', 'workflowFormBlacklist', 'jbWorkflowUtil', 'jbValidate', '$uibModal', 'AUTHORITY_TYPE', 'jbMessages',
 		function ($scope, ProcessResource, workflowAssigneeAspects, NEW_PROCESS_DEFAULT_WHITELIST, workflowFormBlacklist, jbWorkflowUtil, jbValidate, $uibModal, AUTHORITY_TYPE, jbMessages) {
-
+	
+			$scope.AUTHORITY_TYPE = AUTHORITY_TYPE;
 			$scope.jbValidate = jbValidate;
 
 			$scope.back = function (form) {
@@ -80,7 +81,7 @@ angular.module('newProcess', [])
 			$scope.addedAssignee = [];
 			$scope.updatedVariables = {};
 			$scope.assigneeType = null;
-			$scope.assigneeMany = false;
+			$scope.assigneeMany;
 			buildStartForm = function (formModel, fieldWhiteList) {
 				//create the form and the relative variable map
 				$scope.updatedVariables = {};
@@ -89,7 +90,7 @@ angular.module('newProcess', [])
 				$scope.addingAssignee =null;
 				$scope.addedAssignee = [];
 				$scope.assigneeType = null;
-				$scope.assigneeMany = false;
+				$scope.assigneeMany;
 				for (var i = 0; i < formModel.length; i++) {
 					var model = formModel[i];
 					var modelName = model.name;
