@@ -144,7 +144,7 @@ table.workflow-list > thead {
 
 .jb-dropdown-header {
 	font-size: 14px;
-	font-weight: bold;
+	font-weight: bold;z
 }
 
 .jb-dropdown-subitems {
@@ -173,4 +173,9 @@ table.workflow-list > thead {
     flex-direction: column;
     overflow-y: scroll;
     margin-top: 15px;
+}
+
+.jb-form-control {
+	padding-right: 0px;
+	padding-left: 0px;
 }

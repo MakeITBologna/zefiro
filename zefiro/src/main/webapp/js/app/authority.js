@@ -39,17 +39,17 @@ angular.module('authority', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentT
 	}	
 
 	$scope.removeSelected = function(selected){
-		var id = getAuthorityId(selected);
+		var id = $scope.getAuthorityId(selected);
 		delete $scope.selectedMap[id];
 		$scope.selectedAuthorities.splice($scope.selectedAuthorities.indexOf(selected), 1);
 	}
 	
-	getAuthorityId = function (auth) {
+	$scope.getAuthorityId = function (auth) {
 		return ($scope.authType === AUTHORITY_TYPE.PERSON) ? auth.id : auth.fullName;
 	}
 	
 	$scope.selectAuthority = function (auth){
-		var id = getAuthorityId(auth);
+		var id = $scope.getAuthorityId(auth);
 		if(!$scope.selectedMap[id]){
 			$scope.selectedMap[id] = auth;
 			$scope.selectedAuthorities.push(auth);

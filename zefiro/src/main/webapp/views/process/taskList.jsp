@@ -1,7 +1,6 @@
-<!-- Task List Page
-  -- @author Alba Quarto
-  -->
+<%-- @author Alba Quarto --%>
 <%@ include file="/include/directive.jsp" %>
+
   <div class="container">
 
     <div class="page-header jb-header-bar">
@@ -19,17 +18,15 @@
     <div>
       <div class="panel jb-header-bar">
 
-        <!-- ##### Sorting dropdown ##### -->
         <div class="panel-body jb-panel-body">
+          <%-- ##### Sorting dropdown ##### --%>
           <form name="sortingForm" class="form-horizontal" novalidate>
 
             <div class="row jb-form-group">
               <label class="control-label col-sm-4">
-                <strong class="control jb-button-label">
                   <fmt:message key="jsp.orderBy" />
-                </strong>
               </label>
-              <div class="btn-group col-sm-8 jb-button-dropdown" uib-dropdown is-open="status.isopen" id="sortingSelect" style="display: -webkit-box;">
+              <div class="btn-group col-sm-8 jb-button-dropdown jb-form-control" uib-dropdown is-open="status.isopen" id="sortingSelect" style="display: -webkit-box;">
                 <button id="sortingSelect" type="button" class="btn dropdown-toggle btn-default jb-full-area" uib-dropdown-toggle ng-disabled="disabled"
                   aria-expanded="false">
                   <span class="pull-left">{{sortingSelectTitle}}</span>
@@ -37,7 +34,7 @@
                     <i class="fa fa-caret-down fa-sm"></i>
                   </span>
                 </button>
-                <!-- #####  Dropdown ##### -->
+                <%-- #####  Dropdown ##### --%>
                 <ul class="dropdown-menu jb-full-area jb-button-dropdown" uib-dropdown-menu role="menu" aria-labelledby="single-button">
                   <li class="dropdown-header jb-dropdown-header" ng-repeat-start="gr in sortingSelectData">
                     <span class="text">{{gr.title}}</span>
@@ -51,15 +48,15 @@
               </div>
             </div>
           </form>
+          <%-- #####  End sorting dropdown ##### --%>
         </div>
-        <!-- #####  End sorting dropdown ##### -->
 
-        <!-- #####  Task list ##### -->
+        <%-- #####  Task list ##### --%>
         <table ng-init="initList()" ng-table="taskTable" class="table table-condensed ng-table-responsive workflow-list" show-filter="false"
           show-group="isGroupHeaderRowVisible">
           <tbody>
 
-            <!-- #####  Group header ##### -->
+            <%-- #####  Group header ##### --%>
             <tr class="ng-table-group group-header" ng-repeat-start="($g_index, group) in $groups">
               <td colspan="3">
                 <h4>
@@ -74,11 +71,11 @@
               </td>
             </tr>
 
-            <!-- #####  Task Row ##### -->
+            <%-- #####  Task Row ##### --%>
             <tr ng-hide="group.$hideRows" ng-repeat="($index, row) in group.data track by row.id" ng-dblclick="startEdit($g_index, $index)"
               ng-repeat-end>
 
-              <!-- #####  Icons column ##### -->
+              <%-- #####  Icons column ##### --%>
               <td class="">
                 <h5 class="text-center jb-fa-md" ng-class="(row.deadlineProximity <= 2)  ? 'jb-text-danger' : 'jb-text-success'">
                   <i class="fa fa-clock-o" uib-tooltip="{{deadlineTMessag[row.deadlineProximity]}}" tooltip-placement="right-top" tooltip-class="jb-tooltip"></i>
@@ -92,7 +89,7 @@
                 </h5>
               </td>
 
-              <!-- #####  Details Column ##### -->
+              <%-- #####  Details Column ##### --%>
               <td>
                 <h5 class="jb-clickable">
                   <a ng-click="startEdit($g_index, $index)">
@@ -155,7 +152,7 @@
             </tr>
           </tbody>
         </table>
-        <!-- #####  End Task List ##### -->
+        <%-- #####  End Task List ##### --%>
 
       </div>
     </div>

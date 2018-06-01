@@ -1,6 +1,6 @@
-<!-- Task Detail Page
+<%-- Task Detail Page
   -- @author Alba Quarto
-  -->
+  --%>
 <%@ include file="/include/directive.jsp" %>
   <div class="container-fluid">
     <ol class="breadcrumb">
@@ -38,7 +38,7 @@
 
     <div class="row form-group">
 
-      <!-- ##### Preview ##### -->
+      <%-- ##### Preview ##### --%>
       <div ng-if="currentTaskItems.length > 0" class="col-sm-8">
         <uib-tabset active="active">
           <uib-tab ng-repeat="tab in currentTaskItems track by $index" index="$index" heading="{{tab.name}}" disable="tab.disabled">
@@ -48,7 +48,7 @@
         </uib-tabset>
       </div>
 
-      <!-- ##### Dettaglio ##### -->
+      <%-- ##### Dettaglio ##### --%>
       <div class="col-sm-4">
         <uib-tabset type="pills">
           <uib-tab disable="true" class="tab-mock">
@@ -56,13 +56,13 @@
               <span>&nbsp;</span>
             </uib-tab-heading>
 
-            <!-- ]##### Form ##### -->
+            <%-- ]##### Form ##### --%>
             <form name="jbTaskForm" class="form-horizontal" novalidate>
               <div class="row jb-form-group" ng-repeat="(i, p) in currentTaskForm">
                 <label for="jbTaskForm-p.name" class="control-label col-sm-4" title="{{p.name}}">{{p.title}}</label>
                 <div class="col-sm-8">
 
-                  <!-- ##### STRING ##### -->
+                  <%-- ##### STRING ##### --%>
                   <div ng-if="jbWorkflowUtil.decodeType(p.dataType) == 'STRING'">
                     <div ng-if="!readOnly" ng-class="getValidClass(jbTaskForm[p.name])">
                       <input ng-if="jbUtil.isEmptyObject(p.allowedValues)" ng-required="p.required" id="jbTaskForm-{{p.name}}" class="form-control"
@@ -76,9 +76,9 @@
                       <p ng-if="!p.linkType" class="form-control-static">{{updatedVariables[p.name].value}}</p>
                     </div>
                   </div>
-                  <!-- ##### END STRING ##### -->
+                  <%-- ##### END STRING ##### --%>
 
-                  <!-- ##### INTEGER ##### -->
+                  <%-- ##### INTEGER ##### --%>
                   <div ng-if="jbWorkflowUtil.decodeType(p.dataType) == 'INTEGER'">
                     <div ng-if="!readOnly" ng-class="getValidClass(jbTaskForm[p.name])">
                       <input ng-if="jbUtil.isEmptyObject(p.allowedValues)" ng-required="p.required" id="jbTaskForm-{{p.name}}" class="form-control"
@@ -93,9 +93,9 @@
                       <p class="form-control-static">{{updatedVariables[p.name].value}}</p>
                     </div>
                   </div>
-                  <!-- ##### END INTEGER ##### -->
+                  <%-- ##### END INTEGER ##### --%>
 
-                  <!-- ##### BOOLEAN ##### -->
+                  <%-- ##### BOOLEAN ##### --%>
                   <div ng-if="jbWorkflowUtil.decodeType(p.dataType) == 'BOOLEAN'">
                     <div ng-if="!readOnly">
                       <select ng-required="p.required" id="jbTaskForm-{{p.name}}" class="form-control" title="{{p.name}}" name="{{p.name}}" ng-model="updatedVariables[p.name].value"
@@ -121,9 +121,9 @@
                       </p>
                     </div>
                   </div>
-                  <!-- ##### END BOOLEAN ##### -->
+                  <%-- ##### END BOOLEAN ##### --%>
 
-                  <!-- ##### DECIMAL ##### -->
+                  <%-- ##### DECIMAL ##### --%>
                   <div ng-if="jbWorkflowUtil.decodeType(p.dataType) == 'DECIMAL'">
                     <div ng-if="!readOnly" ng-class="getValidClass(jbTaskForm[p.name])">
                       <input ng-required="p.required" id="jbTaskForm-{{p.name}}" class="form-control" title="{{p.name}}" type="text" name="{{p.name}}"
@@ -136,9 +136,9 @@
                       <p class="form-control-static">{{updatedVariables[p.name].value}}</p>
                     </div>
                   </div>
-                  <!-- ##### END DECIMAL ##### -->
+                  <%-- ##### END DECIMAL ##### --%>
 
-                  <!-- ##### DATETIME ##### -->
+                  <%-- ##### DATETIME ##### --%>
                   <div ng-if="jbWorkflowUtil.decodeType(p.dataType) == 'DATETIME'">
                     <div class="input-group" ng-if="!readOnly">
                       <input ng-required="p.required" id="jbTaskForm-{{p.name}}" class="form-control" title="{{p.name}}" type="text" name="{{p.name}}"
@@ -157,9 +157,9 @@
                       <p class="form-control-static">{{updatedVariables[p.name].value | date: '${localePatternTimestamp}'}}</p>
                     </div>
                   </div>
-                  <!-- ##### END DATETIME ##### -->
+                  <%-- ##### END DATETIME ##### --%>
 
-                  <!-- ##### DATE ##### -->
+                  <%-- ##### DATE ##### --%>
                   <div ng-if="jbWorkflowUtil.decodeType(p.dataType) == 'DATE'">
                     <div class="input-group" ng-if="!readOnly">
                       <input ng-required="p.required" id="jbTaskForm-{{p.name}}" class="form-control" title="{{p.name}}" type="text" name="{{p.name}}"
@@ -182,7 +182,7 @@
                 </div>
               </div>
             </form>
-            <!-- ##### End Form ##### -->
+            <%-- ##### End Form ##### --%>
 
             <div ng-if="outcomeButtons.length > 0" class="jb-panel-body pull-right">
               <button ng-repeat="button in outcomeButtons" class="btn jb-btn-primary" type="button" ng-click="jbValidate.checkForm(jbTaskForm) && completeTask( jbTaskForm, true, button)">
@@ -200,6 +200,6 @@
         </uib-tabset>
       </div>
 
-      <!-- ##### Fine Dettaglio #####-->
+      <%-- ##### Fine Dettaglio #####--%>
     </div>
   </div>

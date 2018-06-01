@@ -79,11 +79,17 @@ angular.module('newProcess', [])
 			$scope.addingAssignee = null;
 			$scope.addedAssignee = [];
 			$scope.updatedVariables = {};
+			$scope.assigneeType = null;
+			$scope.assigneeMany = false;
 			buildStartForm = function (formModel, fieldWhiteList) {
 				//create the form and the relative variable map
 				$scope.updatedVariables = {};
 				$scope.currentTypeForm = [];
 				$scope.addAssignee = null;
+				$scope.addingAssignee =null;
+				$scope.addedAssignee = [];
+				$scope.assigneeType = null;
+				$scope.assigneeMany = false;
 				for (var i = 0; i < formModel.length; i++) {
 					var model = formModel[i];
 					var modelName = model.name;
@@ -98,6 +104,9 @@ angular.module('newProcess', [])
 							//TODO capire come mostrare a video l'errore
 							throw new Error("Ambiguità sul tipo di assegnatrio")
 						}
+						var auth = jbWorkflowUtil.getAssigneeType(model.name);
+						$scope.assigneeType = auth.type;
+						$scope.assigneeMany = auth.many;
 						$scope.addingAssignee = model;
 					} else {
 						$scope.currentTypeForm.push(model)
@@ -119,15 +128,15 @@ angular.module('newProcess', [])
 				var authMany = auth.many;
 				userModal = $uibModal.open({
 					animation: false,
-					templateUrl: 'views/process/selectUser.jsp',
+					templateUrl: 'views/process/processSelectAssignee.jsp',
 					controller: 'AuthorityController',
 					size: size,
 					scope: $scope,
 					resolve: {
 						title: function () { return jbMessages.workflow.select[name] || jbMessages.workflow.select.assignee },
-						authType: function () { return authType },
+						authType: function () { return $scope.assigneeType },
 						authArray: function () { return $scope.addedAssignee },
-						authMany: function () { return authMany }
+						authMany: function () { return $scope.assigneeMany }
 					}
 				});
 

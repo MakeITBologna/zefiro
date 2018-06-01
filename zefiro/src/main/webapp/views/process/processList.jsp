@@ -1,6 +1,4 @@
-<!-- Process List Page
-  -- @author Alba Quarto
-  -->
+<%-- @author Alba Quarto --%>
 <%@ include file="/include/directive.jsp" %>
   <div class="container">
     <div class="page-header jb-header-bar">
@@ -18,12 +16,12 @@
     <div>
       <div class="panel jb-header-bar">
 
-        <!-- #####  Process list ##### -->
+        <%-- #####  Process list ##### --%>
         <table ng-init="initList()" ng-table="processTable" class="table table-condensed ng-table-responsive workflow-list" show-filter="false"
           show-group="isGroupHeaderRowVisible">
           <tbody>
 
-            <!-- #####  Group header ##### -->
+            <%-- #####  Group header ##### --%>
             <tr class="ng-table-group group-header" ng-repeat-start="($g_index, group) in $groups">
               <td colspan="3">
                 <h4>
@@ -36,18 +34,18 @@
               </td>
             </tr>
 
-            <!-- #####  Process Row ##### -->
+            <%-- ##### Process Row ##### --%>
             <tr ng-hide="group.$hideRows" ng-repeat="($index, row) in group.data track by row.id" ng-dblclick="startEdit($g_index, $index)"
               ng-repeat-end>
 
-              <!-- #####  Icons column ##### -->
+              <%-- #####  Icons column ##### --%>
               <td class="">
                 <h5 class="text-center jb-text-primary">
                   <i class="fa fa-bars"></i>
                 </h5>
               </td>
 
-              <!-- #####  Details Column ##### -->
+              <%-- #####  Details Column ##### --%>
               <td>
                 <h5 class="jb-clickable">
                   <a ng-click="startEdit($g_index, $index)">
@@ -73,7 +71,7 @@
             </tr>
           </tbody>
         </table>
-        <!-- #####  End Process List ##### -->
+        <%-- #####  End Process List ##### --%>
 
       </div>
     </div>
