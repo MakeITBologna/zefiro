@@ -49,8 +49,8 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 		}
 	}])
 
-	.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', 'jbWorkflowUtil', 'jbUtil', 'jbValidate', 'workflowFormBlacklist', 'OUTCOME_PROPERTY_NAME', 'taskState', 'TASK_DEFAULT_WHITE_LIST', '$cookies',
-		function ($scope, TaskResource, NgTableParams, jbMessages, jbWorkflowUtil, jbUtil, jbValidate, workflowFormBlacklist, OUTCOME_PROPERTY_NAME, taskState, TASK_DEFAULT_WHITE_LIST, $cookies) {
+	.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', 'jbWorkflowUtil', 'jbUtil', 'jbValidate', 'workflowFormBlacklist', 'OUTCOME_PROPERTY_NAME', 'taskState', 'TASK_DEFAULT_WHITE_LIST', 'jbAuthFactory','$uibModal','AUTHORITY_TYPE',
+		function ($scope, TaskResource, NgTableParams, jbMessages, jbWorkflowUtil, jbUtil, jbValidate, workflowFormBlacklist, OUTCOME_PROPERTY_NAME, taskState, TASK_DEFAULT_WHITE_LIST, jbAuthFactory,$uibModal, AUTHORITY_TYPE) {
 			$scope.testnestedcontroller = "task";
 			//Utilities
 			$scope.jbMessages = jbMessages;
@@ -60,7 +60,8 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 
 			$scope.editing = false;
 			$scope.readOnly = false;
-
+			$scope.user = jbAuthFactory.getUser();
+			
 			$scope.breadCrumbIndex = -1;
 			$scope.breadcrumbs = [];
 			$scope.orderCriteria = "";
@@ -135,9 +136,11 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 			SEPARATOR = ",";
 			$scope.BPM_COMMENT = "bpm_comment";
 			$scope.BPM_STATUS = "bpm_status";
+			$scope.currentTaskReassignable = false;
+			$scope.readOnly = false;
 
 			$scope.startEdit = function (group_i, row_i) {
-				console.log("Editing: " + group_i + " " + row_i, $scope.taskTable);
+				console.log("----------Editing: " + group_i + " " + row_i, $scope.taskTable);
 				$scope.currentRowNum = row_i;
 				var currentGroupNum = group_i;
 				$scope.breadCrumbIndex = 0;
@@ -146,9 +149,15 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 				$scope.breadcrumbs = [];
 				$scope.currentTaskItems = [];
 				$scope.updatedVariables = {};
+				$scope.currentTaskReassignable = false;
 				$scope.taskEditing.id = $scope.taskTable.data[currentGroupNum].data[$scope.currentRowNum].id;
+				$scope.readOnly = false;
 				var taskPromise = TaskResource().get($scope.taskEditing, function () {
+					console.log("------taskEditing",taskPromise );
 					$scope.taskEditing = taskPromise;
+					if($scope.taskEditing[jbWorkflowUtil.taskFieldName("ASSIGNEE")] !== $scope.user.username){
+						$scope.readOnly = true;
+					}
 					$scope.breadcrumbs.push({
 						id: $scope.taskEditing.id,
 						name: $scope.taskEditing.name,
@@ -183,6 +192,9 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 				for (var i = 0; i < variables.length; i++) {
 					var variable = variables[i];
 					var variableName = variable.name;
+					if(variableName === "bpm_reassignable"){
+						$scope.currentTaskReassignable = variable.value;
+					}
 					currentTaskVariables[variableName] = variable;
 				}
 				outcomeButton = "";
@@ -227,17 +239,17 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 				return true;
 			}
 
-			$scope.completeTask = function (jbTaskForm, outcome, outcomeValue) {
+			$scope.completeTask = function (jbForm, outcome, outcomeValue) {
 				if (outcome) {
 					$scope.outcomeButtons.$$variable.value = outcomeValue;
 				}
 				var state = jbWorkflowUtil.taskFieldName("STATE");
 				$scope.taskEditing[state] = taskState.COMPLETED;
 				var updated = [state];
-				$scope.saveTask(jbTaskForm, updated);
+				$scope.saveTask(jbForm, updated);
 			}
 
-			$scope.saveTask = function (jbTaskForm, updated) {
+			$scope.saveTask = function (jbForm, updated) {
 				variables = [];
 				for (variable in $scope.updatedVariables) {
 					console.log("----completeTask", variable)
@@ -247,8 +259,58 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 				updated.push(jbWorkflowUtil.taskFieldName("VARIABLES"));
 				$scope.taskEditing[jbWorkflowUtil.taskFieldName("VARIABLES")] = variables;
 				updatePromise = TaskResource({ updated: updated }).updateTask($scope.taskEditing, function () {
-
 					$scope.initList($scope.closeDetail);
+				});
+			}
+
+			//update task with given assignee
+			reassignTask = function(username){
+				$scope.taskEditing[jbWorkflowUtil.taskFieldName("ASSIGNEE")] = username;
+				updatePromise = TaskResource({ updated: [jbWorkflowUtil.taskFieldName("ASSIGNEE")] }).updateTask($scope.taskEditing, function () {
+					console.log("-----reassign", updatePromise)
+					if(updatePromise[jbWorkflowUtil.taskFieldName("ASSIGNEE")]!== $scope.user.username){
+						$scope.initList($scope.closeDetail);
+					} 
+					$scope.readOnly = false;
+				});
+			}
+			
+			$scope.reassigneTask = function(username){
+				if(username){
+					reassignTask(username);
+					return;
+				}
+					
+					var assignee = [];
+					userModal = $uibModal.open({
+						animation: false,
+						templateUrl: 'views/process/taskChangeAssignee.jsp',
+						controller: 'AuthorityController',
+						size: ' md',
+						scope: $scope,
+						resolve: {
+							title: function () { return jbMessages.workflow.select[name] || jbMessages.workflow.select.assignee },
+							authType: function () { return AUTHORITY_TYPE.PERSON},
+							authArray: function () { return assignee },
+							authMany: function () { return true; }
+						}
+					});
+				
+					var modalBack = $scope.$on('authorityModalBack', function(){
+						console.log('authorityModalBack', assignee);
+						if(assignee[0]){
+							reassignTask(assignee[0].id);
+						}
+						modalBack();
+					})
+					
+			}
+			
+			$scope.unclaimTask= function(){
+				$scope.taskEditing [jbWorkflowUtil.taskFieldName("STATE")] = taskState["UNCLAIMED"];
+				updatePromise = TaskResource({ updated: [jbWorkflowUtil.taskFieldName("STATE")] }).updateTask($scope.taskEditing, function () {
+					console.log("-----unclaim", updatePromise)
+						$scope.initList($scope.closeDetail);
 				});
 			}
 

@@ -48,7 +48,6 @@
 <script type="text/javascript" src="js/app/document.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/workflow.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/process.js?version=${version}"></script>
-<script type="text/javascript" src="js/app/newProcess.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/task.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/authority.js?version=${version}"></script>
 

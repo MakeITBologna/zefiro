@@ -2,11 +2,11 @@
   -- @author Alba Quarto
   --%>
 <%@ include file="/include/directive.jsp" %>
-  <div class="container">
+  <div class="container" ng-show="!selectDocument">
 
     <div class="page-header jb-header-bar">
       <div class="pull-right">
-        <button class="btn btn-default" type="button" ng-click="back(jbNewProcessForm)">
+        <button class="btn btn-default" type="button" ng-click="back(jbForm)">
           <i class="fa fa-times"></i>
           <fmt:message key="js.dialog.back" />
         </button>
@@ -21,7 +21,7 @@
 
         <div class="panel-body jb-panel-body">
           <%-- ##### Edit Form ##### --%>
-          <form name="jbNewProcessForm" class="form-horizontal">
+          <form name="jbForm" class="form-horizontal">
 
             <%-- #####  Process Type choise dropdown ##### --%>
             <div class="row jb-form-group">
@@ -57,17 +57,17 @@
 
             <%-- ##### Process Properties ##### --%>
             <%-- <div class="row jb-form-group">
-            <label for="jbNewProcessForm-businessKey" class="control-label col-sm-4" title="{{p.name}}">{{p.title}}</label>
+            <label for="jbForm-businessKey" class="control-label col-sm-4" title="{{p.name}}">{{p.title}}</label>
             <div class="col-sm-8">
               <div></div>
             </div>
           </div>
 
           <div class="row jb-form-group">
-            <label for="jbNewProcessForm-businessKey" class="control-label col-sm-4" title="{{p.name}}">{{p.title}}</label>
+            <label for="jbForm-businessKey" class="control-label col-sm-4" title="{{p.name}}">{{p.title}}</label>
             <div class="col-sm-8">
               <div>
-                <input ng-if="jbUtil.isEmptyObject(p.allowedValues)" required id="jbNewProcessForm-businessKey" class="form-control"
+                <input ng-if="jbUtil.isEmptyObject(p.allowedValues)" required id="jbForm-businessKey" class="form-control"
                     title="{{businessKey}}" type="text" name="{{businessKey}}" ng-model="startedProcess[businessKey]" />
               </div>
             </div>
@@ -76,16 +76,16 @@
 
             <%-- ##### Variables ##### --%>
             <div ng-if="selectedType" class="row jb-form-group" ng-repeat="(i, p) in currentTypeForm">
-              <label for="jbNewProcessForm-p.name" class="control-label col-sm-4" title="{{p.name}}" style="padding-left: 0px;">{{p.title}}</label>
+              <label for="jbForm-p.name" class="control-label col-sm-4" title="{{p.name}}" style="padding-left: 0px;">{{p.title}}</label>
               <div class="col-sm-8 jb-form-control">
 
                 <%-- ##### STRING ##### --%>
                 <div ng-if="jbWorkflowUtil.decodeType(p.dataType) == 'STRING'">
-                  <div ng-if="!readOnly" ng-class="getValidClass(jbNewProcessForm[p.name])">
-                    <input ng-if="jbUtil.isEmptyObject(p.allowedValues)" ng-required="p.required" id="jbNewProcessForm-{{p.name}}" class="form-control"
+                  <div ng-if="!readOnly" ng-class="getValidClass(jbForm[p.name])">
+                    <input ng-if="jbUtil.isEmptyObject(p.allowedValues)" ng-required="p.required" id="jbForm-{{p.name}}" class="form-control"
                       title="{{p.name}}" type="text" name="{{p.name}}" ng-model="updatedVariables[p.name].value" />
                     <ng-include src="'views/process/select.jsp'"></ng-include>
-                    <label class="text-danger" ng-show="jbValidate.showMessag.e(jbNewProcessForm[p.name])">
+                    <label class="text-danger" ng-show="jbValidate.showMessag.e(jbForm[p.name])">
                       <fmt:message key="js.validate.required" />
                     </label>
                   </div>
@@ -97,12 +97,12 @@
 
                 <%-- ##### INTEGER ##### --%>
                 <div ng-if="jbWorkflowUtil.decodeType(p.dataType) == 'INTEGER'">
-                  <div ng-if="!readOnly" ng-class="getValidClass(jbNewProcessForm[p.name])">
-                    <input ng-if="jbUtil.isEmptyObject(p.allowedValues)" ng-required="p.required" id="jbNewProcessForm-{{p.name}}" class="form-control"
+                  <div ng-if="!readOnly" ng-class="getValidClass(jbForm[p.name])">
+                    <input ng-if="jbUtil.isEmptyObject(p.allowedValues)" ng-required="p.required" id="jbForm-{{p.name}}" class="form-control"
                       title="{{p.name}}" type="text" name="{{p.name}}" ng-model="updatedVariables[p.name].value" ng-pattern="jbPatterns.number(0)"
                       jb-number="0" />
                     <ng-include src="'views/process/select.jsp'"></ng-include>
-                    <label class="text-danger" ng-show="jbValidate.showMessage(jbNewProcessForm[p.name])">
+                    <label class="text-danger" ng-show="jbValidate.showMessage(jbForm[p.name])">
                       <fmt:message key="js.validate.number" />
                     </label>
                   </div>
@@ -115,7 +115,7 @@
                 <%-- ##### BOOLEAN ##### --%>
                 <div ng-if="jbWorkflowUtil.decodeType(p.dataType) == 'BOOLEAN'">
                   <div ng-if="!readOnly">
-                    <select ng-required="p.required" id="jbNewProcessForm-{{p.name}}" class="form-control" title="{{p.name}}" name="{{p.name}}"
+                    <select ng-required="p.required" id="jbForm-{{p.name}}" class="form-control" title="{{p.name}}" name="{{p.name}}"
                       ng-model="updatedVariables[p.name].value" jb-boolean>
                       <option></option>
                       <option value="true">
@@ -125,7 +125,7 @@
                         <fmt:message key="jsp.boolean.0" />
                       </option>
                     </select>
-                    <label class="text-danger" ng-show="jbValidate.showMessage(jbNewProcessForm[p.name])">
+                    <label class="text-danger" ng-show="jbValidate.showMessage(jbForm[p.name])">
                       <fmt:message key="js.validate.required" />
                     </label>
                   </div>
@@ -142,10 +142,10 @@
 
                 <%-- ##### DECIMAL ##### --%>
                 <div ng-if="jbWorkflowUtil.decodeType(p.dataType) == 'DECIMAL'">
-                  <div ng-if="!readOnly" ng-class="getValidClass(jbNewProcessForm[p.name])">
-                    <input ng-required="p.required" id="jbNewProcessForm-{{p.name}}" class="form-control" title="{{p.name}}" type="text" name="{{p.name}}"
+                  <div ng-if="!readOnly" ng-class="getValidClass(jbForm[p.name])">
+                    <input ng-required="p.required" id="jbForm-{{p.name}}" class="form-control" title="{{p.name}}" type="text" name="{{p.name}}"
                       ng-model="updatedVariables[p.name].value" ng-pattern="jbPatterns.number(2)" jb-number="2" />
-                    <label class="text-danger" ng-show="jbValidate.showMessage(jbNewProcessForm[p.name])">
+                    <label class="text-danger" ng-show="jbValidate.showMessage(jbForm[p.name])">
                       <fmt:message key="js.validate.number" />
                     </label>
                   </div>
@@ -158,15 +158,15 @@
                 <%-- ##### DATETIME ##### --%>
                 <div ng-if="jbWorkflowUtil.decodeType(p.dataType) == 'DATETIME'">
                   <div class="input-group" ng-if="!readOnly">
-                    <input ng-required="p.required" id="jbNewProcessForm-{{p.name}}" class="form-control" title="{{p.name}}" type="text" name="{{p.name}}"
-                      readonly uib-datepicker-popup="${localePatternTimestamp}" ng-model="updatedVariables[p.name].value" is-open="calendarPopups['jbNewProcessForm-'+ p.name]"
+                    <input ng-required="p.required" id="jbForm-{{p.name}}" class="form-control" title="{{p.name}}" type="text" name="{{p.name}}"
+                      readonly uib-datepicker-popup="${localePatternTimestamp}" ng-model="updatedVariables[p.name].value" is-open="calendarPopups['jbForm-'+ p.name]"
                     />
                     <span class="input-group-btn">
-                      <button type="button" class="btn btn-default" ng-click="openCalendar('jbNewProcessForm-'+ p.name)">
+                      <button type="button" class="btn btn-default" ng-click="openCalendar('jbForm-'+ p.name)">
                         <i class="fa fa-calendar"></i>
                       </button>
                     </span>
-                    <label class="text-danger" ng-show="jbValidate.showMessage(jbNewProcessForm[p.name])">
+                    <label class="text-danger" ng-show="jbValidate.showMessage(jbForm[p.name])">
                       <fmt:message key="js.validate.required" />
                     </label>
                   </div>
@@ -179,15 +179,15 @@
                 <%-- ##### DATE ##### --%>
                 <div ng-if="jbWorkflowUtil.decodeType(p.dataType) == 'DATE'">
                   <div class="input-group" ng-if="!readOnly">
-                    <input ng-required="p.required" id="jbNewProcessForm-{{p.name}}" class="form-control" title="{{p.name}}" type="text" name="{{p.name}}"
-                      readonly uib-datepicker-popup="${localePatternDate}" ng-model="updatedVariables[p.name].value" is-open="calendarPopups['jbNewProcessForm-'+ p.name]"
+                    <input ng-required="p.required" id="jbForm-{{p.name}}" class="form-control" title="{{p.name}}" type="text" name="{{p.name}}"
+                      readonly uib-datepicker-popup="${localePatternDate}" ng-model="updatedVariables[p.name].value" is-open="calendarPopups['jbForm-'+ p.name]"
                     />
                     <span class="input-group-btn">
-                      <button type="button" class="btn btn-default" ng-click="openCalendar('jbNewProcessForm-'+ p.name)">
+                      <button type="button" class="btn btn-default" ng-click="openCalendar('jbForm-'+ p.name)">
                         <i class="fa fa-calendar"></i>
                       </button>
                     </span>
-                    <label class="text-danger" ng-show="jbValidate.showMessage(jbNewProcessForm[p.name])">
+                    <label class="text-danger" ng-show="jbValidate.showMessage(jbForm[p.name])">
                       <fmt:message key="js.validate.required" />
                     </label>
                   </div>
@@ -203,7 +203,7 @@
 
             <%-- ###### Assignee Button ##### --%>
             <div ng-if="addingAssignee" class="row jb-form-group">
-              <label for="jbNewProcessForm-addingAssignee" class="control-label col-sm-4" title="addingAssignee">{{addingAssignee.title}}</label>
+              <label for="jbForm-addingAssignee" class="control-label col-sm-4" title="addingAssignee" style="padding-left: 0px;">{{addingAssignee.title}}</label>
               <div class="col-sm-8 jb-form-control">
                 <div class="form-control" readonly  style="display: inherit;">
                   <span ng-repeat="($index, assignee) in addedAssignee">
@@ -214,7 +214,7 @@
                       <span>({{assignee.id}})</span>
                     </span>
                     <span ng-if="assigneeType === AUTHORITY_TYPE.GROUP">
-                      <span>{{assignee.fullName}}</span>
+                      <span>{{assignee.displayName}}</span>
                     </span>
                   </span>
                 </div>
@@ -230,7 +230,7 @@
           </form>
 
           <div ng-if="selectedType" class="row jb-form-control text-right navbar-btn ">
-            <button class="btn btn-primary" type="button" ng-click="jbValidate.checkForm(jbNewProcessForm) && startProcess(jbNewProcessForm)">
+            <button class="btn btn-primary" type="button" ng-click="jbValidate.checkForm(jbForm) && startProcess(jbForm)">
               <span>
                 <fmt:message key="jsp.process.start" />
               </span>

@@ -8,6 +8,7 @@ angular.module("jbLocale", ["ngLocale"])
 "confirmTitle" : "Prego confermare",
 "confirmDelete": "Eliminare il record ?",
 "confirmDeleteRel": "Eliminare la relazione?",
+"confirmSelection":"Sicuro di voler selezionare",
 
 "today": "Oggi",
 "clear": "Pulisci",
@@ -23,7 +24,7 @@ angular.module("jbLocale", ["ngLocale"])
 "expired": "Scaduto",
 "maturing": "In scadenza",
 "other": "Altro",
-	
+
 "task" : {
 	"expired": "Attività scaduta",
 	"expiring": "Attività in scadenza",

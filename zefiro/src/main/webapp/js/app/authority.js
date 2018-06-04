@@ -1,4 +1,4 @@
-angular.module('authority', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentType', 'angular.filter'])
+angular.module('authority', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter'])
 
 .factory('AuthorityResource', ['$resource', function ($resource) {
 		return $resource('', { id: '@id' }, {
@@ -35,6 +35,7 @@ angular.module('authority', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentT
 	$scope.searchMessage = jbMessages.authority.searchAuthority;
 	
 	$scope.back = function(){
+			$scope.$emit('authorityModalBack');
 			modalInstance.dismiss();
 	}	
 
@@ -54,6 +55,7 @@ angular.module('authority', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentT
 			$scope.selectedMap[id] = auth;
 			$scope.selectedAuthorities.push(auth);
 		}
+		return true;
 	}
 	
 	$scope.searchAuthority = function(form){
@@ -93,5 +95,22 @@ angular.module('authority', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentT
 	
 	$scope.validate = function (form) {
 		$scope.jbValidate.showMessage(form);
+	}
+	
+	$scope.getAuthorityDisplayName = function(authority){
+		if($scope.authType === AUTHORITY_TYPE.PERSON){
+			var displayName = authority.firstName;
+			if(authority.lastName){
+				displayName += " "+ authority.lastName;
+			}
+			displayName +=  " ("+ authority.id+")";
+			return  displayName;
+		} else if ($scope.authType === AUTHORITY_TYPE.GROUP){
+			return authority.displayName;
+		}
+	}
+	
+	$scope.getAuthorityDisplayName2 = function (found){
+		return $scope.getAuthorityDisplayName(found);
 	}
 }])

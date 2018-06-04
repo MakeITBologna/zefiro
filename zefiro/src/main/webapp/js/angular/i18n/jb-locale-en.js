@@ -8,6 +8,7 @@ angular.module("jbLocale", ["ngLocale"])
 "confirmTitle" : "Please confirm",
 "confirmDelete": "Delete current record ?",
 "confirmDeleteRel": "Delete current relatioship?",
+"confirmSelection":"Are you sure you want to select",
 
 "today": "Today",
 "clear": "Clear",

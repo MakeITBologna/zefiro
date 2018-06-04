@@ -109,6 +109,7 @@ angular.module('workflow', [])
 				case "DEADLINE_PROX": return "deadlineProximity";
 				case "VARIABLES": return "variables";
 				case "STATE": return "state";
+				case "ASSIGNEE": return "assignee";
 				default: return field;
 			}
 			

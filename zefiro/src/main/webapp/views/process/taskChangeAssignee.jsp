@@ -39,7 +39,7 @@
     <div class="row">
     
       <%-- ###### Searhc results ###### --%>
-      <div class="col-md-6">
+      <div class="col-md-12">
         <ul class="jb-select-list jb-full-area form-control" uib-dropdown-menu role="menu" aria-labelledby="single-button">
           <li ng-if="foundAuthorities.length===0" data-original-index="0" data-optgroup="1">
             <div>
@@ -47,32 +47,11 @@
             </div>
           </li>
           <li ng-repeat="found in foundAuthorities" data-original-index="0" data-optgroup="1">
-            <div>
+            <div ng-if="authType === AUTHORITY_TYPE.PERSON">
               <span>{{getAuthorityDisplayName(found)}}</span>
-              <span ng-if="(!authMany && selectedAuthorities.length===0) || (authMany && !selectedMap[getAuthorityId(found)])" ng-click="selectAuthority(found)"
+              <span ng-if="(!authMany && selectedAuthorities.length===0) || (authMany && !selectedMap[getAuthorityId(found)])" confirm="{{jbMessages.confirmSelection}} {{getAuthorityDisplayName2(found)}}?" ng-click="selectAuthority(found) && saveSelected()"
                 class="pull-right">
-                <i class="fa fa-plus-circle"></i>
-              </span>
-            </div>
-          </li>
-        </ul>
-      </div>
-      
-      <%-- ###### Selected items ###### --%>
-      <div class="col-md-6" ng-init="preSelectedAutority()">
-        <ul class="jb-select-list jb-full-area col-md-6 form-control" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-          <li ng-if="selectedAuthorities.length===0" data-original-index="0" data-optgroup="1">
-            <div>
-              <em>{{selectedMessage}}
-                <em>
-            </div>
-          </li>
-
-          <li ng-repeat="selected in selectedAuthorities" data-original-index="0" data-optgroup="1">
-            <div>
-              <span>{{getAuthorityDisplayName(selected)}}</span>
-              <span class="pull-right" ng-click="removeSelected(selected)">
-                <i class="fa fa-times-circle-o"></i>
+                <span class="label label-primary"><fmt:message key="jsp.select"/></span>
               </span>
             </div>
           </li>
@@ -82,10 +61,4 @@
     </div>
     <%-- ###### End Select Areas ###### --%>
 
-  </div>
-
-  <div class="modal-footer">
-    <div class="text-center">
-      <button class="btn btn-primary" type="button" ng-click="saveSelected()">Salva</button>
-    </div>
   </div>

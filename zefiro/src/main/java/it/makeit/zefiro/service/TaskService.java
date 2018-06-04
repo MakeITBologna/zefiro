@@ -43,7 +43,14 @@ public class TaskService extends ZefiroAbstractServcie {
 	public TaskComplete load(String id) {
 		Task task = AlfrescoWorkflowHelper.getTask(id, httpRequestFactory, alfrescoConfig);
 		ProcessService service = new ProcessService(alfrescoConfig);
-		return buildTaskComplete(task, service.load(task.getProcessId()));
+		TaskComplete taskComplete = buildTaskComplete(task, service.load(task.getProcessId()));
+		Map<String, Person> people = new HashMap<String, Person>();
+		addPersonDecoding(task.getAssignee(), taskComplete, people, DecodingType.ASSIGNEE);
+		addPersonDecoding(task.getOwner(), taskComplete, people, DecodingType.OWNER);
+		taskComplete.setCandidates(
+				AlfrescoWorkflowHelper.getTaskCandidates(task.getId(), httpRequestFactory, alfrescoConfig));
+
+		return taskComplete;
 	}
 
 	/**

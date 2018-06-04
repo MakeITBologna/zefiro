@@ -16,7 +16,6 @@ angular.module('main', [
 	'workflow',
 	'process',
 	'task',
-	'newProcess',
 	'authority'
 ])
 
@@ -53,8 +52,8 @@ angular.module('main', [
 					templateUrl: 'views/login.jsp',
 					controller: 'LoginController',
 					resolve: {
-						reset: function ($cookies) {
-							$cookies.remove("jbuser");
+						reset: function (jbAuthFactory) {
+							jbAuthFactory.removeUser();
 						}
 					}
 				})
@@ -100,14 +99,14 @@ angular.module('main', [
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//FACTORY
 	//ResponseErrorHanler
-	.factory('responseErrorHandler', ['$cookies', '$q', '$location', '$rootScope', function responseErrorHandler($cookies, $q, $location, $rootScope) {
+	.factory('responseErrorHandler', ['$q', '$location', '$rootScope','jbAuthFactory', function responseErrorHandler($q, $location, $rootScope, jbAuthFactory) {
 		return {
 			'responseError': function (response) {
 				switch (response.status) {
 					case 403:
 						var rdata = response.data;
 						if (rdata.username) { // login fallito
-							$cookies.putObject('jbuser', { username: rdata.username });
+							jbAuthFactory.storeUser({ username: rdata.username })
 							$location.url('/login', true);
 						} else if (rdata.notLoggedIn) { // non autenticato
 							$location.url('/login', true);
@@ -266,13 +265,30 @@ angular.module('main', [
 			}
 		}
 	})
+	
+	//jbValidate, contiene funzioni di validazione input
+	.factory('jbAuthFactory', ['$cookies', function ($cookies) {
+		var storedUserLabel = "jbuser"; 
+		
+		return {
+			getUser: function () {
+				return $cookies.getObject(storedUserLabel);
+			},
+			storeUser: function(jbuser){
+				$cookies.putObject(storedUserLabel, { idUser: jbuser.idUser, username: jbuser.username, enabled: jbuser.enabled, fullName: jbuser.fullName });
+			},
+			removeUser(){
+				$cookies.remove(storedUserLabel);
+			}
+		}
+	}])
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//CONTROLLER
 
 	//Logincontroller
-	.controller('LoginController', ['$cookies', '$scope', '$http', '$location', 'jbValidate', function ($cookies, $scope, $http, $location, jbValidate) {
+	.controller('LoginController', [ '$scope', '$http', '$location', 'jbValidate', 'jbAuthFactory', function ( $scope, $http, $location, jbValidate, jbAuthFactory) {
 
 		$scope.jbValidate = jbValidate;
 
@@ -284,7 +300,7 @@ angular.module('main', [
 					.get('a/Login', { params: $scope.credentials })
 					.then(function (response) {
 						var jbuser = response.data;
-						$cookies.putObject('jbuser', { idUser: jbuser.idUser, username: jbuser.username, enabled: jbuser.enabled, fullName: jbuser.fullName });
+						jbAuthFactory.storeUser(jbuser);
 						$location.url('/home', true);
 					});
 		};
@@ -292,7 +308,7 @@ angular.module('main', [
 	}])
 
 	//MainController
-	.controller('MainController', ['$cookies', '$scope', '$http', function ($cookies, $scope, $http) {
+	.controller('MainController', [ '$scope', '$http', 'jbAuthFactory', function ( $scope, $http, jbAuthFactory) {
 
 		$scope.serverMessageVisible = false;
 		$scope.serverMessageString = null;
@@ -307,7 +323,7 @@ angular.module('main', [
 		}
 
 		$scope.getUser = function () {
-			return $cookies.getObject("jbuser");
+			return jbAuthFactory.getUser();
 		};
 
 		$scope.isUserLogged = function () {
@@ -324,7 +340,7 @@ angular.module('main', [
 			$http
 				.get("a/Login", { params: { action: 'logout' } })
 				.then(function (response) {
-					$cookies.remove("jbuser");
+					jbAuthFactory.removeUser();
 				});
 		};
 
