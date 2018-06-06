@@ -78,8 +78,8 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 
 	.controller('NewProcessController', ['$scope', 'ProcessResource', 'workflowAssigneeAspects', 'NEW_PROCESS_DEFAULT_WHITELIST', 'workflowFormBlacklist', 'jbWorkflowUtil', 'jbValidate', '$uibModal', 'jbUtil', 'AUTHORITY_TYPE', 'jbMessages',
 		function ($scope, ProcessResource, workflowAssigneeAspects, NEW_PROCESS_DEFAULT_WHITELIST, workflowFormBlacklist, jbWorkflowUtil, jbValidate, $uibModal, jbUtil, AUTHORITY_TYPE, jbMessages) {
-			
-			
+
+
 			$scope.AUTHORITY_TYPE = AUTHORITY_TYPE;
 			$scope.jbValidate = jbValidate;
 			$scope.jbWorkflowUtil = jbWorkflowUtil;
@@ -117,7 +117,6 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 
 			$scope.initStartNewProcess = function () {
 				var definitionsPromise = ProcessResource.processDefinitions(function () {
-					console.log("------definitionsPromise", definitionsPromise)
 					$scope.choiseSelectData = definitionsPromise;
 				})
 			}
@@ -133,7 +132,6 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 			startEditProcess = function (definition) {
 				$scope.selectedType = null;
 				formPromise = ProcessResource.startForm({ id: definition.id }, function () {
-					console.log("-----formPromise", formPromise);
 					buildStartForm(formPromise);
 				});
 			}
@@ -249,47 +247,46 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 					}
 				}
 				startProcessProcmise = ProcessResource.startProcess(process, function (started) {
-					console.log("-------started Process", started);
-					if($scope.selectedItems.length===0){
-						 $scope.$emit('StartedNewProcess', false);
-						 $scope.back(form);
-						 return started;
+					if ($scope.selectedItems.length === 0) {
+						$scope.$emit('StartedNewProcess', false);
+						$scope.back(form);
+						return started;
 					}
 					var items = [];
 					items.id = started.id;
-					for(item in $scope.selectedItems){
+					for (item in $scope.selectedItems) {
 						var id = $scope.selectedItems[item].id.split(';')[0];
-						items.push({id: id});
+						items.push({ id: id });
 					}
-					addItemsProcmise = ProcessResource.addItems(items, function (items){
-						 $scope.$emit('StartedNewProcess', false);
-						 $scope.back(form);
-						 return started;
+					addItemsProcmise = ProcessResource.addItems(items, function (items) {
+						$scope.$emit('StartedNewProcess', false);
+						$scope.back(form);
+						return started;
 					});
 				});
 			}
-			
+
 			//Documents
 			/**
 			 * subscription at Documentontroller  selection event
 			 */
 			$scope.$on('DocumentSelected', function (event, item) {
 				$scope.selectDocument = false;
-				if(!selectedItemsMap[item.id]){
-					selectedItemsMap[item.id]=item;
+				if (!selectedItemsMap[item.id]) {
+					selectedItemsMap[item.id] = item;
 					$scope.selectedItems.push(item);
 				}
 			});
-			
-			$scope.$on('DocumentBack', function(){
+
+			$scope.$on('DocumentBack', function () {
 				$scope.selectDocument = false;
 			})
 
-			$scope.addItem = function(){
+			$scope.addItem = function () {
 				$scope.selectDocument = true;
 			}
-			
-			$scope.removeItem = function(item){
+
+			$scope.removeItem = function (item) {
 				delete selectedItemsMap[item.id];
 				$scope.selectedItems.splice($scope.selectedItems.indexOf(item), 1);
 			}

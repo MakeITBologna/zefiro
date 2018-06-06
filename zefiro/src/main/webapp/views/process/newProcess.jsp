@@ -266,5 +266,5 @@
     </div>
   </div>
   <div ng-show="selectDocument">
-    <div class="row" ng-include="'views/process/addDocument.jsp'"  ng-controller="DocumentController" >
+    <div class="row" ng-include="'views/process/addDocument.jsp'"  ng-controller="DocumentController"></div>
   </div>
