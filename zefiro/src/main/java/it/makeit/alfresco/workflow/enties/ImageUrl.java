@@ -10,6 +10,11 @@ import it.makeit.alfresco.restApi.AlfrescoApiPath;
 import it.makeit.alfresco.restApi.AlfrescoBaseUrl;
 import it.makeit.alfresco.restApi.AlfrescoUrlException;
 
+/**
+ *
+ * @author Alba Quarto
+ *
+ */
 public class ImageUrl extends GenericUrl implements AlfrescoBaseUrl {
 
 	private static final String PATH = "/image";

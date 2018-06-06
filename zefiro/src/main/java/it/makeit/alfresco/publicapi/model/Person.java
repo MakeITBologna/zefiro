@@ -2,18 +2,17 @@ package it.makeit.alfresco.publicapi.model;
 
 import com.google.api.client.util.Key;
 
+
 /**
  * L'entità {@code Person} modella un utente Alfresco.<br/>
  * <br/>
  * Consente di interagire con l'API {@code people} di Alfresco.<br/>
  * <br/>
- * People are the users of Alfresco. A person entity describes the user as they
- * are known to Alfresco. There are API methods to get the sites a person is a
- * member of, to get the details of a person, their favorite sites, preferences,
- * and networks they are a member of. Methods are also available to process
- * activities related to a person.<br/>
+ * People are the users of Alfresco. A person entity describes the user as they are known to
+ * Alfresco. There are API methods to get the sites a person is a member of, to get the details of a
+ * person, their favorite sites, preferences, and networks they are a member of. Methods are also
+ * available to process activities related to a person.<br/>
  * <br/>
- * 
  * @author Alessio Gaeta
  *
  */
@@ -88,7 +87,7 @@ public class Person extends Entry {
 	private String firstName;
 
 	/**
-	 * The person's telephone number
+	 * 	The person's telephone number
 	 */
 	@Key
 	private String telephone;
@@ -100,7 +99,7 @@ public class Person extends Entry {
 	private String jobTitle;
 
 	/**
-	 * The person's mobile number
+	 * 	The person's mobile number
 	 */
 	@Key
 	private String mobile;

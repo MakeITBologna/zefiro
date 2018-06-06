@@ -15,6 +15,7 @@ import it.makeit.alfresco.restApi.AlfrescoRESTWhereQueryParamsFactory;
 import it.makeit.alfresco.restApi.AlfrescoWhereOperatorEnum;
 import it.makeit.alfresco.workflow.AlfrescoWorkflowHelper;
 import it.makeit.alfresco.workflow.model.FormModel;
+import it.makeit.alfresco.workflow.model.Item;
 import it.makeit.alfresco.workflow.model.ProcessDefinition;
 import it.makeit.alfresco.workflow.model.WorkflowProcess;
 import it.makeit.zefiro.DecodedFieldNote.DecodingType;
@@ -99,6 +100,10 @@ public class ProcessService extends ZefiroAbstractServcie {
 		WorkflowProcess startedProcess = AlfrescoWorkflowHelper.startProcess(alProcess, httpRequestFactory,
 				alfrescoConfig);
 		return load(startedProcess.getId());
+	}
+
+	public List<Item> addItems(String id, List<Item> items) {
+		return AlfrescoWorkflowHelper.insertProcessItems(id, items, httpRequestFactory, alfrescoConfig);
 	}
 
 	private Map<String, ProcessDefinition> buildDefinitionsMap(List<ProcessDefinition> definitions) {

@@ -597,9 +597,22 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 			return relation.type.id == relationType.id && relation[side].id == documentId;
 		};
 	}
-	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+	$scope.selectDocument = function(item){
+		$scope.$emit('DocumentSelected',item);
+		return item;
+	}
 	
+	$scope.clearAllSearch = function(form){
+		$scope.clearSearch(form);
+		$scope.documentTable = new NgTableParams({count: 25}, {});
+	}
+	
+	$scope.back = function(form){
+		$scope.clearAllSearch(form);
+		$scope.$emit('DocumentBack');
+	}
 }])
 
 .directive('jbUpload', function ($http) {

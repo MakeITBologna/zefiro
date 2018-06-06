@@ -1,7 +1,5 @@
 package it.makeit.alfresco.webscriptsapi.services;
 
-import it.makeit.alfresco.AlfrescoConfig;
-
 import com.google.api.client.http.BasicAuthentication;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
@@ -12,6 +10,8 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
+
+import it.makeit.alfresco.AlfrescoConfig;
 
 public abstract class AbstractService {
 

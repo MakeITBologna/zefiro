@@ -1,9 +1,6 @@
 package it.makeit.alfresco.workflow.model;
 
 public class ProcessVariable {
-	private String value;
-	private String type;
-
 	private String name;
 
 	public String getName() {
@@ -30,4 +27,6 @@ public class ProcessVariable {
 		this.type = type;
 	}
 
+	private String value;
+	private String type;
 }

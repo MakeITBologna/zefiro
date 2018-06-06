@@ -44,9 +44,9 @@
                     <a id="choise_{{definition.key}}" tabindex="0" class="opt jb-action" data-tokens="null" role="option" aria-disabled="false"
                       aria-selected="true" ng-click="choise(definition)">
                       <div class="row">
-                        <div class="col-sm-12" ng-if="definition.name">{{definition.name}}</div>
-                        <div class="col-sm-12" ng-if="!definition.name">{{definition.key}}</div>
-                        <div class="col-sm-12" ng-if="definition.description">{{definition.description}}</div>
+                        <div ng-if="definition.name" class="col-sm-12 jb-text-bold" >{{definition.name}}</div>
+                        <div ng-if="!definition.name" class="col-sm-12 jb-text-bold">{{definition.key}}</div>
+                        <div ng-if="definition.description" class="col-sm-12 jb-text-italic">{{definition.description}}</div>
                       </div>
                     </a>
                   </li>
@@ -201,10 +201,34 @@
             </div>
             <%-- ##### End Variables ##### --%>
 
+            <%-- ##### Adding Items ##### --%>
+            <div ng-if="selectedType" class="row jb-form-group">
+              <label for="jbForm-addingItems" class="control-label col-sm-4" title="addingItems" style="padding-left: 0px;">Items</label>
+              <div class="col-sm-8 jb-form-control" style="display: inline-table;">
+                <div class="form-control" readonly  style="display: inherit;">
+                  <div ng-repeat="($index, item) in selectedItems">
+                      <span>{{item.name}}</span>
+                      <span ng-if="item.description">({{item.description}})</span>
+                      <span class="pull-right" ng-click="removeItem(item)">
+                		<i class="fa fa-times-circle-o"></i>
+              		  </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div ng-if="selectedType" class="row jb-form-group">
+              <div class="text-right">
+                <button class="btn jb-btn-primary" type="button" ng-click="addItem()">
+                  <div><fmt:message key="jsp.newProcess.addItem" /></div>
+                </button>
+              </div>
+            </div>
+            <%-- ##### End Adding Items ##### --%>
+
             <%-- ###### Assignee Button ##### --%>
             <div ng-if="addingAssignee" class="row jb-form-group">
               <label for="jbForm-addingAssignee" class="control-label col-sm-4" title="addingAssignee" style="padding-left: 0px;">{{addingAssignee.title}}</label>
-              <div class="col-sm-8 jb-form-control">
+              <div class="col-sm-8 jb-form-control"  style="display: inline-table;">
                 <div class="form-control" readonly  style="display: inherit;">
                   <span ng-repeat="($index, assignee) in addedAssignee">
                     <span ng-if="$index>0">,&nbsp;</span>
@@ -240,4 +264,7 @@
         </div>
       </div>
     </div>
+  </div>
+  <div ng-show="selectDocument">
+    <div class="row" ng-include="'views/process/addDocument.jsp'"  ng-controller="DocumentController" >
   </div>

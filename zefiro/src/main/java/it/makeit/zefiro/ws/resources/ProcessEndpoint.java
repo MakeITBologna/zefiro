@@ -1,5 +1,7 @@
 package it.makeit.zefiro.ws.resources;
 
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -8,6 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import it.makeit.alfresco.workflow.model.Item;
 import it.makeit.zefiro.dao.WorkFlowProcessComplete;
 import it.makeit.zefiro.service.ProcessService;
 
@@ -53,5 +56,13 @@ public class ProcessEndpoint extends AbstractEndpoint {
 		ProcessService service = (ProcessService) getServiceInstance(ProcessService.class);
 
 		return Response.ok(service.loadStartForm(id)).build();
+	}
+
+	@POST
+	@Path("/processes/{id}/items")
+	public Response getStartForm(@PathParam("id") String id, List<Item> items) {
+		ProcessService service = (ProcessService) getServiceInstance(ProcessService.class);
+
+		return Response.ok(service.addItems(id, items)).build();
 	}
 }

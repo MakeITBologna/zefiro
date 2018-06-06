@@ -1,8 +1,5 @@
 package it.makeit.alfresco.webscriptsapi.services;
 
-import it.makeit.alfresco.AlfrescoConfig;
-import it.makeit.alfresco.webscriptsapi.model.Thumbnail;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Formatter;
@@ -15,6 +12,9 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.http.json.JsonHttpContent;
+
+import it.makeit.alfresco.AlfrescoConfig;
+import it.makeit.alfresco.webscriptsapi.model.Thumbnail;
 
 // TODO (Alessio): gestione errori (eccezioni o altro)
 /**

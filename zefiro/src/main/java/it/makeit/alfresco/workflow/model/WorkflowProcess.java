@@ -15,7 +15,10 @@ public class WorkflowProcess {
 	private String endActivityDefinitionId;
 	private String startUserId;
 	private String deleteReason;
+
+	// only for post
 	private Map<String, Object> variables;
+	// only for post
 	private String processDefinitionKey;
 
 	public String getProcessDefinitionKey() {

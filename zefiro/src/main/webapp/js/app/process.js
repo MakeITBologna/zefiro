@@ -1,85 +1,90 @@
 angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.filter'])
 
 
-.constant('NEW_PROCESS_DEFAULT_WHITELIST', [
-	"bpm_workflowDescription",
-	"bpm_workflowDueDate",
-	"bpm_workflowPriority",
-	"bpm_sendEMailNotifications",
-	"bpm_percentComplete",
-	"bpm_comment",
-	"bpm_status",
-])
+	.constant('NEW_PROCESS_DEFAULT_WHITELIST', [
+		"bpm_workflowDescription",
+		"bpm_workflowDueDate",
+		"bpm_workflowPriority",
+		"bpm_sendEMailNotifications",
+		"bpm_percentComplete",
+		"bpm_comment",
+		"bpm_status",
+	])
 
-.factory('ProcessResource', ['$resource', function($resource) {
-	return $resource('a/Process/processes/:id', {id:'@id'},
+	.factory('ProcessResource', ['$resource', function ($resource) {
+		return $resource('a/Process/processes/:id', { id: '@id' },
 			{
 				startedProcesses: {
-					url:'a/Process/startedProcesses',
+					url: 'a/Process/startedProcesses',
 					method: 'GET',
 					isArray: true
 				}, processDefinitions: {
-					url:'a/Process/definitions',
+					url: 'a/Process/definitions',
 					method: 'GET',
 					isArray: true
 				}, startForm: {
-					url:'a/Process/definitions/:id/startForm',
+					url: 'a/Process/definitions/:id/startForm',
 					method: 'GET',
 					isArray: true
 				}, startProcess: {
-					url:'a/Process/processes/',
+					url: 'a/Process/processes/',
 					method: 'POST',
 					isArray: false
+				}, addItems: {
+					url: 'a/Process/processes/:id/items',
+					method: 'POST',
+					isArray: true
 				}
 			});
-}])
+	}])
 
-.controller('ProcessController', ['$scope', 'ProcessResource', 'NgTableParams', '$log',
-	function($scope, ProcessResource,  NgTableParams, $log) {
+	.controller('ProcessController', ['$scope', 'ProcessResource', 'NgTableParams', '$log',
+		function ($scope, ProcessResource, NgTableParams, $log) {
 
-	$scope.processes = {};
-	$scope.processTable = new NgTableParams({group: "name"},{counts: [],groupOptions: {
-        isExpanded: false
-    }});
-	$scope.isGroupHeaderRowVisible = false;
-	
-	//Ricerca documenti a partire dalla form di ricerca
-	$scope.initList = function() {
-		var documentPromise = ProcessResource.startedProcesses($scope.documentTemplate, function() {
-			$log.log(documentPromise)
-			$scope.processTable.settings({dataset: documentPromise});
-		});
-		return documentPromise;
-	}
-	//NEW PROCESS
-	$scope.startNewProcess = false;
-	$scope.startProcess = function () {
-		$scope.$broadcast('StartNewProcess');
-		$scope.startNewProcess = true;
-	}
+			$scope.processes = {};
+			$scope.processTable = new NgTableParams({ group: "name" }, {
+				counts: [], groupOptions: {
+					isExpanded: false
+				}
+			});
+			$scope.isGroupHeaderRowVisible = false;
 
-	$scope.$on('StartedNewProcess', function (event) {
-		$scope.startNewProcess = false;
-		$scope.initList();
-	});
+			//Ricerca documenti a partire dalla form di ricerca
+			$scope.initList = function () {
+				var documentPromise = ProcessResource.startedProcesses($scope.documentTemplate, function () {
+					$log.log(documentPromise)
+					$scope.processTable.settings({ dataset: documentPromise });
+				});
+				return documentPromise;
+			}
+			//NEW PROCESS
+			$scope.startNewProcess = false;
+			$scope.startProcess = function () {
+				$scope.$broadcast('StartNewProcess');
+				$scope.startNewProcess = true;
+			}
 
-	$scope.$on('NewProcessBack', function (event) {
-		$scope.startNewProcess = false;
-	});
+			$scope.$on('StartedNewProcess', function (event) {
+				$scope.startNewProcess = false;
+				$scope.initList();
+			});
 
-
-}])
-
+			$scope.$on('NewProcessBack', function (event) {
+				$scope.startNewProcess = false;
+			});
 
 
-	.controller('NewProcessController', ['$scope', 'ProcessResource', 'workflowAssigneeAspects', 'NEW_PROCESS_DEFAULT_WHITELIST', 'workflowFormBlacklist', 'jbWorkflowUtil', 'jbValidate', '$uibModal','jbUtil', 'AUTHORITY_TYPE', 'jbMessages',
-		function ($scope, ProcessResource, workflowAssigneeAspects, NEW_PROCESS_DEFAULT_WHITELIST, workflowFormBlacklist, jbWorkflowUtil, jbValidate, $uibModal,jbUtil, AUTHORITY_TYPE, jbMessages) {
-	
+		}])
+
+	.controller('NewProcessController', ['$scope', 'ProcessResource', 'workflowAssigneeAspects', 'NEW_PROCESS_DEFAULT_WHITELIST', 'workflowFormBlacklist', 'jbWorkflowUtil', 'jbValidate', '$uibModal', 'jbUtil', 'AUTHORITY_TYPE', 'jbMessages',
+		function ($scope, ProcessResource, workflowAssigneeAspects, NEW_PROCESS_DEFAULT_WHITELIST, workflowFormBlacklist, jbWorkflowUtil, jbValidate, $uibModal, jbUtil, AUTHORITY_TYPE, jbMessages) {
+			
+			
 			$scope.AUTHORITY_TYPE = AUTHORITY_TYPE;
 			$scope.jbValidate = jbValidate;
 			$scope.jbWorkflowUtil = jbWorkflowUtil;
 			$scope.jbUtil = jbUtil;
-			
+
 			$scope.back = function (form) {
 				$scope.$emit('NewProcessBack', false);
 				cleanController(form)
@@ -138,15 +143,20 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 			$scope.updatedVariables = {};
 			$scope.assigneeType = null;
 			$scope.assigneeMany;
+			selectedItemsMap = {};
+			$scope.selectedItems = []
 			buildStartForm = function (formModel, fieldWhiteList) {
 				//create the form and the relative variable map
 				$scope.updatedVariables = {};
 				$scope.currentTypeForm = [];
 				$scope.addAssignee = null;
-				$scope.addingAssignee =null;
+				$scope.addingAssignee = null;
 				$scope.addedAssignee = [];
 				$scope.assigneeType = null;
 				$scope.assigneeMany;
+				$scope.selectDocument = false;
+				selectedItemsMap = {};
+				$scope.selectedItems = []
 				for (var i = 0; i < formModel.length; i++) {
 					var model = formModel[i];
 					var modelName = model.name;
@@ -212,21 +222,21 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 						$scope.updatedVariables[assigneeName].value = []
 						var assigneeValue = $scope.updatedVariables[assigneeName].value
 						for (assignee in $scope.addedAssignee) {
-							if(auth.type === AUTHORITY_TYPE.PERSON){
+							if (auth.type === AUTHORITY_TYPE.PERSON) {
 								assigneeValue.push($scope.addedAssignee[assignee].id);
-							} else if (auth.type === AUTHORITY_TYPE.GROUP){
+							} else if (auth.type === AUTHORITY_TYPE.GROUP) {
 								assigneeValue.push($scope.addedAssignee[assignee].fullName);
 							}
-							
+
 						}
 					} else {
 						if ($scope.addedAssignee.length === 1) {
-							if(auth.type === AUTHORITY_TYPE.PERSON){
+							if (auth.type === AUTHORITY_TYPE.PERSON) {
 								$scope.updatedVariables[assigneeName].value = $scope.addedAssignee[0].id;
-							} else if (auth.type === AUTHORITY_TYPE.GROUP){
+							} else if (auth.type === AUTHORITY_TYPE.GROUP) {
 								$scope.updatedVariables[assigneeName].value = $scope.addedAssignee[0].fullName;
 							}
-							
+
 						}
 					}
 				}
@@ -240,10 +250,48 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 				}
 				startProcessProcmise = ProcessResource.startProcess(process, function (started) {
 					console.log("-------started Process", started);
-					$scope.$emit('StartedNewProcess', false);
-					$scope.back(form)
-				})
+					if($scope.selectedItems.length===0){
+						 $scope.$emit('StartedNewProcess', false);
+						 $scope.back(form);
+						 return started;
+					}
+					var items = [];
+					items.id = started.id;
+					for(item in $scope.selectedItems){
+						var id = $scope.selectedItems[item].id.split(';')[0];
+						items.push({id: id});
+					}
+					addItemsProcmise = ProcessResource.addItems(items, function (items){
+						 $scope.$emit('StartedNewProcess', false);
+						 $scope.back(form);
+						 return started;
+					});
+				});
+			}
+			
+			//Documents
+			/**
+			 * subscription at Documentontroller  selection event
+			 */
+			$scope.$on('DocumentSelected', function (event, item) {
+				$scope.selectDocument = false;
+				if(!selectedItemsMap[item.id]){
+					selectedItemsMap[item.id]=item;
+					$scope.selectedItems.push(item);
+				}
+			});
+			
+			$scope.$on('DocumentBack', function(){
+				$scope.selectDocument = false;
+			})
 
+			$scope.addItem = function(){
+				$scope.selectDocument = true;
+			}
+			
+			$scope.removeItem = function(item){
+				delete selectedItemsMap[item.id];
+				$scope.selectedItems.splice($scope.selectedItems.indexOf(item), 1);
 			}
 
 		}])

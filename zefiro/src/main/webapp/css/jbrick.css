@@ -135,6 +135,7 @@ table.workflow-list > thead {
 	white-space: initial;
 	margin-left: unset;
 	overflow: hidden;
+	color: #797979;
 }
 
 .jb-button-label {
@@ -178,4 +179,12 @@ table.workflow-list > thead {
 .jb-form-control {
 	padding-right: 0px;
 	padding-left: 0px;
+}
+
+.jb-text-bold {
+	font-weight: bold;
+}
+
+.jb-text-italic {
+	font-style: italic;
 }

@@ -18,6 +18,15 @@ public class AlfrescoConfig {
 		this.rootFolderId = rootFolderId;
 	}
 
+	public AlfrescoConfig(URL host, String username, String password) {
+		super();
+		this.host = host;
+		this.username = username;
+		this.password = password;
+	}
+
+
+
 	public URL getHost() {
 		return host;
 	}
