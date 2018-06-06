@@ -152,6 +152,7 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 				$scope.currentTaskReassignable = false;
 				$scope.taskEditing.id = $scope.taskTable.data[currentGroupNum].data[$scope.currentRowNum].id;
 				$scope.readOnly = false;
+				$scope.outcomeButtons = [];
 				var taskPromise = TaskResource().get($scope.taskEditing, function () {
 					console.log("------taskEditing",taskPromise );
 					$scope.taskEditing = taskPromise;
