@@ -65,4 +65,27 @@ public class ProcessEndpoint extends AbstractEndpoint {
 
 		return Response.ok(service.addItems(id, items)).build();
 	}
+
+	@GET
+	@Path("workflowInstances")
+	public Response getWorkflowInstances() {
+		ProcessService service = (ProcessService) getServiceInstance(ProcessService.class);
+
+		return Response.ok(service.loadWorkflowInstances()).build();
+	}
+
+	@GET
+	@Path("workflowInstances/{id}")
+	public Response getWorkflowInstance(@PathParam("id") String id) {
+		ProcessService service = (ProcessService) getServiceInstance(ProcessService.class);
+		return Response.ok(service.loadWorkflowInstance(id)).build();
+	}
+
+	@GET
+	@Path("workflowDefinitions")
+	public Response getWorkflowDefinitions() {
+		ProcessService service = (ProcessService) getServiceInstance(ProcessService.class);
+
+		return Response.ok(service.loadWorkflowDefinitions()).build();
+	}
 }

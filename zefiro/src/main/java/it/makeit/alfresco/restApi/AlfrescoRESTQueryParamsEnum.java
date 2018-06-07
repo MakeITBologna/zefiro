@@ -3,9 +3,9 @@ package it.makeit.alfresco.restApi;
 /**
  * @author Alba Quarto
  */
-public enum AlfrescoRESTQueryParamsEnum {
+public enum AlfrescoRESTQueryParamsEnum implements RESTQueryParams {
 	MAX_ITEMS("maxItems"), ORDER_BY("orderBy"), PROPERTIES("properties"), SKIP_COUNT("skipCount"), WHERE(
-			"where"), SELECT("select"), FIELDS("fields"), TERM("term");
+			"where"), SELECT("select"), FIELDS("fields"), TERM("term"), EXCLUDE("exclude");
 
 	private String name;
 
@@ -13,6 +13,7 @@ public enum AlfrescoRESTQueryParamsEnum {
 		name = pName;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}

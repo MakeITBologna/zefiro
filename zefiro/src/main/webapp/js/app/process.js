@@ -29,36 +29,98 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 				}, startProcess: {
 					url: 'a/Process/processes/',
 					method: 'POST',
-					isArray: false
 				}, addItems: {
 					url: 'a/Process/processes/:id/items',
 					method: 'POST',
+					isArray: true
+				}, getWorkflowInstances: {
+					url: 'a/Process/workflowInstances',
+					method: 'GET',
+					isArray: true
+				},  getWorkflowInstance: {
+					url: 'a/Process/workflowInstances/:id',
+					method: 'GET',
+				}, getWorkflowDefinitions: {
+					url: 'a/Process/workflowDefinitions',
+					method: 'GET',
 					isArray: true
 				}
 			});
 	}])
 
-	.controller('ProcessController', ['$scope', 'ProcessResource', 'NgTableParams', '$log',
-		function ($scope, ProcessResource, NgTableParams, $log) {
+	.controller('ProcessController', ['$scope', 'ProcessResource', 'NgTableParams', 'jbMessages', 'WORKFLOW_DEFINITION_PROPERTIES', 'WORKFLOW_INSTANCE_PROPERTIES',
+		function ($scope, ProcessResource, NgTableParams, jbMessages, WORKFLOW_DEFINITION_PROPERTIES, WORKFLOW_INSTANCE_PROPERTIES) {
 
+			$scope.jbMessages=jbMessages;
+			$scope.WORKFLOW_INSTANCE_PROPERTIES = WORKFLOW_INSTANCE_PROPERTIES;
+			$scope.WORKFLOW_DEFINITION_PROPERTIES = WORKFLOW_DEFINITION_PROPERTIES;
+			
 			$scope.processes = {};
-			$scope.processTable = new NgTableParams({ group: "name" }, {
-				counts: [], groupOptions: {
-					isExpanded: false
-				}
-			});
+			$scope.processTable = new NgTableParams();
 			$scope.isGroupHeaderRowVisible = false;
-
+			$scope.definitionsMap = {};
+			
 			//Ricerca documenti a partire dalla form di ricerca
 			$scope.initList = function () {
-				var documentPromise = ProcessResource.startedProcesses($scope.documentTemplate, function () {
-					$log.log(documentPromise)
-					$scope.processTable.settings({ dataset: documentPromise });
+				var processesPromise = ProcessResource.getWorkflowInstances({}, function(){
+					console.log("----processPromise", processesPromise);
+					var definitionsPromise = ProcessResource.getWorkflowDefinitions({}, function(){
+						console.log("----definitionsPromise", definitionsPromise);
+						cleanListData();
+						for(var i = 0; i<definitionsPromise.length; i++){
+							$scope.definitionsMap[definitionsPromise[i][$scope.WORKFLOW_DEFINITION_PROPERTIES.URL]] = definitionsPromise[i];
+						}
+						$scope.processTable.settings({ dataset: processesPromise });
+					})
+				})
+				return processesPromise;
+				/*var processPromise = ProcessResource.startedProcesses($scope.documentTemplate, function () {
+					$log.log(processPromise)
+					$scope.processTable.settings({ dataset: processPromise });
 				});
-				return documentPromise;
+				return processPromise;*/
 			}
+			
+			cleanListData = function(){
+				$scope.processTable = new NgTableParams({ group: $scope.WORKFLOW_INSTANCE_PROPERTIES.DEFINITION_URL }, {
+					counts: [], groupOptions: {
+						isExpanded: false
+					}
+				});
+				$scope.definitionsMap = {};
+			}
+			
+			//EDIT PROCESS
+			$scope.editingProcessId =  null;
+			$scope.showDetail = false;
+			$scope.processDetail = {};
+			$scope.processTasksList = new NgTableParams();
+			$scope.viewDetail = function(group_i, row_i){
+				 cleanDetail();
+				 $scope.editingProcessId =  $scope.processTable.data[group_i].data[row_i].id;
+				 processPromise = ProcessResource.getWorkflowInstance({id:  $scope.editingProcessId}, function(){
+					 console.log("------processPromise data" , processPromise);
+					 $scope.processDetail = processPromise;
+					 $scope.breadcrumbs.push($scope.processDetail);
+					 $scope.processTasksList.settings({ dataset: processPromise.tasks || [] });
+					 $scope.showDetail = true;
+				 })
+			}
+			
+			cleanDetail = function(form){
+				$scope.editingProcessId =  null;
+				$scope.processDetail = {};
+				$scope.processTasksList = new NgTableParams();
+			}
+			
+			$scope.closeDetail = function(){
+				cleanDetail();
+				$scope.showDetail = false;
+			}
+			
 			//NEW PROCESS
 			$scope.startNewProcess = false;
+			$scope.breadcrumbs = [];
 			$scope.startProcess = function () {
 				$scope.$broadcast('StartNewProcess');
 				$scope.startNewProcess = true;
@@ -72,9 +134,24 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 			$scope.$on('NewProcessBack', function (event) {
 				$scope.startNewProcess = false;
 			});
-
-
+			
+			//BC
+			$scope.gotoBreadcrumb = function (i, form) {
+				if (i < 0) {
+					$scope.breadcrumbs = [];
+					$scope.closeDetail();
+					return;
+				}
+				var shortDocument = $scope.breadcrumbs[i];
+				$scope.breadCrumbIndex = i - 1;
+				if (i == 0) {
+					$scope.startEdit(shortDocument.rownum);
+				} else {
+					$scope.breadcrumbs = $scope.breadcrumbs.slice(0, i);
+				}
+			}
 		}])
+		
 
 	.controller('NewProcessController', ['$scope', 'ProcessResource', 'workflowAssigneeAspects', 'NEW_PROCESS_DEFAULT_WHITELIST', 'workflowFormBlacklist', 'jbWorkflowUtil', 'jbValidate', '$uibModal', 'jbUtil', 'AUTHORITY_TYPE', 'jbMessages',
 		function ($scope, ProcessResource, workflowAssigneeAspects, NEW_PROCESS_DEFAULT_WHITELIST, workflowFormBlacklist, jbWorkflowUtil, jbValidate, $uibModal, jbUtil, AUTHORITY_TYPE, jbMessages) {
@@ -212,7 +289,7 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 				var process = {};
 				process[jbWorkflowUtil.processFieldName('PROCESS_DEFINITION_ID')] = $scope.selectedDefinition.id;
 				process[jbWorkflowUtil.processFieldName('PROCESS_DEFINITION_KEY')] = $scope.selectedDefinition.key;
-				var assigneeName = $scope.addingAssignee.name;
+				var assigneeName = $scope.addingAssignee ? $scope.addingAssignee.name : null;
 				if (assigneeName) {
 					var auth = jbWorkflowUtil.getAssigneeType(assigneeName);
 					var authMany = auth.many;

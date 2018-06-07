@@ -27,11 +27,9 @@
       </div>
       <span ng-hide="currentRowNum == null">
         <h2>
-          <b>{{taskEditing.processBusinessKey}}</b>
+          <b>{{taskEditing.description}}</b>
+          <small>{{taskEditing.name}}</small>
         </h2>
-        <h3>
-          {{taskEditing.description}}
-        </h3>
       </span>
     </div>
 

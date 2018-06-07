@@ -13,6 +13,11 @@ import it.makeit.alfresco.restApi.AlfrescoParamPredicate;
 import it.makeit.alfresco.restApi.AlfrescoRESTQueryParamsEnum;
 import it.makeit.alfresco.restApi.AlfrescoRESTWhereQueryParamsFactory;
 import it.makeit.alfresco.restApi.AlfrescoWhereOperatorEnum;
+import it.makeit.alfresco.webscriptsapi.AlfrescoWorkflowInstanceQueryParamsEnum;
+import it.makeit.alfresco.webscriptsapi.model.WorkflowDefinition;
+import it.makeit.alfresco.webscriptsapi.model.WorkflowDefinitionList;
+import it.makeit.alfresco.webscriptsapi.model.WorkflowInstance;
+import it.makeit.alfresco.webscriptsapi.model.WorkflowInstanceList;
 import it.makeit.alfresco.workflow.AlfrescoWorkflowHelper;
 import it.makeit.alfresco.workflow.model.FormModel;
 import it.makeit.alfresco.workflow.model.Item;
@@ -92,6 +97,36 @@ public class ProcessService extends ZefiroAbstractServcie {
 
 	public List<FormModel> loadStartForm(String id) {
 		return AlfrescoWorkflowHelper.getProcessDefinitionStartFormModel(id, httpRequestFactory, alfrescoConfig);
+	}
+
+	public List<WorkflowInstance> loadWorkflowInstances() {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put(AlfrescoWorkflowInstanceQueryParamsEnum.INITIATOR.getName(), alfrescoConfig.getUsername());
+
+		WorkflowInstanceList objectList = AlfrescoWorkflowHelper.getWorkflowInstances(httpRequestFactory,
+				alfrescoConfig, params);
+		List<WorkflowInstance> list = objectList.getData();
+		if (list == null) {
+			list = new ArrayList<WorkflowInstance>();
+		}
+		return list;
+	}
+
+	public WorkflowInstance loadWorkflowInstance(String id) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put(AlfrescoWorkflowInstanceQueryParamsEnum.INCLUDE_TASKS.getName(), true);
+
+		return AlfrescoWorkflowHelper.getWorkflowInstance(id, httpRequestFactory, alfrescoConfig, params);
+	}
+
+	public List<WorkflowDefinition> loadWorkflowDefinitions() {
+		WorkflowDefinitionList objectList = AlfrescoWorkflowHelper.getWorkflowDefinitions(httpRequestFactory,
+				alfrescoConfig);
+		List<WorkflowDefinition> list = objectList.getData();
+		if (list == null) {
+			list = new ArrayList<WorkflowDefinition>();
+		}
+		return list;
 	}
 
 	public WorkFlowProcessComplete startProcess(WorkFlowProcessComplete process) {

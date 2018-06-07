@@ -27,7 +27,7 @@
                 <h4>
                   <a ng-click="group.$hideRows = !group.$hideRows">
                     <span class="glyphicon jb-clickable" ng-class="{ 'glyphicon-chevron-right': group.$hideRows, 'glyphicon-chevron-down': !group.$hideRows }"></span>
-                    <span>{{ group.value }}</span>
+                   <span>{{ definitionsMap[group.value][WORKFLOW_DEFINITION_PROPERTIES.TITLE] }}</span> 
                     <span>({{group.data.length}})</span>
                   </a>
                 </h4>
@@ -35,7 +35,7 @@
             </tr>
 
             <%-- ##### Process Row ##### --%>
-            <tr ng-hide="group.$hideRows" ng-repeat="($index, row) in group.data track by row.id" ng-dblclick="startEdit($g_index, $index)"
+            <tr ng-hide="group.$hideRows" ng-repeat="($index, row) in group.data track by row.id" ng-dblclick="viewDetail($g_index, $index)"
               ng-repeat-end>
 
               <%-- #####  Icons column ##### --%>
@@ -48,24 +48,24 @@
               <%-- #####  Details Column ##### --%>
               <td>
                 <h5 class="jb-clickable">
-                  <a ng-click="startEdit($g_index, $index)">
-                    <span ng-if="row.businessKey">{{row.businessKey}}</span>
-                    <span ng-else>(Nessun Messaggio)</span>
+                  <a ng-click="viewDetail($g_index, $index)">
+                    <span ng-if="row[WORKFLOW_INSTANCE_PROPERTIES.MESSAGE]">{{row[WORKFLOW_INSTANCE_PROPERTIES.MESSAGE]}}</span>
+                    <span ng-else>{{jbMessages.noMessage}}</span>
                   </a>
                 </h5>
                 <h6>
                   <span>
                     <strong>
-                      <fmt:message key="jsp.process.startedAt" />: </strong>
+                      <fmt:message key="jsp.process.startedAt" /> <fmt:message key="jsp.at" />: </strong>
                   </span>
-                  <span>{{row.startedAt | date: '${localePatternTimestamp}'}}</span>
+                  <span>{{row[WORKFLOW_INSTANCE_PROPERTIES.START_DATE] | date: '${localePatternTimestamp}'}}</span>
                 </h6>
                 <h6 ng-if="row.endedAt">
                   <span>
                     <strong>
-                      <fmt:message key="jsp.process.endedAt" />: </strong>
+                      <fmt:message key="jsp.process.endedAt" /> <fmt:message key="jsp.at" />: </strong>
                   </span>
-                  <span>{{row.endedAt | date: '${localePatternTimestamp}'}}</span>
+                  <span>{{row[WORKFLOW_INSTANCE_PROPERTIES.END_DATE] | date: '${localePatternTimestamp}'}}</span>
                 </h6>
               </td>
             </tr>

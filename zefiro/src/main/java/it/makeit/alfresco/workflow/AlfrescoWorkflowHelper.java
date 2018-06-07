@@ -17,6 +17,11 @@ import it.makeit.alfresco.AlfrescoConfig;
 import it.makeit.alfresco.AlfrescoException;
 import it.makeit.alfresco.BaseAlfrescoHelper;
 import it.makeit.alfresco.restApi.GenericUrlFactory;
+import it.makeit.alfresco.webscriptsapi.entities.WorkflowDefinitionsUrl;
+import it.makeit.alfresco.webscriptsapi.entities.WorkflowInstanceUrl;
+import it.makeit.alfresco.webscriptsapi.model.WorkflowDefinitionList;
+import it.makeit.alfresco.webscriptsapi.model.WorkflowInstance;
+import it.makeit.alfresco.webscriptsapi.model.WorkflowInstanceList;
 import it.makeit.alfresco.workflow.enties.CandidatesUrl;
 import it.makeit.alfresco.workflow.enties.DeploymentsUrl;
 import it.makeit.alfresco.workflow.enties.ImageUrl;
@@ -526,6 +531,58 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		GenericUrl url = (new GenericUrlFactory(tasksUrl)).add(itemsUrl).build();
 
 		ask(pHttpRequestFactory, url, HttpMethods.DELETE);
+	}
+
+	public static WorkflowDefinitionList getWorkflowDefinitions(HttpRequestFactory pHttpRequestFactory,
+			AlfrescoConfig pConfig) {
+		mLog.info("Start");
+
+		return getWorkflowDefinitions(pHttpRequestFactory, pConfig, null);
+	}
+
+	public static WorkflowDefinitionList getWorkflowDefinitions(HttpRequestFactory pHttpRequestFactory,
+			AlfrescoConfig pConfig, Map<String, Object> pParams) {
+		mLog.info("Start");
+
+		WorkflowDefinitionsUrl wfiUrl = new WorkflowDefinitionsUrl(pConfig.getHost());
+		GenericUrl url = new GenericUrlFactory(wfiUrl).build(buildParams(pParams));
+
+		return (WorkflowDefinitionList) loadWebscriptList(pHttpRequestFactory, url, WorkflowDefinitionList.class);
+	}
+
+	public static WorkflowInstanceList getWorkflowInstances(HttpRequestFactory pHttpRequestFactory,
+			AlfrescoConfig pConfig) {
+		mLog.info("Start");
+
+		return getWorkflowInstances(pHttpRequestFactory, pConfig, null);
+	}
+
+	public static WorkflowInstanceList getWorkflowInstances(HttpRequestFactory pHttpRequestFactory,
+			AlfrescoConfig pConfig, Map<String, Object> pParams) {
+		mLog.info("Start");
+
+		WorkflowInstanceUrl wfiUrl = new WorkflowInstanceUrl(pConfig.getHost());
+		GenericUrl url = new GenericUrlFactory(wfiUrl).build(buildParams(pParams));
+
+		return (WorkflowInstanceList) loadWebscriptList(pHttpRequestFactory, url, WorkflowInstanceList.class);
+	}
+
+	public static WorkflowInstance getWorkflowInstance(String id, HttpRequestFactory pHttpRequestFactory,
+			AlfrescoConfig pConfig) {
+		mLog.info("Start");
+
+		return getWorkflowInstance(id, pHttpRequestFactory, pConfig, null);
+	}
+
+	public static WorkflowInstance getWorkflowInstance(String id, HttpRequestFactory pHttpRequestFactory,
+			AlfrescoConfig pConfig, Map<String, Object> pParams) {
+		mLog.info("Start");
+
+		WorkflowInstanceUrl wfiUrl = new WorkflowInstanceUrl(pConfig.getHost());
+		wfiUrl.addStringPathParam(id);
+		GenericUrl url = new GenericUrlFactory(wfiUrl).build(buildParams(pParams));
+
+		return loadWebscriptObject(pHttpRequestFactory, url, WorkflowInstance.class);
 	}
 
 }

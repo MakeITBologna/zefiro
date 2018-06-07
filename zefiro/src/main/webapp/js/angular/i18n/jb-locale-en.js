@@ -20,6 +20,7 @@ angular.module("jbLocale", ["ngLocale"])
 "priorityHigh": "High priority",
 "priorityLow": "Low priority",
 "priorityMedium": "Medium priority",
+"noMessage":"No message",
 
 "expired": "Expired",
 "maturing": "Maturing",

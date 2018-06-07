@@ -93,8 +93,8 @@
               <td>
                 <h5 class="jb-clickable">
                   <a ng-click="startEdit($g_index, $index)">
-                    <span ng-if="row.processBusinessKey">{{row.processBusinessKey}}</span>
-                    <span ng-else>(Nessun Messaggio)</span>
+                    <span ng-if="row.description">{{row.description}}</span>
+                    <span ng-else>{{jbMessages.noMessage}}</span>
                   </a>
                 </h5>
                 <h6>

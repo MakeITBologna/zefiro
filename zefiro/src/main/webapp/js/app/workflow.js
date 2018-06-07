@@ -77,6 +77,20 @@ angular.module('workflow', [])
 	.constant("processFieldName")
 
 	.constant("OUTCOME_PROPERTY_NAME", "bpm_outcomePropertyName")
+	
+	.constant("WORKFLOW_DEFINITION_PROPERTIES", {
+		"URL": "url",
+		"TITLE": "title"
+	})
+	
+	.constant("WORKFLOW_INSTANCE_PROPERTIES", {
+		"URL": "url",
+		"DEFINITION_URL": "definitionUrl",
+		"START_DATE": "startDate",
+		"END_DATE": "endDAte",
+		"MESSAGE":"message",
+	})
+
 
 	/**
 	 * Utility service for workflow
