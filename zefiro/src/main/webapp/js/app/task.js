@@ -6,7 +6,7 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 
 	.constant('TASK_DEFAULT_WHITE_LIST', [
 		"bpm_comment",
-		"bpm_status"
+//		"bpm_status"
 	])
 
 	.factory('TaskResource', ['$resource', function ($resource) {
@@ -220,6 +220,11 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 					$scope.outcomeButtons.push(value[i]);
 				}
 				return true;
+			}
+			
+			$scope.outcomeButtonShownValues = {
+					"Approve":jbMessages.task.outcome.approve,
+					"Reject":jbMessages.task.outcome.reject,
 			}
 
 			$scope.completeTask = function (jbForm, outcome, outcomeValue) {

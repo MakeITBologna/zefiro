@@ -8,7 +8,7 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 //		"bpm_sendEMailNotifications",
 //		"bpm_percentComplete",
 		"bpm_comment",
-		"bpm_status",
+//		"bpm_status",
 	])
 
 	.factory('ProcessResource', ['$resource', function ($resource) {
@@ -297,7 +297,8 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 			$scope.assigneeType = null;
 			$scope.assigneeMany;
 			selectedItemsMap = {};
-			$scope.selectedItems = []
+			$scope.selectedItems = [];
+			$scope.mandatoryAssignee = false;
 			buildStartForm = function (formModel, fieldWhiteList) {
 				//create the form and the relative variable map
 				$scope.updatedVariables = {};
@@ -309,6 +310,7 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 				$scope.assigneeMany;
 				$scope.selectDocument = false;
 				selectedItemsMap = {};
+				$scope.mandatoryAssignee = false;
 				$scope.selectedItems = []
 				for (var i = 0; i < formModel.length; i++) {
 					var model = formModel[i];
@@ -367,15 +369,22 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 
 			}
 			
+			$scope.showAssigneeError  = false;
 			$scope.validateForm = function(form){
 				var valid = jbValidate.checkForm(form);
 				if(valid){
-					
+					if($scope.addingAssignee && $scope.addingAssignee.required && $scope.addedAssignee.length===0){
+						valid = false;
+						$scope.showAssigneeError=true;
+					}
 				}
 				return valid;
 			}
 
 			$scope.startProcess = function (form) {
+				if(!$scope.validateForm(form)){
+					return;
+				}
 				var form = form;
 				var process = {};
 				process[jbWorkflowUtil.processFieldName('PROCESS_DEFINITION_ID')] = $scope.selectedDefinition.id;

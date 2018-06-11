@@ -66,7 +66,7 @@
                     <input ng-if="jbUtil.isEmptyObject(p.allowedValues)" ng-required="p.required" id="jbForm-{{p.name}}" class="form-control"
                       title="{{p.name}}" type="text" name="{{p.name}}" ng-model="updatedVariables[p.name].value" />
                     <ng-include src="'views/process/select.jsp'"></ng-include>
-                    <label class="text-danger" ng-show="jbValidate.showMessag.e(jbForm[p.name])">
+                    <label class="text-danger" ng-show="jbValidate.showMessage(jbForm[p.name])" >
                       <fmt:message key="js.validate.required" />
                     </label>
                   </div>
@@ -223,7 +223,11 @@
                     </span>
                   </span>
                 </div>
+                <label class="text-danger" ng-show="showAssigneeError && (addedAssignee.length<1)">
+                      <fmt:message key="js.validate.required" />
+               </label>
               </div>
+              
             </div>
             <div ng-if="addingAssignee" class="text-right row jb-form-control">
               <button class="btn jb-btn-primary" type="button" ng-click="selectAssignee()">

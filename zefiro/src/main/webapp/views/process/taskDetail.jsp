@@ -197,7 +197,7 @@
 			<div ng-if="taskEditing.assignee && taskEditing.assignee === user.username">
             <div ng-if="outcomeButtons.length > 0" class="jb-panel-body pull-right">
               <button ng-repeat="button in outcomeButtons" class="btn jb-btn-primary" type="button" ng-click="jbValidate.checkForm(jbForm) && completeTask( jbForm, true, button)">
-                <span>{{button}}</span>
+                <span>{{outcomeButtonShownValues[button] || button}}</span>
               </button>
             </div>
             <div ng-else class="jb-panel-body pull-right">

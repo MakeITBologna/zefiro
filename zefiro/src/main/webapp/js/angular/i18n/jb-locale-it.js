@@ -43,7 +43,11 @@ angular.module("jbLocale", ["ngLocale"])
 	"unassigned" : "Non presa in carico",
 	"completedLate": "Attività completata dopo la data di consegna",
 	"active": "Attività in corso",
-	"completedInTime": "Attività completata entro la data di consegna"
+	"completedInTime": "Attività completata entro la data di consegna",
+	"outcome": {
+		"approve":"Approva",
+		"reject":"Rifiuta"
+	}
 },
 
 "authority" : { 

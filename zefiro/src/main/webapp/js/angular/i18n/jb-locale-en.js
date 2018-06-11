@@ -43,7 +43,11 @@ angular.module("jbLocale", ["ngLocale"])
 		"unassigned" : "Unssigned",
 		"completedLate": "Task completed after the due date",
 		"active": "Task active",
-		"completedInTime": "Task completed in time"
+		"completedInTime": "Task completed in time",
+	"outcome": {
+		"approve":"Approve",
+		"reject":"Reject"
+	}
 },
 
 "authority" : { 

@@ -51,7 +51,9 @@ angular.module('workflow', [])
 		"bpm_workflowDefinitionId",
 		"bpm_workflowDefinitionName",
 		"bpm_workflowInstanceId",
-		"bpm_endAutomatically"
+		"bpm_endAutomatically",
+		
+		"wf_requiredApprovePercent"
 	])
 
 	.constant("workflowAssigneeAspects", [
