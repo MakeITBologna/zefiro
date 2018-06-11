@@ -6,11 +6,11 @@
     <ol class="breadcrumb">
       <li>
         <a href ng-click="gotoTaskBreadcrumb(-1, jbForm)">
-          <fmt:message key="jsp.task.myTask.label" />
+          <fmt:message key="jsp.myTasks.label" />
         </a>
       </li>
       <li ng-repeat="p in breadcrumbs">
-        <a ng-if="!$last" href ng-click="gotoTaskBreadcrumb($index, jbForm)">{{p.processBusinessKey}}</a>
+        <a ng-if="!$last" href ng-click="gotoTaskBreadcrumb($index, jbForm)">{{p.description}}</a>
         <span ng-if="$last">{{p.description}}</span>
       </li>
     </ol>

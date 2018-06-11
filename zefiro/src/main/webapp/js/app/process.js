@@ -40,6 +40,10 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 				},  getWorkflowInstance: {
 					url: 'a/Process/workflowInstances/:id',
 					method: 'GET',
+				}, getcompletedWorkflow: {
+				 	url: 'a/Process/completedWorkflow/:id',
+					method: 'GET',
+					isArray: true
 				}, getWorkflowDefinitions: {
 					url: 'a/Process/workflowDefinitions',
 					method: 'GET',
@@ -48,45 +52,54 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 			});
 	}])
 
-	.controller('ProcessController', ['$scope', 'ProcessResource', 'NgTableParams', 'jbMessages', 'WORKFLOW_DEFINITION_PROPERTIES', 'WORKFLOW_INSTANCE_PROPERTIES',
-		function ($scope, ProcessResource, NgTableParams, jbMessages, WORKFLOW_DEFINITION_PROPERTIES, WORKFLOW_INSTANCE_PROPERTIES) {
+	.controller('ProcessController', ['$scope', 'ProcessResource', 'NgTableParams', 'jbMessages', 'jbUtil', 'jbWorkflowUtil','WORKFLOW_DEFINITION_PROPERTIES', 'WORKFLOW_INSTANCE_PROPERTIES', 'deadlineTMessage',
+		function ($scope, ProcessResource, NgTableParams, jbMessages, jbUtil, jbWorkflowUtil, WORKFLOW_DEFINITION_PROPERTIES, WORKFLOW_INSTANCE_PROPERTIES, deadlineTMessage) {
 
+			$scope.jbctrl = $scope;
 			$scope.jbMessages=jbMessages;
 			$scope.WORKFLOW_INSTANCE_PROPERTIES = WORKFLOW_INSTANCE_PROPERTIES;
 			$scope.WORKFLOW_DEFINITION_PROPERTIES = WORKFLOW_DEFINITION_PROPERTIES;
+			$scope.jbWorkflowUtil = jbWorkflowUtil;
 			
 			$scope.processes = {};
 			$scope.processTable = new NgTableParams();
 			$scope.isGroupHeaderRowVisible = false;
 			$scope.definitionsMap = {};
-			
+			$scope.processCompletedTable = new NgTableParams();
+			$scope.table = $scope.processTable;
 			//Ricerca documenti a partire dalla form di ricerca
 			$scope.initList = function () {
-				var processesPromise = ProcessResource.getWorkflowInstances({}, function(){
-					console.log("----processPromise", processesPromise);
-					var definitionsPromise = ProcessResource.getWorkflowDefinitions({}, function(){
-						console.log("----definitionsPromise", definitionsPromise);
-						cleanListData();
-						for(var i = 0; i<definitionsPromise.length; i++){
-							$scope.definitionsMap[definitionsPromise[i][$scope.WORKFLOW_DEFINITION_PROPERTIES.URL]] = definitionsPromise[i];
-						}
-						$scope.processTable.settings({ dataset: processesPromise });
+				var definitionsPromise = ProcessResource.getWorkflowDefinitions({}, function(){
+					console.log("----definitionsPromise", definitionsPromise);
+										var processesPromise = ProcessResource.getWorkflowInstances({}, function(){
+						console.log("----processPromise", processesPromise);
+						var completedWorkflowPromise = ProcessResource.getcompletedWorkflow({}, function(){
+							cleanListData();
+							for(var i = 0; i<definitionsPromise.length; i++){
+								$scope.definitionsMap[definitionsPromise[i][$scope.WORKFLOW_DEFINITION_PROPERTIES.URL]] = definitionsPromise[i];
+							}
+							
+							console.log("----completedWorkflowPromise", completedWorkflowPromise);
+							$scope.processTable.settings({ dataset: processesPromise });
+							$scope.processCompletedTable.settings({ dataset: completedWorkflowPromise });
+							$scope.table = $scope.processTable;//$scope.listIsInit = true;	
+						})
 					})
 				})
-				return processesPromise;
-				/*var processPromise = ProcessResource.startedProcesses($scope.documentTemplate, function () {
-					$log.log(processPromise)
-					$scope.processTable.settings({ dataset: processPromise });
-				});
-				return processPromise;*/
 			}
-			
+		
 			cleanListData = function(){
 				$scope.processTable = new NgTableParams({ group: $scope.WORKFLOW_INSTANCE_PROPERTIES.DEFINITION_URL }, {
 					counts: [], groupOptions: {
 						isExpanded: false
 					}
 				});
+				$scope.processCompletedTable = new NgTableParams({ group: $scope.WORKFLOW_INSTANCE_PROPERTIES.DEFINITION_URL }, {
+					counts: [], groupOptions: {
+						isExpanded: false
+					}
+				});
+				$scope.table = $scope.processTable;
 				$scope.definitionsMap = {};
 			}
 			
@@ -94,23 +107,60 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 			$scope.editingProcessId =  null;
 			$scope.showDetail = false;
 			$scope.processDetail = {};
-			$scope.processTasksList = new NgTableParams();
-			$scope.viewDetail = function(group_i, row_i){
+			$scope.processTasksList = new NgTableParams({},{counts: []});
+			$scope.viewDetail = function(group_i, row_i, table){
 				 cleanDetail();
-				 $scope.editingProcessId =  $scope.processTable.data[group_i].data[row_i].id;
+				 $scope.editingProcessId =  table.data[group_i].data[row_i].id;
 				 processPromise = ProcessResource.getWorkflowInstance({id:  $scope.editingProcessId}, function(){
 					 console.log("------processPromise data" , processPromise);
 					 $scope.processDetail = processPromise;
 					 $scope.breadcrumbs.push($scope.processDetail);
-					 $scope.processTasksList.settings({ dataset: processPromise.tasks || [] });
+					 $scope.processTasksList.settings({ dataset: sortTasks(processPromise.tasks)});
+					 
 					 $scope.showDetail = true;
 				 })
+			}
+			
+			$scope.COMPLETITION_TIMES = "completitionTimes";
+			$scope.DEADLINE_PROXIMITY = "deadlineProximity";
+			
+			sortTasks = function(tasks){
+				var tasks = tasks || [];
+				for(task in tasks){
+					var dueDate = tasks[task].properties.bpm_dueDate;
+					var completitionDate = tasks[task].properties.bpm_completionDate ;
+					tasks[task][$scope.DEADLINE_PROXIMITY]= jbUtil.deadlineProximity(dueDate);
+					if(completitionDate){
+						tasks[task][$scope.COMPLETITION_TIMES] = jbUtil.deadlineProximity(dueDate, completitionDate);
+					}
+				}
+				var sortingTask = tasks.sort(function (a, b){
+					var a_endDate =a.properties.bpm_completionDate;
+					var b_endDate =b.properties.bpm_completionDate;
+					
+					if(a_endDate && !b_endDate || a_endDate < b_endDate){
+						return 1;
+					}
+					
+					if(!a_endDate && b_endDate || a_endDate > b_endDate){
+						return -1;
+					}
+					
+					if(a_endDate && b_endDate || a_endDate == b_endDate){
+						return 0;
+					}
+				});
+				return sortingTask;
+			}
+			
+			$scope.deadlineProximity = function (date) {
+				return jbUtil.deadlineProximity(date);
 			}
 			
 			cleanDetail = function(form){
 				$scope.editingProcessId =  null;
 				$scope.processDetail = {};
-				$scope.processTasksList = new NgTableParams();
+				$scope.processTasksList = new NgTableParams({},{counts: []});
 			}
 			
 			$scope.closeDetail = function(){
@@ -136,11 +186,17 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 			});
 			
 			//BC
-			$scope.gotoBreadcrumb = function (i, form) {
+			$scope.gotoBreadcrumb = function (i,  func) {
+				
 				if (i < 0) {
 					$scope.breadcrumbs = [];
-					$scope.closeDetail();
+					if(func){
+						func();
+					}
 					return;
+				}
+				if(func){
+					func();
 				}
 				var shortDocument = $scope.breadcrumbs[i];
 				$scope.breadCrumbIndex = i - 1;
@@ -149,6 +205,31 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 				} else {
 					$scope.breadcrumbs = $scope.breadcrumbs.slice(0, i);
 				}
+			}
+			
+			//CONSTANTS
+			$scope.deadlineTMessage = {
+					"1": jbMessages.task.active + ". " + jbMessages.task.expired,
+					"2": jbMessages.task.active ,
+					"3": jbMessages.task.active ,
+				}
+			
+			$scope.completitionTMessage = {
+					"1": jbMessages.task.completedLate,
+					"2": jbMessages.task.completedInTime,
+					"3": jbMessages.task.completedInTime
+			}
+			
+			$scope.taskPriority  = {
+				"1": jbMessages.priorityHigh,
+				"2": jbMessages.priorityMedium,
+				"3": jbMessages.priorityLow
+			}
+			
+			$scope.processPriority = {
+				"1": jbMessages.high_f,
+				"2": jbMessages.medium_f,
+				"3": jbMessages.low_f,
 			}
 		}])
 		

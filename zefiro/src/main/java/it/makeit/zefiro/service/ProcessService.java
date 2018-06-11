@@ -100,7 +100,24 @@ public class ProcessService extends ZefiroAbstractServcie {
 	}
 
 	public List<WorkflowInstance> loadWorkflowInstances() {
+		return loadWorkflowInstances(new HashMap<String, Object>());
+	}
+
+	public WorkflowInstance loadWorkflowInstance(String id) {
 		Map<String, Object> params = new HashMap<String, Object>();
+		params.put(AlfrescoWorkflowInstanceQueryParamsEnum.INCLUDE_TASKS.getName(), true);
+
+		return AlfrescoWorkflowHelper.getWorkflowInstance(id, httpRequestFactory, alfrescoConfig, params);
+	}
+
+	public List<WorkflowInstance> loadCompletedWorkflows() {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put(AlfrescoWorkflowInstanceQueryParamsEnum.STATE.getName(), "COMPLETED");
+
+		return loadWorkflowInstances(params);
+	}
+
+	private List<WorkflowInstance> loadWorkflowInstances(Map<String, Object> params) {
 		params.put(AlfrescoWorkflowInstanceQueryParamsEnum.INITIATOR.getName(), alfrescoConfig.getUsername());
 
 		WorkflowInstanceList objectList = AlfrescoWorkflowHelper.getWorkflowInstances(httpRequestFactory,
@@ -110,13 +127,6 @@ public class ProcessService extends ZefiroAbstractServcie {
 			list = new ArrayList<WorkflowInstance>();
 		}
 		return list;
-	}
-
-	public WorkflowInstance loadWorkflowInstance(String id) {
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put(AlfrescoWorkflowInstanceQueryParamsEnum.INCLUDE_TASKS.getName(), true);
-
-		return AlfrescoWorkflowHelper.getWorkflowInstance(id, httpRequestFactory, alfrescoConfig, params);
 	}
 
 	public List<WorkflowDefinition> loadWorkflowDefinitions() {

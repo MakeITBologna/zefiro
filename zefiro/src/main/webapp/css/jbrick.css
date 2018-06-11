@@ -104,6 +104,22 @@ table.workflow-list > thead {
 	color: #337ab7;
 }
 
+.jb-danger {
+	background-color: #c9302c;
+}
+
+.jb-success {
+	background-color: #5cb85c;
+}
+
+.jb-warning {
+	background-color: #f0ad4e;
+}
+
+.jb-primary {
+	background-color: #337ab7;
+}
+
 .jb-tooltip > .tooltip-inner {
 	background-color: rgb(249,249,249, 1);
 	color: black;

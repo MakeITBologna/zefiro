@@ -237,6 +237,31 @@ angular.module('main', [
 				var ms = Math.round(parseFloat('0.' + (match[7] || 0)) * 1000);
 				timeSetter.call(date, h, m, s, ms);
 				return date;
+			},
+			deadlineProximity: function (date, proximityDate) {
+				if (!date) {
+					return 3;
+				}
+				var parsedDate = this.stringToDate(date);
+				if (!parsedDate) {
+					return 3;
+				}
+				var now = new Date();
+				if(proximityDate){
+					now = this.stringToDate(proximityDate);
+				}
+				var parsedDateSum = parsedDate.getTime();
+				var nowSum = now.getTime();
+				var day = 86400000;
+
+				var dlProx = 3;
+				if (nowSum > (parsedDateSum - day)) {
+					dlProx = 2;
+					if (nowSum > (parsedDateSum)) {
+						dlProx = 1;
+					}
+				}
+				return dlProx;
 			}
 		}
 	})

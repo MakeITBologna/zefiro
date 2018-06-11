@@ -3,7 +3,7 @@ package it.makeit.alfresco.webscriptsapi;
 import it.makeit.alfresco.restApi.RESTQueryParams;
 
 public enum AlfrescoWorkflowInstanceQueryParamsEnum implements RESTQueryParams {
-	INITIATOR("initiator"), INCLUDE_TASKS("includeTasks");
+	INITIATOR("initiator"), INCLUDE_TASKS("includeTasks"), STATE("state");
 
 	private String name;
 
@@ -11,6 +11,7 @@ public enum AlfrescoWorkflowInstanceQueryParamsEnum implements RESTQueryParams {
 		name = pName;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}

@@ -11,7 +11,7 @@
         </button>
       </div>
       <h1>
-        <fmt:message key="jsp.task.myTask.label" />
+        <fmt:message key="jsp.myTasks.label" />
       </h1>
     </div>
 
@@ -101,27 +101,27 @@
                   <span>
                     <span>
                       <strong>
-                        <fmt:message key="jsp.task.task" />: </strong>
+                        <fmt:message key="jsp.task.label" />: </strong>
                     </span>
                     <span>{{row.name}}</span>
                     <span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
                     <strong>
-                      <fmt:message key="jsp.process.process" />: </strong>
+                      <fmt:message key="jsp.process.process" />:&nbsp;</strong>
                   </span>
                   <span>{{row.processId}}</span>
                 </h6>
                 <h6>
                   <span>
                     <strong>
-                      <fmt:message key="jsp.assignedAt" />: </strong>
+                      <fmt:message key="jsp.assigned.label.f" />&nbsp;<fmt:message key="jsp.at.label" />:&nbsp;</strong>
                   </span>
                   <span>{{row.startedAt | date: '${localePatternTimestamp}'}}</span>
                   <span ng-if="row.dueAt">
                     <span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
                     <span>
                       <strong>
-                        <fmt:message key="jsp.process.dueAt" />&nbsp;
-                        <fmt:message key="jsp.at" />: </strong>
+                        <fmt:message key="jsp.due.label" />&nbsp;
+                        <fmt:message key="jsp.at.label" />:&nbsp;</strong>
                     </span>
                     <span>{{row.dueAt | date: '${localePatternTimestamp}'}}</span>
                   </span>
@@ -129,7 +129,7 @@
                 <h6>
                   <span>
                     <strong>
-                      <fmt:message key="jsp.startedFrom" />: </strong>
+                      <fmt:message key="jsp.started.label.f" />:&nbsp;<fmt:message key="jsp.from.label" /></strong>
                   </span>
                   <span>{{row.startUserFirstName}}</span>
                   <span> </span>
@@ -137,14 +137,15 @@
                   <span>&nbsp;&nbsp;&nbsp;</span>
                   <span>
                     <strong>
-                      <fmt:message key="jsp.at" />: </strong>
+                      <fmt:message key="jsp.at.label" />: </strong>
                   </span>
                   <span>{{row.processStartedAt | date: '${localePatternTimestamp}'}}</span>
                 </h6>
                 <h6 ng-if="row.endedAt">
                   <span>
                     <strong>
-                      <fmt:message key="jsp.process.endedAt" />: </strong>
+                      <fmt:message key="jsp.ended.label.f" />&nbsp;
+                      <fmt:message key="jsp.from.label" />:&nbsp;</strong>
                   </span>
                   <span>{{row.endedAt | date: '${localePatternTimestamp}'}}</span>
                 </h6>

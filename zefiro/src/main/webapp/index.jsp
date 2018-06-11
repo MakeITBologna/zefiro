@@ -67,10 +67,10 @@
    	</ul>
    	<ul class="nav navbar-nav">
    	<li class="dropdown" uib-dropdown>
-          <a class="dropdown-toggle" href uib-dropdown-toggle><fmt:message key="jsp.process.label"/><span class="caret"></span></a>
+          <a class="dropdown-toggle" href uib-dropdown-toggle><fmt:message key="jsp.processes.label"/><span class="caret"></span></a>
           <ul class="dropdown-menu" uib-dropdown-menu>
-    		<li><a href="#process"><fmt:message key="jsp.process.myProcesses.label"/></a></li>
-    		<li><a href="#task"><fmt:message key="jsp.task.myTask.label"/></a></li>
+    		<li><a href="#process"><fmt:message key="jsp.myProcesses.label"/></a></li>
+    		<li><a href="#task"><fmt:message key="jsp.myTasks.label"/></a></li>
     	  </ul>
         </li>
    	</ul>

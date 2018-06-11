@@ -87,16 +87,23 @@ angular.module('workflow', [])
 		"URL": "url",
 		"DEFINITION_URL": "definitionUrl",
 		"START_DATE": "startDate",
-		"END_DATE": "endDAte",
+		"END_DATE": "endDate",
 		"MESSAGE":"message",
 	})
+
+	.constant('deadlineTMessage',['jbMessages', function(jbMessages){
+		return{
+			"1": jbMessages.task.expired,
+			"2": jbMessages.task.expiring
+		}
+	}])
 
 
 	/**
 	 * Utility service for workflow
 	 * @author Alba Quarto
 	 */
-	.factory('jbWorkflowUtil', ['AUTHORITY_TYPE', function (AUTHORITY_TYPE) {
+	.factory('jbWorkflowUtil', ['AUTHORITY_TYPE', function (AUTHORITY_TYPE,jbMessages) {
 		return {
 			decodeType: function (type) {
 				switch (type) {
@@ -153,7 +160,14 @@ angular.module('workflow', [])
 					case "bpm_groupAssignee": return { type: AUTHORITY_TYPE.GROUP, many: false };
 					case "bpm_groupAssignees": return { type: AUTHORITY_TYPE.GROUP, many: true };
 				}
-			}
-
+			}, 
+			sanitizeId: function (id){
+				var sanitizedId = "";
+				if(id){
+					var parts = id.split("$");
+					sanitizedId =  parts[parts.length -1];
+				}
+				return sanitizedId;
+		    }
 		}
 	}])

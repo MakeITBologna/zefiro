@@ -22,6 +22,10 @@ angular.module("jbLocale", ["ngLocale"])
 "priorityMedium": "Priorità media",
 "noMessage": "Nessun messaggio",
 
+"high_f": "Alta",
+"low_f": "Bassa",
+"medium_f": "Media",
+
 "expired": "Scaduto",
 "maturing": "In scadenza",
 "other": "Altro",
@@ -36,7 +40,10 @@ angular.module("jbLocale", ["ngLocale"])
 	"deadline": "Scadenza",
 	"priority": "Priorità",
 	"deadlineProssimity": "In scadenza",
-	"unassigned" : "Non presa in carico"
+	"unassigned" : "Non presa in carico",
+	"completedLate": "Attività completata dopo la data di consegna",
+	"active": "Attività in corso",
+	"completedInTime": "Attività completata entro la data di consegna"
 },
 
 "authority" : { 

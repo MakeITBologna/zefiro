@@ -22,6 +22,10 @@ angular.module("jbLocale", ["ngLocale"])
 "priorityMedium": "Medium priority",
 "noMessage":"No message",
 
+"high_f": "High",
+"low_f": "Low",
+"medium_f": "Medium",
+
 "expired": "Expired",
 "maturing": "Maturing",
 "other": "Other",
@@ -36,7 +40,10 @@ angular.module("jbLocale", ["ngLocale"])
 		"deadline": "Deadline",
 		"priority": "Priority",
 		"deadlineProssimity": "Maturing",
-		"unassigned" : "Unssigned"
+		"unassigned" : "Unssigned",
+		"completedLate": "Task completed after the due date",
+		"active": "Task active",
+		"completedInTime": "Task completed in time"
 },
 
 "authority" : { 
