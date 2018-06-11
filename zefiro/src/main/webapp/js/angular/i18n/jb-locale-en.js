@@ -58,6 +58,13 @@ angular.module("jbLocale", ["ngLocale"])
 		"bpm_assignees": "Select the assignee users",
 		"bpm_groupAssignee": "Select the assignee group",
 		"bpm_groupAssignees": "Select the assignee groups"
+	},
+	"status": {
+		 "NYS":"Not Yet Started",
+         "inProgress":"In Progress",
+         "onHold":"On Hold",
+         "cancelled":"Cancelled",
+         "completed":"Completed"
 	}
 }
 })

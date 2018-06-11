@@ -192,12 +192,18 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 						currentTaskVariables[modelName] = $scope.jbWorkflowUtil.getVoidVariable(modelName, model.dataType);
 						variable = currentTaskVariables[modelName];
 					}
+					variable.defaultValue =  model.defaultValue;
 					$scope.updatedVariables[modelName] = variable;
 					if (modelName === outcomeButton) {
 						button = buildOutcomButton(model, currentTaskVariables[modelName]);
 						if (button) {
 							continue;
 						}
+					}
+					if(model.name === "bpm_priority"){
+						model.shownValues = $scope.jbWorkflowUtil.getPriorityValues();
+					} else if(model.name === "bpm_status"){
+						model.shownValues =  $scope.jbWorkflowUtil.getStatusTranslateValues();
 					}
 					$scope.currentTaskForm.push(model)
 				}

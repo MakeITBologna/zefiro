@@ -55,25 +55,6 @@
             </div>
             <%-- #####  Process Type choise dropdown ##### --%>
 
-            <%-- ##### Process Properties ##### --%>
-            <%-- <div class="row jb-form-group">
-            <label for="jbForm-businessKey" class="control-label col-sm-4" title="{{p.name}}">{{p.title}}</label>
-            <div class="col-sm-8">
-              <div></div>
-            </div>
-          </div>
-
-          <div class="row jb-form-group">
-            <label for="jbForm-businessKey" class="control-label col-sm-4" title="{{p.name}}">{{p.title}}</label>
-            <div class="col-sm-8">
-              <div>
-                <input ng-if="jbUtil.isEmptyObject(p.allowedValues)" required id="jbForm-businessKey" class="form-control"
-                    title="{{businessKey}}" type="text" name="{{businessKey}}" ng-model="startedProcess[businessKey]" />
-              </div>
-            </div>
-          </div>	--%>
-            <%-- ##### End Process Properties ##### --%>
-
             <%-- ##### Variables ##### --%>
             <div ng-if="selectedType" class="row jb-form-group" ng-repeat="(i, p) in currentTypeForm">
               <label for="jbForm-p.name" class="control-label col-sm-4" title="{{p.name}}" style="padding-left: 0px;">{{p.title}}</label>
@@ -254,7 +235,7 @@
           </form>
 
           <div ng-if="selectedType" class="row jb-form-control text-right navbar-btn ">
-            <button class="btn btn-primary" type="button" ng-click="jbValidate.checkForm(jbForm) && startProcess(jbForm)">
+            <button class="btn btn-primary" type="button" ng-click="validateForm(jbForm) && startProcess(jbForm)">
               <span>
                 <fmt:message key="jsp.process.start" />
               </span>

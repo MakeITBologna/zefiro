@@ -59,5 +59,13 @@
 		<entry name="exif:xResolution" />
 		<entry name="exif:yResolution" />	
 	</propertyBlacklist>
+	
+	<processDefinitionBlackList>
+		<entry key="activitiAdhoc" />
+		<entry key="activitiParallelGroupReview" />
+		<entry key="activitiParallelReview" />
+		<entry key="activitiReview" />
+		<entry key="activitiReviewPooled" />
+	</processDefinitionBlackList>
 
 </config>

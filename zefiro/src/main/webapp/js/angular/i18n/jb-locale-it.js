@@ -59,6 +59,13 @@ angular.module("jbLocale", ["ngLocale"])
 		"bpm_assignees": "Seleziona gli utenti assegnatari",
 		"bpm_groupAssignee": "Seleziona il grouppo assegnatario",
 		"bpm_groupAssignees": "Seleziona i gruppi assegnatari"
+	},
+	"status": {
+		"NYS":"Non Iniziato",
+        "inProgress":"In corso",
+        "onHold":"In attesa",
+        "cancelled":"Cancellato",
+        "completed":"Completato"
 	}
 }
 

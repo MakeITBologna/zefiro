@@ -82,7 +82,7 @@
                       </label>
                     </div>
                     <div ng-if="readOnly || p.linkType">
-                      <p ng-if="!p.linkType" class="form-control-static">{{updatedVariables[p.name].value}}</p>
+                      <p ng-if="!p.linkType" class="form-control-static">{{p.shownValues[updatedVariables[p.name].value] || updatedVariables[p.name].value}}</p>
                     </div>
                   </div>
                   <%-- ##### END STRING ##### --%>
@@ -99,7 +99,7 @@
                       </label>
                     </div>
                     <div ng-if="readOnly">
-                      <p class="form-control-static">{{updatedVariables[p.name].value}}</p>
+                      <p class="form-control-static">{{p.shownValues[updatedVariables[p.name].value] || updatedVariables[p.name].value}}</p>
                     </div>
                   </div>
                   <%-- ##### END INTEGER ##### --%>

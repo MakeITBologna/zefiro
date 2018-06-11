@@ -99,11 +99,12 @@ angular.module('workflow', [])
 	}])
 
 
+
 	/**
 	 * Utility service for workflow
 	 * @author Alba Quarto
 	 */
-	.factory('jbWorkflowUtil', ['AUTHORITY_TYPE', function (AUTHORITY_TYPE,jbMessages) {
+	.factory('jbWorkflowUtil', ['AUTHORITY_TYPE','jbMessages', function (AUTHORITY_TYPE,jbMessages) {
 		return {
 			decodeType: function (type) {
 				switch (type) {
@@ -168,6 +169,20 @@ angular.module('workflow', [])
 					sanitizedId =  parts[parts.length -1];
 				}
 				return sanitizedId;
-		    }
+		    }, getPriorityValues: function(){
+		    	return	{
+					"1": jbMessages.high_f,
+					"2": jbMessages.medium_f,
+					"3": jbMessages.low_f,
+				}
+		    }, getStatusTranslateValues: function (){	
+		    	return {
+		    		"Not Yet Started": jbMessages.workflow.status.NYS,
+		    		"In Progress": jbMessages.workflow.status.inProgress,
+		    		"On Hold": jbMessages.workflow.status.onHold,
+		    		"Cancelled": jbMessages.workflow.status.cancelled,
+		    		"Completed": jbMessages.workflow.status.completed
+		    	}
+		    } 
 		}
 	}])

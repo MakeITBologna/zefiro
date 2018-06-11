@@ -1,6 +1,7 @@
 package it.makeit.zefiro.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import it.makeit.alfresco.workflow.model.FormModel;
 import it.makeit.alfresco.workflow.model.Item;
 import it.makeit.alfresco.workflow.model.ProcessDefinition;
 import it.makeit.alfresco.workflow.model.WorkflowProcess;
+import it.makeit.jbrick.JBrickConfigManager;
 import it.makeit.zefiro.DecodedFieldNote.DecodingType;
 import it.makeit.zefiro.Util;
 import it.makeit.zefiro.dao.WorkFlowProcessComplete;
@@ -83,6 +85,11 @@ public class ProcessService extends ZefiroAbstractServcie {
 		Map<String, ProcessDefinition> lastesVersions = new HashMap<String, ProcessDefinition>();
 		for (ProcessDefinition process : processDefinition) {
 			String key = process.getKey();
+			List<String> blackList = Arrays.asList(
+					JBrickConfigManager.getInstance().getPropertyList("processDefinitionBlackList/entry", "@key"));
+			if (blackList.contains(key)) {
+				continue;
+			}
 			ProcessDefinition mapProcess = lastesVersions.get(key);
 			if (mapProcess == null) {
 				lastesVersions.put(key, process);

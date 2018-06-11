@@ -5,8 +5,8 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 		"bpm_workflowDescription",
 		"bpm_workflowDueDate",
 		"bpm_workflowPriority",
-		"bpm_sendEMailNotifications",
-		"bpm_percentComplete",
+//		"bpm_sendEMailNotifications",
+//		"bpm_percentComplete",
 		"bpm_comment",
 		"bpm_status",
 	])
@@ -226,11 +226,7 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 				"3": jbMessages.priorityLow
 			}
 			
-			$scope.processPriority = {
-				"1": jbMessages.high_f,
-				"2": jbMessages.medium_f,
-				"3": jbMessages.low_f,
-			}
+			$scope.processPriority = $scope.jbWorkflowUtil.getPriorityValues();
 		}])
 		
 
@@ -290,6 +286,7 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 			startEditProcess = function (definition) {
 				$scope.selectedType = null;
 				formPromise = ProcessResource.startForm({ id: definition.id }, function () {
+					console.log("----formPromise",formPromise)
 					buildStartForm(formPromise);
 				});
 			}
@@ -322,9 +319,9 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 						continue;
 					}
 					$scope.updatedVariables[modelName] = jbWorkflowUtil.getVoidVariable(modelName, model.dataType);
+					$scope.updatedVariables[modelName].defaultValue = model.defaultValue;
 					if (assigneeAspect) {
 						if ($scope.addAssignee !== null) {
-							//TODO capire come mostrare a video l'errore
 							throw new Error("Ambiguità sul tipo di assegnatrio")
 						}
 						var auth = jbWorkflowUtil.getAssigneeType(model.name);
@@ -332,6 +329,11 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 						$scope.assigneeMany = auth.many;
 						$scope.addingAssignee = model;
 					} else {
+						if(model.name === "bpm_workflowPriority"){
+							model.shownValues = $scope.jbWorkflowUtil.getPriorityValues();
+						} else if(model.name === "bpm_status"){
+							model.shownValues = $scope.jbWorkflowUtil.getStatusTranslateValues();
+						}
 						$scope.currentTypeForm.push(model)
 					}
 				}
@@ -363,6 +365,14 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 					}
 				});
 
+			}
+			
+			$scope.validateForm = function(form){
+				var valid = jbValidate.checkForm(form);
+				if(valid){
+					
+				}
+				return valid;
 			}
 
 			$scope.startProcess = function (form) {
