@@ -41,9 +41,9 @@ angular.module("jbLocale", ["ngLocale"])
 	"priority": "Priorità",
 	"deadlineProssimity": "In scadenza",
 	"unassigned" : "Non presa in carico",
-	"completedLate": "Attività completata dopo la data di consegna",
+	"completedLate": "Attività completata dopo la data di scadenza",
 	"active": "Attività in corso",
-	"completedInTime": "Attività completata entro la data di consegna",
+	"completedInTime": "Attività completata entro la data di scadenza",
 	"outcome": {
 		"approve":"Approva",
 		"reject":"Rifiuta"

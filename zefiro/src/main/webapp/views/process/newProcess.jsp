@@ -184,9 +184,11 @@
 
             <%-- ##### Adding Items ##### --%>
             <div ng-if="selectedType" class="row jb-form-group">
-              <label for="jbForm-addingItems" class="control-label col-sm-4" title="addingItems" style="padding-left: 0px;"><fmt:message key="jsp.document.label" /></label>
-              <div class="col-sm-8 jb-form-control" style="display: inline-table;">
-                <div class="form-control" readonly  style="display: inherit;">
+              <div>
+                <label for="jbForm-addingItems" class="control-label col-sm-4" title="addingItems" style="padding-left: 0px;"><fmt:message key="jsp.document.label" /></label>
+              </div>
+              <div class="col-sm-8 jb-form-control" style="display:  block;">
+                <div class="form-control" readonly  style="display:  inline-table;">
                   <div ng-repeat="($index, item) in selectedItems">
                       <span>{{item.name}}</span>
                       <span ng-if="item.description">({{item.description}})</span>
@@ -208,9 +210,11 @@
 
             <%-- ###### Assignee Button ##### --%>
             <div ng-if="addingAssignee" class="row jb-form-group">
-              <label for="jbForm-addingAssignee" class="control-label col-sm-4" title="addingAssignee" style="padding-left: 0px;">{{addingAssignee.title}}</label>
-              <div class="col-sm-8 jb-form-control"  style="display: inline-table;">
-                <div class="form-control" readonly  style="display: inherit;">
+              <div>
+                <label for="jbForm-addingAssignee" class="control-label col-sm-4" title="addingAssignee" style="padding-left: 0px;">{{addingAssignee.title}}</label>
+              </div>
+              <div class="col-sm-8 jb-form-control"  style="display: block;">
+                <div class="form-control" readonly  style="display:  inline-table;">
                   <span ng-repeat="($index, assignee) in addedAssignee">
                     <span ng-if="$index>0">,&nbsp;</span>
                     <span ng-if="assigneeType === AUTHORITY_TYPE.PERSON">

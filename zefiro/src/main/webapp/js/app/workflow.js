@@ -52,8 +52,6 @@ angular.module('workflow', [])
 		"bpm_workflowDefinitionName",
 		"bpm_workflowInstanceId",
 		"bpm_endAutomatically",
-		
-		"wf_requiredApprovePercent"
 	])
 
 	.constant("workflowAssigneeAspects", [
@@ -91,6 +89,8 @@ angular.module('workflow', [])
 		"START_DATE": "startDate",
 		"END_DATE": "endDate",
 		"MESSAGE":"message",
+		"DUE_DATE":"dueDate",
+		"PRIORITY":"priority"
 	})
 
 	.constant('deadlineTMessage',['jbMessages', function(jbMessages){
@@ -99,6 +99,11 @@ angular.module('workflow', [])
 			"2": jbMessages.task.expiring
 		}
 	}])
+	
+	.constant('WF_VARIABLE_SCOPE', {
+		"LOCAL": "local",
+		"GLOBAL": "global"
+	})
 
 
 
@@ -106,7 +111,7 @@ angular.module('workflow', [])
 	 * Utility service for workflow
 	 * @author Alba Quarto
 	 */
-	.factory('jbWorkflowUtil', ['AUTHORITY_TYPE','jbMessages', function (AUTHORITY_TYPE,jbMessages) {
+	.factory('jbWorkflowUtil', ['AUTHORITY_TYPE','WF_VARIABLE_SCOPE', 'jbMessages', function (AUTHORITY_TYPE, WF_VARIABLE_SCOPE, jbMessages) {
 		return {
 			decodeType: function (type) {
 				switch (type) {
@@ -149,7 +154,7 @@ angular.module('workflow', [])
 			},
 			getVoidVariable: function (name, type) {
 				return {
-					scope: "local",
+					scope: WF_VARIABLE_SCOPE.LOCAL,
 					name: name,
 					type: type,
 					value: null

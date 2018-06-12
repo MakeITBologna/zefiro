@@ -27,6 +27,11 @@
                 <h5 class="text-center jb-text-primary">
                   <i class="fa fa-bars"></i>
                 </h5>
+                <h5  class="text-center">
+                 <span  ng-class="{'jb-text-success':row.priority==3, 'jb-text-warning': row.priority==2, 'jb-text-danger':row.priority==1}">
+                   <i class="fa fa-exclamation-circle" uib-tooltip="{{taskPriority[row.priority]}}" tooltip-placement="right-top" tooltip-class="jb-tooltip"></i>
+                 </span>
+                </h5>
               </td>
 
               <%-- #####  Details Column ##### --%>
@@ -43,6 +48,15 @@
                       <fmt:message key="jsp.started.label.m" />&nbsp;<fmt:message key="jsp.at.label" />: </strong>
                   </span>
                   <span>{{row[WORKFLOW_INSTANCE_PROPERTIES.START_DATE] | date: '${localePatternTimestamp}'}}</span>
+                  <span ng-if="row[WORKFLOW_INSTANCE_PROPERTIES.DUE_DATE]">
+                    <span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
+                    <span>
+                      <strong>
+                        <fmt:message key="jsp.due.label" />&nbsp;
+                        <fmt:message key="jsp.at.label" />:&nbsp;</strong>
+                    </span>
+                    <span>{{row[WORKFLOW_INSTANCE_PROPERTIES.DUE_DATE] | date: '${localePatternTimestamp}'}}</span>
+                  </span>
                 </h6>
                 <h6 ng-if="row[WORKFLOW_INSTANCE_PROPERTIES.END_DATE]">
                   <span>

@@ -49,8 +49,8 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 		}
 	}])
 
-	.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', 'jbWorkflowUtil', 'jbUtil', 'jbValidate', 'workflowFormBlacklist', 'OUTCOME_PROPERTY_NAME', 'taskState', 'TASK_DEFAULT_WHITE_LIST', 'jbAuthFactory', '$uibModal', 'AUTHORITY_TYPE',
-		function ($scope, TaskResource, NgTableParams, jbMessages, jbWorkflowUtil, jbUtil, jbValidate, workflowFormBlacklist, OUTCOME_PROPERTY_NAME, taskState, TASK_DEFAULT_WHITE_LIST, jbAuthFactory, $uibModal, AUTHORITY_TYPE) {
+	.controller('TaskController', ['$scope', 'TaskResource', 'NgTableParams', 'jbMessages', 'jbWorkflowUtil', 'jbUtil', 'jbValidate', 'workflowFormBlacklist', 'OUTCOME_PROPERTY_NAME', 'taskState', 'TASK_DEFAULT_WHITE_LIST', 'WF_VARIABLE_SCOPE','jbAuthFactory', '$uibModal', 'AUTHORITY_TYPE',
+		function ($scope, TaskResource, NgTableParams, jbMessages, jbWorkflowUtil, jbUtil, jbValidate, workflowFormBlacklist, OUTCOME_PROPERTY_NAME, taskState, TASK_DEFAULT_WHITE_LIST, WF_VARIABLE_SCOPE, jbAuthFactory, $uibModal, AUTHORITY_TYPE) {
 			$scope.testnestedcontroller = "task";
 			//Utilities
 			$scope.jbMessages = jbMessages;
@@ -162,13 +162,15 @@ angular.module('task', ['workflow', 'ngResource', 'ui.bootstrap', 'ngTable', 'an
 			}
 
 			currentTaskVariables = {};
-
 			buildTaskForm = function (formModel, variables) {
 				//create map of current task variables
 				currentTaskVariables = {};
 				for (var i = 0; i < variables.length; i++) {
 					var variable = variables[i];
 					var variableName = variable.name;
+					if(currentTaskVariables[variableName] && currentTaskVariables[variableName].scope=== WF_VARIABLE_SCOPE.LOCAL){
+						continue;
+					}
 					if (variableName === "bpm_reassignable") {
 						$scope.currentTaskReassignable = variable.value;
 					}

@@ -82,7 +82,6 @@
                <fmt:message key="jsp.priority" />:&nbsp;</strong>
                <span class="badge" ng-class="{'jb-success':processDetail.priority==3, 'jb-warning': processDetail.priority==2, 'jb-danger': processDetail.priority==1}">{{processPriority[processDetail.priority]}}</span>
            </span>
-           <span>{{processDetail.endDate | date: '${localePatternTimestamp}'}}</span>
         </h6>
         
         <h5 class="jb-header-bar"><strong><fmt:message key="jsp.task.label" />:</strong></h5>

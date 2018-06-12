@@ -85,8 +85,14 @@ public class ProcessService extends ZefiroAbstractServcie {
 		Map<String, ProcessDefinition> lastesVersions = new HashMap<String, ProcessDefinition>();
 		for (ProcessDefinition process : processDefinition) {
 			String key = process.getKey();
-			List<String> blackList = Arrays.asList(
-					JBrickConfigManager.getInstance().getPropertyList("processDefinitionBlackList/entry", "@key"));
+			String[] blackListArray = JBrickConfigManager.getInstance()
+					.getPropertyList("processDefinitionBlackList/entry", "@key");
+
+			List<String> blackList = new ArrayList<String>();
+			if (blackListArray != null) {
+				blackList = Arrays.asList(blackListArray);
+			}
+
 			if (blackList.contains(key)) {
 				continue;
 			}
