@@ -126,6 +126,9 @@ public class ProcessService extends ZefiroAbstractServcie {
 	public List<WorkflowInstance> loadCompletedWorkflows() {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put(AlfrescoWorkflowInstanceQueryParamsEnum.STATE.getName(), "COMPLETED");
+		// Warkaround per evitare errori quando è stata effettuata un undeploy
+		// di definizioni con instanze attive
+		params.put(AlfrescoRESTQueryParamsEnum.EXCLUDE.getName(), "activity$jbpippo");
 
 		return loadWorkflowInstances(params);
 	}

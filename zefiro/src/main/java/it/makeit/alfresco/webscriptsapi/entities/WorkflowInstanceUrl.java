@@ -33,7 +33,7 @@ public class WorkflowInstanceUrl extends GenericUrl implements AlfrescoBaseUrl {
 
 		addParam(AlfrescoWorkflowInstanceQueryParamsEnum.INITIATOR, AlfrescoWorkflowInstanceQueryParamsEnum.STATE,
 				AlfrescoWorkflowInstanceQueryParamsEnum.INCLUDE_TASKS, AlfrescoRESTQueryParamsEnum.SKIP_COUNT,
-				AlfrescoRESTQueryParamsEnum.MAX_ITEMS);
+				AlfrescoRESTQueryParamsEnum.MAX_ITEMS, AlfrescoRESTQueryParamsEnum.EXCLUDE);
 	}
 
 	private void addParam(RESTQueryParams... params) {
