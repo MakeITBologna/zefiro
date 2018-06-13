@@ -40,10 +40,10 @@ public class ProcessService extends ZefiroAbstractServcie {
 	}
 
 	private List<WorkFlowProcessComplete> load(Map<String, Object> pParams) {
-		List<WorkflowProcess> workflowProcess = AlfrescoWorkflowHelper.getProcesses(httpRequestFactory, alfrescoConfig,
-				pParams);
-		List<ProcessDefinition> processDefinition = AlfrescoWorkflowHelper.getProcessDefinitions(httpRequestFactory,
-				alfrescoConfig);
+		List<WorkflowProcess> workflowProcess = AlfrescoWorkflowHelper
+				.getProcesses(httpRequestFactory, alfrescoConfig, pParams).getData();
+		List<ProcessDefinition> processDefinition = AlfrescoWorkflowHelper
+				.getProcessDefinitions(httpRequestFactory, alfrescoConfig).getData();
 		Map<String, ProcessDefinition> definitions = buildDefinitionsMap(processDefinition);
 		List<WorkFlowProcessComplete> entities = new ArrayList<WorkFlowProcessComplete>();
 		Map<String, Person> people = new HashMap<String, Person>();
@@ -79,8 +79,8 @@ public class ProcessService extends ZefiroAbstractServcie {
 	}
 
 	public List<ProcessDefinition> loadDefinitions() {
-		List<ProcessDefinition> processDefinition = AlfrescoWorkflowHelper.getProcessDefinitions(httpRequestFactory,
-				alfrescoConfig);
+		List<ProcessDefinition> processDefinition = AlfrescoWorkflowHelper
+				.getProcessDefinitions(httpRequestFactory, alfrescoConfig).getData();
 
 		Map<String, ProcessDefinition> lastesVersions = new HashMap<String, ProcessDefinition>();
 		for (ProcessDefinition process : processDefinition) {
@@ -109,7 +109,8 @@ public class ProcessService extends ZefiroAbstractServcie {
 	}
 
 	public List<FormModel> loadStartForm(String id) {
-		return AlfrescoWorkflowHelper.getProcessDefinitionStartFormModel(id, httpRequestFactory, alfrescoConfig);
+		return AlfrescoWorkflowHelper.getProcessDefinitionStartFormModel(id, httpRequestFactory, alfrescoConfig)
+				.getData();
 	}
 
 	public List<WorkflowInstance> loadWorkflowInstances() {

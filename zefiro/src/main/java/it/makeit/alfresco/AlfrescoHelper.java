@@ -71,6 +71,7 @@ import it.makeit.alfresco.publicapi.entities.PeopleUrl;
 import it.makeit.alfresco.publicapi.entities.QueriesUrl;
 import it.makeit.alfresco.publicapi.model.MultipleEntry;
 import it.makeit.alfresco.publicapi.model.Person;
+import it.makeit.alfresco.publicapi.model.PersonList;
 import it.makeit.alfresco.publicapi.model.SingleEntry;
 import it.makeit.alfresco.restApi.AlfrescoRESTQueryParamsEnum;
 import it.makeit.alfresco.restApi.GenericUrlFactory;
@@ -167,7 +168,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 	 * @param pParams
 	 * @return
 	 */
-	public static List<Person> getUsers(String charSeq, HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig,
+	public static PersonList getUsers(String charSeq, HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig,
 			Map<String, Object> pParams) {
 		mLog.debug("Start");
 
@@ -177,7 +178,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		PeopleUrl peopleUrl = new PeopleUrl(pConfig.getHost());
 		GenericUrl url = (new GenericUrlFactory(queriesUrl)).add(peopleUrl).build(params);
 
-		return loadList(pHttpRequestFactory, url, Person.class);
+		return (PersonList) loadList(pHttpRequestFactory, url, PersonList.class);
 	}
 
 	/**

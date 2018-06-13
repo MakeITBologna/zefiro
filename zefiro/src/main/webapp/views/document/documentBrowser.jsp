@@ -205,15 +205,14 @@
 		<tr ng-repeat="row in $data track by $index" ng-dblclick="!relation && startEdit($index)">
 
 	      <td ng-if="jbUtil.isEmptyObject(documentType)" sortable="'typeName'">{{row.typeName}}</td>
-	      <td sortable="'description'"><a ng-href="a/Document/{{row.id}}/content" target="_blank">{{row.description}}</a></td>
+	      <td sortable="'description'"><a ng-if="row.properties['cmis:contentStreamId'] && row.properties['cmis:contentStreamId'].value !==null " g-href="a/Document/{{row.id}}/content" target="_blank">{{row.description}}</a><span ng-else>{{row.description}}</span></td>
 	      <td ng-if="jbUtil.isEmptyObject(documentType)" sortable="'createdBy'">{{row.createdBy}}</td>
           <td class="text-right" sortable="'created'">{{row.created | date: '${localePatternDate}'}}</td>
 
           <td ng-repeat-start="p in documentType.propertyList" ng-if="p.queryable && p.propertyType == 'INTEGER'" class="text-right" sortable="'\''+p.queryName+'\''">{{row[p.queryName] | number:0}}</td>
           <td ng-if="p.queryable && p.propertyType == 'DECIMAL'" class="text-right" sortable="'\''+p.queryName+'\''">{{row[p.queryName] | number:2}}</td>
           <td ng-if="p.queryable && p.propertyType == 'DATETIME'" class="text-right" sortable="'\''+p.queryName+'\''">{{row[p.queryName] | date: '${localePatternDate}'}}</td>
-          <td ng-if="p.queryable && p.propertyType == 'BOOLEAN' && row[p.queryName]" sortable="'\''+p.queryName+'\''"><fmt:message key="jsp.boolean.1"/></td>
-          <td ng-if="p.queryable && p.propertyType == 'BOOLEAN' && !row[p.queryName]" sortable="'\''+p.queryName+'\''"><fmt:message key="jsp.boolean.0"/></td>
+          <td ng-if="p.queryable && p.propertyType == 'BOOLEAN'" sortable="'\''+p.queryName+'\''"><span ng-if="row[p.queryName] === true"><fmt:message key="jsp.boolean.1"/></span><span ng-if="row[p.queryName] === false"><fmt:message key="jsp.boolean.0"/></span></td>
           <td ng-repeat-end ng-if="p.queryable && p.propertyType == 'STRING'" sortable="'\''+p.queryName+'\''">
             <a ng-if="p.linkType" href ng-click="showDocument(row[p.queryName])">{{row[p.queryName].split('|')[1]}}</a>
             <any ng-if="!p.linkType">{{row[p.queryName]}}</any>

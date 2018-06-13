@@ -48,7 +48,7 @@ public class TaskService extends ZefiroAbstractServcie {
 		addPersonDecoding(task.getAssignee(), taskComplete, people, DecodingType.ASSIGNEE);
 		addPersonDecoding(task.getOwner(), taskComplete, people, DecodingType.OWNER);
 		taskComplete.setCandidates(
-				AlfrescoWorkflowHelper.getTaskCandidates(task.getId(), httpRequestFactory, alfrescoConfig));
+				AlfrescoWorkflowHelper.getTaskCandidates(task.getId(), httpRequestFactory, alfrescoConfig).getData());
 
 		return taskComplete;
 	}
@@ -66,7 +66,8 @@ public class TaskService extends ZefiroAbstractServcie {
 		String where = factory.add("assignee", value).build();
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put(AlfrescoRESTQueryParamsEnum.WHERE.getName(), where);
-		List<Task> tasksAssigned = AlfrescoWorkflowHelper.getTasks(httpRequestFactory, alfrescoConfig, params);
+		List<Task> tasksAssigned = AlfrescoWorkflowHelper.getTasks(httpRequestFactory, alfrescoConfig, params)
+				.getData();
 
 		factory = new AlfrescoRESTWhereQueryParamsFactory();
 		value = new AlfrescoParamPredicate();
@@ -75,21 +76,22 @@ public class TaskService extends ZefiroAbstractServcie {
 		where = factory.add("candidateUser", value).build();
 		params = new HashMap<String, Object>();
 		params.put(AlfrescoRESTQueryParamsEnum.WHERE.getName(), where);
-		List<Task> tasksCandidated = AlfrescoWorkflowHelper.getTasks(httpRequestFactory, alfrescoConfig, params);
+		List<Task> tasksCandidated = AlfrescoWorkflowHelper.getTasks(httpRequestFactory, alfrescoConfig, params)
+				.getData();
 
 		return buildTaskComplete((List<Task>) CollectionUtils.union(tasksAssigned, tasksCandidated));
 	}
 
 	public List<FormModel> loadFormModel(String id) {
-		return AlfrescoWorkflowHelper.getTaskFormModel(id, httpRequestFactory, alfrescoConfig);
+		return AlfrescoWorkflowHelper.getTaskFormModel(id, httpRequestFactory, alfrescoConfig).getData();
 	}
 
 	public List<Variable> loadVariables(String id) {
-		return AlfrescoWorkflowHelper.getTaskVariables(id, httpRequestFactory, alfrescoConfig);
+		return AlfrescoWorkflowHelper.getTaskVariables(id, httpRequestFactory, alfrescoConfig).getData();
 	}
 
 	public List<Item> loadItems(String id) {
-		return AlfrescoWorkflowHelper.getTaskItems(id, httpRequestFactory, alfrescoConfig);
+		return AlfrescoWorkflowHelper.getTaskItems(id, httpRequestFactory, alfrescoConfig).getData();
 	}
 
 	public TaskComplete update(String id, TaskComplete task, String updatedProperties) {
@@ -155,8 +157,8 @@ public class TaskService extends ZefiroAbstractServcie {
 			TaskComplete taskComplete = buildTaskComplete(task, process);
 			addPersonDecoding(task.getAssignee(), taskComplete, people, DecodingType.ASSIGNEE);
 			addPersonDecoding(task.getOwner(), taskComplete, people, DecodingType.OWNER);
-			taskComplete.setCandidates(
-					AlfrescoWorkflowHelper.getTaskCandidates(task.getId(), httpRequestFactory, alfrescoConfig));
+			taskComplete.setCandidates(AlfrescoWorkflowHelper
+					.getTaskCandidates(task.getId(), httpRequestFactory, alfrescoConfig).getData());
 			entities.add(taskComplete);
 		}
 		return entities;

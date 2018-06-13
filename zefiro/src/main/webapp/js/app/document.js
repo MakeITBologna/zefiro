@@ -155,7 +155,7 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 		var r = [];
 		var c = new Array();
 		var i = 0;
-		for (var j = 0; j < aProperties.length-1; j++) {
+		for (var j = 0; j < aProperties.length; j++) {
 			if (aProperties[j].queryable) {
 				if (i % nColumns == 0 && i > 0) {
 						r.push(c);

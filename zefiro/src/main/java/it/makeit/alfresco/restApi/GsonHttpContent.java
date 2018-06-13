@@ -1,4 +1,4 @@
-package it.makeit.alfresco;
+package it.makeit.alfresco.restApi;
 
 import java.io.IOException;
 import java.io.OutputStream;

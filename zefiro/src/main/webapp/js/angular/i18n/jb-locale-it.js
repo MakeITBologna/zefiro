@@ -61,7 +61,7 @@ angular.module("jbLocale", ["ngLocale"])
 		"assignee": "Seleziona l'assegnatario",
 		"bpm_assignee": "Seleziona l'utente assegnatario",
 		"bpm_assignees": "Seleziona gli utenti assegnatari",
-		"bpm_groupAssignee": "Seleziona il grouppo assegnatario",
+		"bpm_groupAssignee": "Seleziona il gruppo assegnatario",
 		"bpm_groupAssignees": "Seleziona i gruppi assegnatari"
 	},
 	"status": {

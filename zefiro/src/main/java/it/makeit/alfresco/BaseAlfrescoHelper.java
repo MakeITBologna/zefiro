@@ -1,7 +1,8 @@
 package it.makeit.alfresco;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +22,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import it.makeit.alfresco.restApi.GsonHttpContent;
 import it.makeit.alfresco.restApi.model.AbstractList;
+import it.makeit.alfresco.webscriptsapi.model.Paging;
 import it.makeit.alfresco.workflow.AlfrescoWorkflowException;
 import it.makeit.alfresco.workflow.ResponseBodyPartEnum;
 import it.makeit.alfresco.workflow.model.AlfrescoError;
@@ -39,7 +42,8 @@ public class BaseAlfrescoHelper {
 		return parse(ask(pHttpRequestFactory, url, HttpMethods.GET), ResponseBodyPartEnum.ENTRY.partName(), clz);
 	}
 
-	protected static <T> List<T> loadList(HttpRequestFactory pHttpRequestFactory, GenericUrl url, Class<T> clz) {
+	protected static <T> AbstractList<T> loadList(HttpRequestFactory pHttpRequestFactory, GenericUrl url,
+			Class<? extends AbstractList<T>> clz) {
 		return parseList(ask(pHttpRequestFactory, url, HttpMethods.GET), clz);
 	}
 
@@ -56,8 +60,8 @@ public class BaseAlfrescoHelper {
 				clz);
 	}
 
-	protected static <T> List<T> insertList(HttpRequestFactory pHttpRequestFactory, GenericUrl url, List<T> body,
-			Class<T> clz) {
+	protected static <T> AbstractList<T> insertList(HttpRequestFactory pHttpRequestFactory, GenericUrl url,
+			List<T> body, Class<? extends AbstractList<T>> clz) {
 		HttpContent content = new GsonHttpContent(gson, body);
 		return parseList(ask(pHttpRequestFactory, url, HttpMethods.POST, content), clz);
 	}
@@ -151,16 +155,27 @@ public class BaseAlfrescoHelper {
 		}
 	}
 
-	protected static <T> List<T> parseList(String lResponse, Class<T> clz) {
-		List<T> resList = new LinkedList<T>();
+	protected static <T> AbstractList<T> parseList(String lResponse, Class<? extends AbstractList<T>> clz) {
+		List<T> dataList = new ArrayList<T>();
 		JsonObject obj = gson.fromJson(lResponse, JsonObject.class);
 		JsonObject list = obj.getAsJsonObject(ResponseBodyPartEnum.LIST.partName());
+		Paging pagination = null;
+		Class<T> dataClass = getAbstractListGenricClass(clz);
+
 		if (list != null) {
 			JsonArray entries = list.getAsJsonArray(ResponseBodyPartEnum.ENTRIES.partName());
 			for (JsonElement entry : entries) {
-				resList.add(parse(entry.toString(), ResponseBodyPartEnum.ENTRY.partName(), clz));
+				dataList.add(parse(entry.toString(), ResponseBodyPartEnum.ENTRY.partName(), dataClass));
 			}
+			list.remove(ResponseBodyPartEnum.ENTRIES.partName());
+			pagination = parse(list.toString(), ResponseBodyPartEnum.PAGINATION.partName(), Paging.class);
+			list.remove(ResponseBodyPartEnum.PAGINATION.partName());
 		}
+
+		AbstractList<T> resList = gson.fromJson(list, clz);
+		resList.setData(dataList);
+		resList.setPaging(pagination);
+
 		return resList;
 	}
 
@@ -189,5 +204,29 @@ public class BaseAlfrescoHelper {
 			pParams = new HashMap<String, Object>();
 		}
 		return pParams;
+	}
+
+	@SuppressWarnings({ "restriction", "unchecked" })
+	private static <T> Class<T> getAbstractListGenricClass(Class<? extends AbstractList<T>> clz) {
+		boolean isAbstractList = false;
+		Type[] generics = {};
+
+		while (!isAbstractList) {
+			isAbstractList = clz.getSuperclass().equals(AbstractList.class);
+			if (isAbstractList) {
+				generics = ((sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl) clz.getAnnotatedSuperclass()
+						.getType()).getActualTypeArguments();
+			}
+		}
+
+		Class<T> tclz = null;
+
+		try {
+			tclz = (Class<T>) (generics.length > 0 ? Class.forName(generics[0].getTypeName()) : null);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		return tclz;
 	}
 }

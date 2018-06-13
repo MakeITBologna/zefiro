@@ -17,7 +17,7 @@ public class AuthorityService extends ZefiroAbstractServcie {
 	}
 
 	public List<Person> loadUsers(String charsSeq) {
-		return AlfrescoHelper.getUsers(charsSeq.toLowerCase(), httpRequestFactory, alfrescoConfig, null);
+		return AlfrescoHelper.getUsers(charsSeq.toLowerCase(), httpRequestFactory, alfrescoConfig, null).getData();
 	}
 
 	public List<Group> loadGroups(String charsSeq) {
