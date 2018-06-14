@@ -115,7 +115,7 @@
 				<div class="col-sm-2">
 			  	  <div class="input-group">
 			  	    <span class="input-group-addon"><fmt:message key="jsp.from.label"/></span>
-			        <input id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}-FROM" class="form-control" title="{{p.displayName}}" <fmt:message key="jsp.from.label"/>" type="text" name="{{p.queryName}}|GE" ng-model="documentTemplate[p.queryName+'|GE']" uib-datepicker-popup="${localePatternDate}" is-open="calendarPopups['jbSearchFormDocument-'+jbUtil.sanitize(p.queryName)+'-FROM']"/>
+			        <input id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}-FROM" class="form-control" title="{{p.displayName}} <fmt:message key="jsp.from.label"/>" type="text" name="{{p.queryName}}|GE" ng-model="documentTemplate[p.queryName+'|GE']" uib-datepicker-popup="${localePatternDate}" is-open="calendarPopups['jbSearchFormDocument-'+jbUtil.sanitize(p.queryName)+'-FROM']"/>
 	                <span class="input-group-btn">
 	                  <button type="button" class="btn btn-default" ng-click="openCalendar('jbSearchFormDocument-'+jbUtil.sanitize(p.queryName)+'-FROM')"><i class="fa fa-calendar"></i></button>
 	                </span>
@@ -205,7 +205,11 @@
 		<tr ng-repeat="row in $data track by $index" ng-dblclick="!relation && startEdit($index)">
 
 	      <td ng-if="jbUtil.isEmptyObject(documentType)" sortable="'typeName'">{{row.typeName}}</td>
-	      <td sortable="'description'"><a ng-if="row.properties['cmis:contentStreamId'] && row.properties['cmis:contentStreamId'].value !==null " g-href="a/Document/{{row.id}}/content" target="_blank">{{row.description}}</a><span ng-else>{{row.description}}</span></td>
+	      <td sortable="'description'">
+	        <span ng-if="row.properties['cmis:contentStreamId'] && row.properties['cmis:contentStreamId'].value !==null ">
+	      	  <a ng-href="a/Document/{{row.id}}/content" target="_blank">{{row.description}}</a>
+	        </span>
+	        <span ng-else>{{row.description}}</span></td>
 	      <td ng-if="jbUtil.isEmptyObject(documentType)" sortable="'createdBy'">{{row.createdBy}}</td>
           <td class="text-right" sortable="'created'">{{row.created | date: '${localePatternDate}'}}</td>
 

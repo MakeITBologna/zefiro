@@ -33,6 +33,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
@@ -264,7 +265,11 @@ public class Document {
 
 	@GET
 	@Path("/{id}/content")
-	public Response getDocumentFile(@PathParam("id") String pStrId, @Context ServletContext pServletContext) {
+	public Response getDocumentFile(@PathParam("id") PathSegment pSegment, @Context ServletContext pServletContext) {
+		String pStrId = pSegment.getPath();
+		for (String key : pSegment.getMatrixParameters().keySet()) {
+			pStrId = String.format("%s;%s", pStrId, key);
+		}
 		Session lSession = Util.getUserAlfrescoSession(httpRequest);
 		org.apache.chemistry.opencmis.client.api.Document lDocument = AlfrescoHelper.getDocumentById(lSession, pStrId);
 		ContentStream lContentStream = lDocument.getContentStream();
@@ -648,6 +653,7 @@ public class Document {
 			}
 
 			lStreamingOutput = new StreamingOutput() {
+
 				@Override
 				public void write(OutputStream pOutputStream) throws IOException {
 					PrintUtil.printXLSBeanArray(lStrReportFile, lArrayStrHeader, lArrayList, lLocale, pOutputStream,
