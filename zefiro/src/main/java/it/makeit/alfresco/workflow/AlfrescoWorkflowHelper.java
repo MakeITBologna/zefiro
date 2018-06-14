@@ -57,7 +57,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		deployment.addStringPathParam(id);
 		GenericUrl url = (new GenericUrlFactory(deployment)).build();
 
-		return loadObject(pHttpRequestFactory, url, Deployment.class);
+		return loadObject(pHttpRequestFactory, url, buildHeaders(pConfig), Deployment.class);
 	}
 
 	public static DeploymentsList getDeployments(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
@@ -72,7 +72,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 
 		GenericUrl url = (new GenericUrlFactory(new DeploymentsUrl(pConfig.getHost()))).build(buildParams(pParams));
 
-		return (DeploymentsList) loadList(pHttpRequestFactory, url, DeploymentsList.class);
+		return (DeploymentsList) loadList(pHttpRequestFactory, url, buildHeaders(pConfig), DeploymentsList.class);
 	}
 
 	public static void deleteDeployments(String id, HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
@@ -82,7 +82,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		deployment.addStringPathParam(id);
 		GenericUrl url = (new GenericUrlFactory(deployment)).build();
 
-		ask(pHttpRequestFactory, url, HttpMethods.DELETE);
+		ask(pHttpRequestFactory, url, HttpMethods.DELETE, buildHeaders(pConfig));
 	}
 
 	public static ProcessDefinition getProcessDefinition(String id, HttpRequestFactory pHttpRequestFactory,
@@ -93,7 +93,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		processDefinitionsUrl.addStringPathParam(id);
 		GenericUrl url = (new GenericUrlFactory(processDefinitionsUrl)).build();
 
-		return loadObject(pHttpRequestFactory, url, ProcessDefinition.class);
+		return loadObject(pHttpRequestFactory, url, buildHeaders(pConfig), ProcessDefinition.class);
 	}
 
 	public static ProcessDefinitionList getProcessDefinitions(HttpRequestFactory pHttpRequestFactory,
@@ -110,7 +110,8 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		GenericUrl url = (new GenericUrlFactory(new ProcessDefinitionsUrl(pConfig.getHost())))
 				.build(buildParams(pParams));
 
-		return (ProcessDefinitionList) loadList(pHttpRequestFactory, url, ProcessDefinitionList.class);
+		return (ProcessDefinitionList) loadList(pHttpRequestFactory, url, buildHeaders(pConfig),
+				ProcessDefinitionList.class);
 	}
 
 	public static FormModelList getProcessDefinitionStartFormModel(String processDefinitionId,
@@ -123,7 +124,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		StartFormModelUrl startFormUrl = new StartFormModelUrl(host);
 		GenericUrl url = (new GenericUrlFactory(processUrl)).add(startFormUrl).build();
 
-		return (FormModelList) loadList(pHttpRequestFactory, url, FormModelList.class);
+		return (FormModelList) loadList(pHttpRequestFactory, url, buildHeaders(pConfig), FormModelList.class);
 	}
 
 	public static InputStream getProcessDefinitionImage(String processDefinitionId,
@@ -167,7 +168,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		processUrl.addStringPathParam(id);
 		GenericUrl url = (new GenericUrlFactory(processUrl)).build();
 
-		return loadObject(pHttpRequestFactory, url, WorkflowProcess.class);
+		return loadObject(pHttpRequestFactory, url, buildHeaders(pConfig), WorkflowProcess.class);
 	}
 
 	public static WorkflowProcessList getProcesses(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
@@ -182,7 +183,8 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 
 		GenericUrl url = (new GenericUrlFactory(new ProcessesUrl(pConfig.getHost()))).build(buildParams(pParams));
 
-		return (WorkflowProcessList) loadList(pHttpRequestFactory, url, WorkflowProcessList.class);
+		return (WorkflowProcessList) loadList(pHttpRequestFactory, url, buildHeaders(pConfig),
+				WorkflowProcessList.class);
 	}
 
 	public static WorkflowProcess startProcess(WorkflowProcess process, HttpRequestFactory pHttpRequestFactory,
@@ -192,7 +194,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		ProcessesUrl processUrl = new ProcessesUrl(pConfig.getHost());
 		GenericUrl url = (new GenericUrlFactory(processUrl)).build();
 
-		return insert(pHttpRequestFactory, url, process, WorkflowProcess.class);
+		return insert(pHttpRequestFactory, url, buildHeaders(pConfig), process, WorkflowProcess.class);
 	}
 
 	public static List<WorkflowProcess> startProcesses(List<WorkflowProcess> processes,
@@ -202,7 +204,8 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		ProcessesUrl processUrl = new ProcessesUrl(pConfig.getHost());
 		GenericUrl url = (new GenericUrlFactory(processUrl)).build();
 
-		return insertList(pHttpRequestFactory, url, processes, WorkflowProcessList.class).getData();
+		return insertList(pHttpRequestFactory, url, buildHeaders(pConfig), processes, WorkflowProcessList.class)
+				.getData();
 	}
 
 	public static void deleteProcess(String id, HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
@@ -212,7 +215,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		processUrl.addStringPathParam(id);
 		GenericUrl url = (new GenericUrlFactory(processUrl)).build();
 
-		ask(pHttpRequestFactory, url, HttpMethods.DELETE);
+		ask(pHttpRequestFactory, url, HttpMethods.DELETE, buildHeaders(pConfig));
 	}
 
 	public static TaskList getProcessTask(String processId, HttpRequestFactory pHttpRequestFactory,
@@ -232,7 +235,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		TasksUrl tasksUrl = new TasksUrl(host);
 		GenericUrl url = (new GenericUrlFactory(processUrl)).add(tasksUrl).build(buildParams(pParams));
 
-		return (TaskList) loadList(pHttpRequestFactory, url, TaskList.class);
+		return (TaskList) loadList(pHttpRequestFactory, url, buildHeaders(pConfig), TaskList.class);
 	}
 
 	public static ItemList getProcessItems(String processId, HttpRequestFactory pHttpRequestFactory,
@@ -252,7 +255,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		ItemsUrl itemsUrl = new ItemsUrl(host);
 		GenericUrl url = (new GenericUrlFactory(processUrl)).add(itemsUrl).build(buildParams(pParams));
 
-		return (ItemList) loadList(pHttpRequestFactory, url, ItemList.class);
+		return (ItemList) loadList(pHttpRequestFactory, url, buildHeaders(pConfig), ItemList.class);
 	}
 
 	public static List<Item> insertProcessItems(String processId, List<Item> items,
@@ -266,12 +269,12 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		GenericUrl url = (new GenericUrlFactory(processesUrl)).add(itemUrl).build();
 
 		if (items.size() == 1) {
-			Item item = insert(pHttpRequestFactory, url, items.get(0), Item.class);
+			Item item = insert(pHttpRequestFactory, url, buildHeaders(pConfig), items.get(0), Item.class);
 			List<Item> insertedItems = new ArrayList<Item>();
 			insertedItems.add(item);
 			return insertedItems;
 		}
-		return insertList(pHttpRequestFactory, url, items, ItemList.class).getData();
+		return insertList(pHttpRequestFactory, url, buildHeaders(pConfig), items, ItemList.class).getData();
 	}
 
 	public static void deleteProcessItem(String processId, Item Item, HttpRequestFactory pHttpRequestFactory,
@@ -285,7 +288,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		itemsUrl.addStringPathParam(Item.getId());
 		GenericUrl url = (new GenericUrlFactory(processesUrl)).add(itemsUrl).build();
 
-		ask(pHttpRequestFactory, url, HttpMethods.DELETE);
+		ask(pHttpRequestFactory, url, HttpMethods.DELETE, buildHeaders(pConfig));
 	}
 
 	public static VariableList getProcessVariables(String processId, HttpRequestFactory pHttpRequestFactory,
@@ -305,7 +308,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		VariablesUrl variableUrl = new VariablesUrl(host);
 		GenericUrl url = (new GenericUrlFactory(processUrl)).add(variableUrl).build(buildParams(pParams));
 
-		return (VariableList) loadList(pHttpRequestFactory, url, VariableList.class);
+		return (VariableList) loadList(pHttpRequestFactory, url, buildHeaders(pConfig), VariableList.class);
 	}
 
 	public static List<Variable> insertProcessVariable(String processId, List<Variable> variables,
@@ -320,13 +323,14 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 
 		if (variables.size() == 1) {
 			List<Variable> resList = new ArrayList<Variable>();
-			Variable inserted = insert(pHttpRequestFactory, url, variables.get(0), Variable.class);
+			Variable inserted = insert(pHttpRequestFactory, url, buildHeaders(pConfig), variables.get(0),
+					Variable.class);
 			if (inserted != null) {
 				resList.add(inserted);
 			}
 			return resList;
 		}
-		return insertList(pHttpRequestFactory, url, variables, VariableList.class).getData();
+		return insertList(pHttpRequestFactory, url, buildHeaders(pConfig), variables, VariableList.class).getData();
 	}
 
 	public static Variable updateProcessVariable(String processId, Variable variable,
@@ -340,7 +344,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		varUrl.addStringPathParam(variable.getName());
 		GenericUrl url = (new GenericUrlFactory(processesUrl)).add(varUrl).build();
 
-		return update(pHttpRequestFactory, url, variable, Variable.class);
+		return update(pHttpRequestFactory, url, buildHeaders(pConfig), variable, Variable.class);
 	}
 
 	public static void deleteProcessVariable(String processId, Variable variable,
@@ -354,7 +358,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		varUrl.addStringPathParam(variable.getName());
 		GenericUrl url = (new GenericUrlFactory(processesUrl)).add(varUrl).build();
 
-		ask(pHttpRequestFactory, url, HttpMethods.DELETE);
+		ask(pHttpRequestFactory, url, HttpMethods.DELETE, buildHeaders(pConfig));
 	}
 
 	public static Task getTask(String id, HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
@@ -364,7 +368,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		taskUrl.addStringPathParam(id);
 		GenericUrl url = (new GenericUrlFactory(taskUrl)).build();
 
-		return loadObject(pHttpRequestFactory, url, Task.class);
+		return loadObject(pHttpRequestFactory, url, buildHeaders(pConfig), Task.class);
 	}
 
 	public static TaskList getTasks(HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
@@ -379,7 +383,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 
 		GenericUrl url = (new GenericUrlFactory(new TasksUrl(pConfig.getHost()))).build(buildParams(pParams));
 
-		return (TaskList) loadList(pHttpRequestFactory, url, TaskList.class);
+		return (TaskList) loadList(pHttpRequestFactory, url, buildHeaders(pConfig), TaskList.class);
 	}
 
 	public static Task updateTask(String id, Task task, HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig,
@@ -390,7 +394,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		taskUrl.addStringPathParam(id);
 		GenericUrl url = (new GenericUrlFactory(taskUrl)).build(pParams);
 
-		return update(pHttpRequestFactory, url, task, Task.class);
+		return update(pHttpRequestFactory, url, buildHeaders(pConfig), task, Task.class);
 	}
 
 	public static VariableList getTaskVariables(String taskId, HttpRequestFactory pHttpRequestFactory,
@@ -410,7 +414,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		VariablesUrl varUrl = new VariablesUrl(host);
 		GenericUrl url = (new GenericUrlFactory(taskUrl)).add(varUrl).build(buildParams(pParams));
 
-		return (VariableList) loadList(pHttpRequestFactory, url, VariableList.class);
+		return (VariableList) loadList(pHttpRequestFactory, url, buildHeaders(pConfig), VariableList.class);
 	}
 
 	public static List<Variable> insertTaskVariable(String taskId, List<Variable> variables,
@@ -425,13 +429,14 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 
 		if (variables.size() == 1) {
 			List<Variable> resList = new ArrayList<Variable>();
-			Variable inserted = insert(pHttpRequestFactory, url, variables.get(0), Variable.class);
+			Variable inserted = insert(pHttpRequestFactory, url, buildHeaders(pConfig), variables.get(0),
+					Variable.class);
 			if (inserted != null) {
 				resList.add(inserted);
 			}
 			return resList;
 		}
-		return insertList(pHttpRequestFactory, url, variables, VariableList.class).getData();
+		return insertList(pHttpRequestFactory, url, buildHeaders(pConfig), variables, VariableList.class).getData();
 	}
 
 	public static Variable updateTaskVariable(String taskId, Variable variable, HttpRequestFactory pHttpRequestFactory,
@@ -445,7 +450,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		varUrl.addStringPathParam(variable.getName());
 		GenericUrl url = (new GenericUrlFactory(taskUrl)).add(varUrl).build();
 
-		return update(pHttpRequestFactory, url, variable, Variable.class);
+		return update(pHttpRequestFactory, url, buildHeaders(pConfig), variable, Variable.class);
 	}
 
 	public static void deleteTaskVariable(String taskId, Variable variable, HttpRequestFactory pHttpRequestFactory,
@@ -459,7 +464,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		varUrl.addStringPathParam(variable.getName());
 		GenericUrl url = (new GenericUrlFactory(tasksUrl)).add(varUrl).build();
 
-		ask(pHttpRequestFactory, url, HttpMethods.DELETE);
+		ask(pHttpRequestFactory, url, HttpMethods.DELETE, buildHeaders(pConfig));
 	}
 
 	public static CandidateList getTaskCandidates(String taskId, HttpRequestFactory pHttpRequestFactory,
@@ -479,7 +484,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		CandidatesUrl candidateUrl = new CandidatesUrl(host);
 		GenericUrl url = (new GenericUrlFactory(taskUrl)).add(candidateUrl).build(buildParams(pParams));
 
-		return (CandidateList) loadList(pHttpRequestFactory, url, CandidateList.class);
+		return (CandidateList) loadList(pHttpRequestFactory, url, buildHeaders(pConfig), CandidateList.class);
 	}
 
 	public static FormModelList getTaskFormModel(String taskId, HttpRequestFactory pHttpRequestFactory,
@@ -499,7 +504,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		TaskFormModelUrl taskFormModelUrl = new TaskFormModelUrl(host);
 		GenericUrl url = (new GenericUrlFactory(taskUrl)).add(taskFormModelUrl).build(buildParams(pParams));
 
-		return (FormModelList) loadList(pHttpRequestFactory, url, FormModelList.class);
+		return (FormModelList) loadList(pHttpRequestFactory, url, buildHeaders(pConfig), FormModelList.class);
 	}
 
 	public static ItemList getTaskItems(String taskId, HttpRequestFactory pHttpRequestFactory, AlfrescoConfig pConfig) {
@@ -518,7 +523,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		ItemsUrl itemsUrl = new ItemsUrl(host);
 		GenericUrl url = (new GenericUrlFactory(taskUrl)).add(itemsUrl).build(buildParams(pParams));
 
-		return (ItemList) loadList(pHttpRequestFactory, url, ItemList.class);
+		return (ItemList) loadList(pHttpRequestFactory, url, buildHeaders(pConfig), ItemList.class);
 	}
 
 	public static List<Item> insertTaskItems(String taskId, List<Item> items, HttpRequestFactory pHttpRequestFactory,
@@ -532,12 +537,12 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		GenericUrl url = (new GenericUrlFactory(tasksUrl)).add(itemUrl).build();
 
 		if (items.size() == 1) {
-			Item item = insert(pHttpRequestFactory, url, items.get(0), Item.class);
+			Item item = insert(pHttpRequestFactory, url, buildHeaders(pConfig), items.get(0), Item.class);
 			List<Item> insertedItems = new ArrayList<Item>();
 			insertedItems.add(item);
 			return insertedItems;
 		}
-		return insertList(pHttpRequestFactory, url, items, ItemList.class).getData();
+		return insertList(pHttpRequestFactory, url, buildHeaders(pConfig), items, ItemList.class).getData();
 	}
 
 	public static void deleteTaskItem(String taskId, Item Item, HttpRequestFactory pHttpRequestFactory,
@@ -551,7 +556,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		itemsUrl.addStringPathParam(Item.getId());
 		GenericUrl url = (new GenericUrlFactory(tasksUrl)).add(itemsUrl).build();
 
-		ask(pHttpRequestFactory, url, HttpMethods.DELETE);
+		ask(pHttpRequestFactory, url, HttpMethods.DELETE, buildHeaders(pConfig));
 	}
 
 	public static WorkflowDefinitionList getWorkflowDefinitions(HttpRequestFactory pHttpRequestFactory,
@@ -568,7 +573,8 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		WorkflowDefinitionsUrl wfiUrl = new WorkflowDefinitionsUrl(pConfig.getHost());
 		GenericUrl url = new GenericUrlFactory(wfiUrl).build(buildParams(pParams));
 
-		return (WorkflowDefinitionList) loadWebscriptList(pHttpRequestFactory, url, WorkflowDefinitionList.class);
+		return (WorkflowDefinitionList) loadWebscriptList(pHttpRequestFactory, url, buildHeaders(pConfig),
+				WorkflowDefinitionList.class);
 	}
 
 	public static WorkflowInstanceList getWorkflowInstances(HttpRequestFactory pHttpRequestFactory,
@@ -585,7 +591,8 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		WorkflowInstanceUrl wfiUrl = new WorkflowInstanceUrl(pConfig.getHost());
 		GenericUrl url = new GenericUrlFactory(wfiUrl).build(buildParams(pParams));
 
-		return (WorkflowInstanceList) loadWebscriptList(pHttpRequestFactory, url, WorkflowInstanceList.class);
+		return (WorkflowInstanceList) loadWebscriptList(pHttpRequestFactory, url, buildHeaders(pConfig),
+				WorkflowInstanceList.class);
 	}
 
 	public static WorkflowInstance getWorkflowInstance(String id, HttpRequestFactory pHttpRequestFactory,
@@ -603,7 +610,7 @@ public class AlfrescoWorkflowHelper extends BaseAlfrescoHelper {
 		wfiUrl.addStringPathParam(id);
 		GenericUrl url = new GenericUrlFactory(wfiUrl).build(buildParams(pParams));
 
-		return loadWebscriptObject(pHttpRequestFactory, url, WorkflowInstance.class);
+		return loadWebscriptObject(pHttpRequestFactory, url, buildHeaders(pConfig), WorkflowInstance.class);
 	}
 
 }

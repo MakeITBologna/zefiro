@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
+import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpMethods;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
@@ -38,50 +39,56 @@ public class BaseAlfrescoHelper {
 	protected static Gson gsonParser = new GsonBuilder().setDateFormat(dateFormatParser).create();;
 
 	// UTILS METHODS BELOW
-	protected static <T> T loadObject(HttpRequestFactory pHttpRequestFactory, GenericUrl url, Class<T> clz) {
-		return parse(ask(pHttpRequestFactory, url, HttpMethods.GET), ResponseBodyPartEnum.ENTRY.partName(), clz);
+	protected static <T> T loadObject(HttpRequestFactory pHttpRequestFactory, GenericUrl url, HttpHeaders headers,
+			Class<T> clz) {
+		return parse(ask(pHttpRequestFactory, url, HttpMethods.GET, headers), ResponseBodyPartEnum.ENTRY.partName(),
+				clz);
 	}
 
 	protected static <T> AbstractList<T> loadList(HttpRequestFactory pHttpRequestFactory, GenericUrl url,
-			Class<? extends AbstractList<T>> clz) {
-		return parseList(ask(pHttpRequestFactory, url, HttpMethods.GET), clz);
+			HttpHeaders headers, Class<? extends AbstractList<T>> clz) {
+		return parseList(ask(pHttpRequestFactory, url, HttpMethods.GET, headers), clz);
 	}
 
-	protected static <T> T update(HttpRequestFactory pHttpRequestFactory, GenericUrl url, T body, Class<T> clz) {
+	protected static <T> T update(HttpRequestFactory pHttpRequestFactory, GenericUrl url, HttpHeaders headers, T body,
+			Class<T> clz) {
 
 		HttpContent content = new GsonHttpContent(gson, body);
-		return parse(ask(pHttpRequestFactory, url, HttpMethods.PUT, content), ResponseBodyPartEnum.ENTRY.partName(),
-				clz);
+		return parse(ask(pHttpRequestFactory, url, HttpMethods.PUT, content, headers),
+				ResponseBodyPartEnum.ENTRY.partName(), clz);
 	}
 
-	protected static <T> T insert(HttpRequestFactory pHttpRequestFactory, GenericUrl url, T body, Class<T> clz) {
+	protected static <T> T insert(HttpRequestFactory pHttpRequestFactory, GenericUrl url, HttpHeaders headers, T body,
+			Class<T> clz) {
 		HttpContent content = new GsonHttpContent(gson, body);
-		return parse(ask(pHttpRequestFactory, url, HttpMethods.POST, content), ResponseBodyPartEnum.ENTRY.partName(),
-				clz);
+		return parse(ask(pHttpRequestFactory, url, HttpMethods.POST, content, headers),
+				ResponseBodyPartEnum.ENTRY.partName(), clz);
 	}
 
 	protected static <T> AbstractList<T> insertList(HttpRequestFactory pHttpRequestFactory, GenericUrl url,
-			List<T> body, Class<? extends AbstractList<T>> clz) {
+			HttpHeaders headers, List<T> body, Class<? extends AbstractList<T>> clz) {
 		HttpContent content = new GsonHttpContent(gson, body);
-		return parseList(ask(pHttpRequestFactory, url, HttpMethods.POST, content), clz);
+		return parseList(ask(pHttpRequestFactory, url, HttpMethods.POST, content, headers), clz);
 	}
 
-	protected static <T> T loadWebscriptObject(HttpRequestFactory pHttpRequestFactory, GenericUrl url, Class<T> clz) {
-		return parseWebscriptObject(ask(pHttpRequestFactory, url, HttpMethods.GET), clz);
+	protected static <T> T loadWebscriptObject(HttpRequestFactory pHttpRequestFactory, GenericUrl url,
+			HttpHeaders headers, Class<T> clz) {
+		return parseWebscriptObject(ask(pHttpRequestFactory, url, HttpMethods.GET, headers), clz);
 	}
 
 	protected static <T> AbstractList<T> loadWebscriptList(HttpRequestFactory pHttpRequestFactory, GenericUrl url,
-			Class<? extends AbstractList<T>> clz) {
-		return parseWebscriptList(ask(pHttpRequestFactory, url, HttpMethods.GET), clz);
-	}
-
-	protected static String ask(HttpRequestFactory pHttpRequestFactory, GenericUrl url, String method) {
-		HttpContent content = new GsonHttpContent(gson, "");
-		return ask(pHttpRequestFactory, url, method, content);
+			HttpHeaders headers, Class<? extends AbstractList<T>> clz) {
+		return parseWebscriptList(ask(pHttpRequestFactory, url, HttpMethods.GET, headers), clz);
 	}
 
 	protected static String ask(HttpRequestFactory pHttpRequestFactory, GenericUrl url, String method,
-			HttpContent content) {
+			HttpHeaders headers) {
+		HttpContent content = new GsonHttpContent(gson, "");
+		return ask(pHttpRequestFactory, url, method, content, headers);
+	}
+
+	protected static String ask(HttpRequestFactory pHttpRequestFactory, GenericUrl url, String method,
+			HttpContent content, HttpHeaders headers) {
 		try {
 			HttpRequest request;
 			switch (method) {
@@ -96,6 +103,9 @@ public class BaseAlfrescoHelper {
 				break;
 			default:
 				request = pHttpRequestFactory.buildGetRequest(url);
+			}
+			if (headers != null) {
+				request.setHeaders(headers);
 			}
 
 			debugRequest(request);
@@ -228,5 +238,14 @@ public class BaseAlfrescoHelper {
 		}
 
 		return tclz;
+	}
+
+	protected static HttpHeaders buildHeaders(AlfrescoConfig pConfig) {
+		HttpHeaders headers = new HttpHeaders();
+		String languages = pConfig.getAcceptedLanguageAsString();
+		if (languages != null) {
+			headers.set("Accept-language", languages);
+		}
+		return headers;
 	}
 }

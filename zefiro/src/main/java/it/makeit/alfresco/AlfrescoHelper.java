@@ -178,7 +178,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		PeopleUrl peopleUrl = new PeopleUrl(pConfig.getHost());
 		GenericUrl url = (new GenericUrlFactory(queriesUrl)).add(peopleUrl).build(params);
 
-		return (PersonList) loadList(pHttpRequestFactory, url, PersonList.class);
+		return (PersonList) loadList(pHttpRequestFactory, url, buildHeaders(pConfig), PersonList.class);
 	}
 
 	/**

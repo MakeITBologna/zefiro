@@ -1,7 +1,8 @@
 package it.makeit.alfresco;
 
 import java.net.URL;
-
+import java.util.Arrays;
+import java.util.List;
 
 public class AlfrescoConfig {
 
@@ -9,7 +10,8 @@ public class AlfrescoConfig {
 	private String username;
 	private String password;
 	private String rootFolderId;
-
+	private List<String> acceptedLanguages;
+	private final String SEPARATOR = ",";
 
 	public AlfrescoConfig(URL host, String username, String password, String rootFolderId) {
 		this.host = host;
@@ -24,8 +26,6 @@ public class AlfrescoConfig {
 		this.username = username;
 		this.password = password;
 	}
-
-
 
 	public URL getHost() {
 		return host;
@@ -57,5 +57,31 @@ public class AlfrescoConfig {
 
 	public void setRootFolderId(String rootFolderId) {
 		this.rootFolderId = rootFolderId;
+	}
+
+	public List<String> getAcceptedLanguages() {
+		return acceptedLanguages;
+	}
+
+	public void setAcceptedLanguages(List<String> acceptedLanguages) {
+		this.acceptedLanguages = acceptedLanguages;
+	}
+
+	public void setAcceptedLanguages(String acceptedLanguages) {
+		String al = acceptedLanguages.replaceAll("\\s+", "");
+		this.acceptedLanguages = Arrays.asList(al.split(","));
+	}
+
+	public String getAcceptedLanguageAsString() {
+		StringBuilder sb = new StringBuilder("");
+		for (int i = 0; i < acceptedLanguages.size(); i++) {
+			String s = acceptedLanguages.get(i);
+			if (i == 0) {
+				sb.append(s);
+				continue;
+			}
+			sb.append(SEPARATOR).append(s);
+		}
+		return sb.toString();
 	}
 }

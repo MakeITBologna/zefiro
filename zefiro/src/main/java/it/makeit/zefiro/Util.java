@@ -40,7 +40,12 @@ public final class Util {
 	}
 
 	public static AlfrescoConfig getUserAlfrescoConfig(HttpServletRequest httpRequest) {
-		return (AlfrescoConfig) httpRequest.getSession().getAttribute("alfrescoConfig");
+		AlfrescoConfig aConfig = (AlfrescoConfig) httpRequest.getSession().getAttribute("alfrescoConfig");
+		String acceptedLanguages = httpRequest.getHeader(javax.ws.rs.core.HttpHeaders.ACCEPT_LANGUAGE);
+		if (StringUtils.isNotBlank(acceptedLanguages)) {
+			aConfig.setAcceptedLanguages(acceptedLanguages);
+		}
+		return aConfig;
 	}
 
 	public static Session getUserAlfrescoSession(HttpServletRequest httpRequest) {
