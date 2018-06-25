@@ -7,6 +7,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -68,7 +69,7 @@ public class ProcessEndpoint extends AbstractEndpoint {
 
 	@GET
 	@Path("workflowInstances")
-	public Response getWorkflowInstances() {
+	public Response getWorkflowInstances(@QueryParam("from") String from, @QueryParam("to") String to) {
 		ProcessService service = (ProcessService) getServiceInstance(ProcessService.class);
 
 		return Response.ok(service.loadWorkflowInstances()).build();
@@ -91,7 +92,7 @@ public class ProcessEndpoint extends AbstractEndpoint {
 
 	@GET
 	@Path("completedWorkflow")
-	public Response getCompletedWorkflow() {
+	public Response getCompletedWorkflow(@QueryParam("from") String from, @QueryParam("to") String to) {
 		ProcessService service = (ProcessService) getServiceInstance(ProcessService.class);
 
 		return Response.ok(service.loadCompletedWorkflows()).build();

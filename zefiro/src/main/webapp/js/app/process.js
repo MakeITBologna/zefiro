@@ -41,9 +41,10 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 					url: 'a/Process/workflowInstances/:id',
 					method: 'GET',
 				}, getcompletedWorkflow: {
-				 	url: 'a/Process/completedWorkflow/:id',
+				 	url: 'a/Process/completedWorkflow',
 					method: 'GET',
-					isArray: true
+					isArray: true,
+					params : {start:null, to:null}
 				}, getWorkflowDefinitions: {
 					url: 'a/Process/workflowDefinitions',
 					method: 'GET',
@@ -52,8 +53,8 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 			});
 	}])
 
-	.controller('ProcessController', ['$scope', 'ProcessResource', 'NgTableParams', 'jbMessages', 'jbUtil', 'jbWorkflowUtil','WORKFLOW_DEFINITION_PROPERTIES', 'WORKFLOW_INSTANCE_PROPERTIES', 'deadlineTMessage',
-		function ($scope, ProcessResource, NgTableParams, jbMessages, jbUtil, jbWorkflowUtil, WORKFLOW_DEFINITION_PROPERTIES, WORKFLOW_INSTANCE_PROPERTIES, deadlineTMessage) {
+	.controller('ProcessController', ['$scope', 'ProcessResource', 'NgTableParams', 'jbMessages', 'jbUtil', 'jbWorkflowUtil','WORKFLOW_DEFINITION_PROPERTIES', 'WORKFLOW_INSTANCE_PROPERTIES', 'deadlineTMessage', 'jbValidate', 
+		function ($scope, ProcessResource, NgTableParams, jbMessages, jbUtil, jbWorkflowUtil, WORKFLOW_DEFINITION_PROPERTIES, WORKFLOW_INSTANCE_PROPERTIES, deadlineTMessage, jbValidate) {
 
 			$scope.jbctrl = $scope;
 			$scope.jbMessages=jbMessages;
@@ -62,31 +63,46 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 			$scope.jbWorkflowUtil = jbWorkflowUtil;
 			
 			$scope.processes = {};
+			
+			$scope.processFilter = {};
+			
+			
 			$scope.processTable = new NgTableParams();
 			$scope.isGroupHeaderRowVisible = false;
 			$scope.definitionsMap = {};
 			$scope.processCompletedTable = new NgTableParams();
 			$scope.table = $scope.processTable;
+			
+			
+			
 			//Ricerca documenti a partire dalla form di ricerca
-			$scope.initList = function () {
-				var definitionsPromise = ProcessResource.getWorkflowDefinitions({}, function(){
-					console.log("----definitionsPromise", definitionsPromise);
-										var processesPromise = ProcessResource.getWorkflowInstances({}, function(){
-						console.log("----processPromise", processesPromise);
-						var completedWorkflowPromise = ProcessResource.getcompletedWorkflow({}, function(){
-							cleanListData();
-							for(var i = 0; i<definitionsPromise.length; i++){
-								$scope.definitionsMap[definitionsPromise[i][$scope.WORKFLOW_DEFINITION_PROPERTIES.URL]] = definitionsPromise[i];
-							}
-							
-							console.log("----completedWorkflowPromise", completedWorkflowPromise);
-							$scope.processTable.settings({ dataset: processesPromise });
-							$scope.processCompletedTable.settings({ dataset: completedWorkflowPromise });
-							$scope.table = $scope.processTable;//$scope.listIsInit = true;	
-						})
+			$scope.initList = function() {
+			var definitionsPromise = ProcessResource.getWorkflowDefinitions({}, function() {
+				
+				console.log("----definitionsPromise", definitionsPromise);
+				
+				var processesPromise = ProcessResource.getWorkflowInstances({}, function() {
+					
+					console.log("----processPromise", processesPromise);
+					var completedWorkflowPromise = ProcessResource.getcompletedWorkflow({}, function() {
+						cleanListData();
+						for (var i = 0; i < definitionsPromise.length; i++) {
+							$scope.definitionsMap[definitionsPromise[i][$scope.WORKFLOW_DEFINITION_PROPERTIES.URL]] = definitionsPromise[i];
+						}
+	
+						console.log("----completedWorkflowPromise", completedWorkflowPromise);
+						$scope.processTable.settings({
+							dataset : processesPromise
+						});
+						$scope.processCompletedTable.settings({
+							dataset : completedWorkflowPromise
+						});
+						$scope.table = $scope.processTable;// $scope.listIsInit =
+															// true;
 					})
 				})
-			}
+			})
+		}
 		
 			cleanListData = function(){
 				$scope.processTable = new NgTableParams({ group: $scope.WORKFLOW_INSTANCE_PROPERTIES.DEFINITION_URL }, {
@@ -227,6 +243,40 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 			}
 			
 			$scope.processPriority = $scope.jbWorkflowUtil.getPriorityValues();
+			
+			
+			$scope.jbValidate = jbValidate;
+			
+			$scope.clearSearch = function(form) {
+				jbValidate.clearForm(form);
+				
+				$scope.processFilter['completed-from'] = null;
+				$scope.processFilter['completed-to'] = null;
+				
+			};
+			
+			//Ricerca documenti a partire dalla form di ricerca
+			$scope.search = function() {
+				
+				
+				var processesPromise = ProcessResource.getWorkflowInstances({}, function() {
+					
+					console.log("----processPromise", processesPromise);
+					var completedWorkflowPromise = ProcessResource.getcompletedWorkflow({from:"ciao"}, function() {
+						
+						console.log("----completedWorkflowPromise", completedWorkflowPromise);
+						$scope.processTable.settings({
+							dataset : processesPromise
+						});
+						$scope.processCompletedTable.settings({
+							dataset : completedWorkflowPromise
+						});
+						
+					})
+				})
+				
+			};
+			
 		}])
 		
 

@@ -130,7 +130,7 @@ public class ProcessService extends ZefiroAbstractServcie {
 		// Warkaround per evitare errori quando è stata effettuata un undeploy
 		// di definizioni con instanze attive
 		params.put(AlfrescoRESTQueryParamsEnum.EXCLUDE.getName(), "activity$jbpippo");
-
+		
 		return loadWorkflowInstances(params);
 	}
 
