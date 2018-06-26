@@ -10,7 +10,6 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 		"bpm_comment",
 //		"bpm_status",
 	])
-
 	.factory('ProcessResource', ['$resource', function ($resource) {
 		return $resource('a/Process/processes/:id', { id: '@id' },
 			{
@@ -36,7 +35,8 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 				}, getWorkflowInstances: {
 					url: 'a/Process/workflowInstances',
 					method: 'GET',
-					isArray: true
+					isArray: true,
+					//params : {from:null, to:null}
 				},  getWorkflowInstance: {
 					url: 'a/Process/workflowInstances/:id',
 					method: 'GET',
@@ -235,6 +235,11 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 					"2": jbMessages.task.completedInTime,
 					"3": jbMessages.task.completedInTime
 			}
+
+			$scope.status= {
+				ACTIVE_PROCESS: 1,
+				COMPLETED_PROCESS: 2
+			}
 			
 			$scope.taskPriority  = {
 				"1": jbMessages.priorityHigh,
@@ -249,7 +254,6 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 			
 			$scope.clearSearch = function(form) {
 				jbValidate.clearForm(form);
-				
 				$scope.processFilter['completed-from'] = null;
 				$scope.processFilter['completed-to'] = null;
 				
@@ -257,23 +261,27 @@ angular.module('process', ['ngResource', 'ui.bootstrap', 'ngTable', 'angular.fil
 			
 			//Ricerca documenti a partire dalla form di ricerca
 			$scope.search = function() {
+				var from = $scope.processFilter['completed-from'];
+				var to = $scope.processFilter['completed-to'];
 				
-				
-				var processesPromise = ProcessResource.getWorkflowInstances({}, function() {
-					
-					console.log("----processPromise", processesPromise);
-					var completedWorkflowPromise = ProcessResource.getcompletedWorkflow({from:"ciao"}, function() {
-						
-						console.log("----completedWorkflowPromise", completedWorkflowPromise);
+				if($scope.jbctrl.choice == $scope.status.ACTIVE_PROCESS)
+					var processesPromise = ProcessResource.getWorkflowInstances({start: from, end:to}, function() {
+						console.log("----processPromise", processesPromise);
 						$scope.processTable.settings({
 							dataset : processesPromise
 						});
+					});
+					console.log("date------", from);
+				if($scope.jbctrl.choice == $scope.status.COMPLETED_PROCESS)
+					var completedWorkflowPromise = ProcessResource.getcompletedWorkflow({start: from, end: to}, function() {
+						
+						console.log("----completedWorkflowPromise", completedWorkflowPromise);
 						$scope.processCompletedTable.settings({
 							dataset : completedWorkflowPromise
 						});
-						
+					
 					})
-				})
+				//})
 				
 			};
 			

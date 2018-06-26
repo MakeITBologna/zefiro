@@ -354,6 +354,10 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		lMapParameter.put(SessionParameter.PASSWORD, config.getPassword());
 		lMapParameter.put(SessionParameter.ATOMPUB_URL, buildUrl(ATOMPUB_CMIS11_URL_TEMPLATE, config));
 		lMapParameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
+		//lMapParameter.put(SessionParameter.LOCALE_ISO639_LANGUAGE, config.getAcceptedLanguageAsString());
+		//session Locale
+		lMapParameter.put(SessionParameter.LOCALE_ISO3166_COUNTRY, "IT");
+		lMapParameter.put(SessionParameter.LOCALE_ISO639_LANGUAGE, "it");
 
 		// creo la session factory
 		SessionFactory lSessionFactory = SessionFactoryImpl.newInstance();

@@ -1,6 +1,8 @@
 package it.makeit.zefiro.ws.resources;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -11,6 +13,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import it.makeit.alfresco.webscriptsapi.AlfrescoWorkflowInstanceQueryParamsEnum;
 import it.makeit.alfresco.workflow.model.Item;
 import it.makeit.zefiro.dao.WorkFlowProcessComplete;
 import it.makeit.zefiro.service.ProcessService;
@@ -69,10 +72,10 @@ public class ProcessEndpoint extends AbstractEndpoint {
 
 	@GET
 	@Path("workflowInstances")
-	public Response getWorkflowInstances(@QueryParam("from") String from, @QueryParam("to") String to) {
+	public Response getWorkflowInstances(@QueryParam("start") String from, @QueryParam("end") String to) {
 		ProcessService service = (ProcessService) getServiceInstance(ProcessService.class);
-
-		return Response.ok(service.loadWorkflowInstances()).build();
+		
+		return Response.ok(service.loadWorkflowInstances(from, to)).build();
 	}
 
 	@GET
@@ -92,10 +95,10 @@ public class ProcessEndpoint extends AbstractEndpoint {
 
 	@GET
 	@Path("completedWorkflow")
-	public Response getCompletedWorkflow(@QueryParam("from") String from, @QueryParam("to") String to) {
+	public Response getCompletedWorkflow(@QueryParam("start") String from, @QueryParam("end") String to) {
 		ProcessService service = (ProcessService) getServiceInstance(ProcessService.class);
-
-		return Response.ok(service.loadCompletedWorkflows()).build();
+		System.out.println("date range : (" + from +"," + to +")");
+		return Response.ok(service.loadCompletedWorkflows(from, to)).build();
 	}
 
 }
