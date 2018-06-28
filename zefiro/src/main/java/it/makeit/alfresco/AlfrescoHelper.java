@@ -12,8 +12,11 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
@@ -24,6 +27,7 @@ import org.apache.chemistry.opencmis.client.api.ItemIterable;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
+import org.apache.chemistry.opencmis.client.api.Property;
 import org.apache.chemistry.opencmis.client.api.QueryResult;
 import org.apache.chemistry.opencmis.client.api.Relationship;
 import org.apache.chemistry.opencmis.client.api.RelationshipType;
@@ -79,6 +83,7 @@ import it.makeit.alfresco.webscriptsapi.entities.GroupsUrl;
 import it.makeit.alfresco.webscriptsapi.model.GroupsList;
 import it.makeit.alfresco.webscriptsapi.services.NodeService;
 import it.makeit.jbrick.Log;
+import it.makeit.jbrick.web.LocaleUtil;
 
 public class AlfrescoHelper extends BaseAlfrescoHelper {
 
@@ -96,7 +101,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 	private static final String LOGIN_URL_TEMPLATE = "%1$s/alfresco/service/api/login";
 
 	private static final String DEFAULT_BASE_DOC_TYPE = "cmis:document";
-
+	
 	private static final Gson mGson = new Gson();
 
 	@Deprecated
@@ -343,7 +348,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 
 	}
 
-	public static Session createSession(AlfrescoConfig config) {
+	public static Session createSession(AlfrescoConfig config, Locale locale) {
 		mLog.debug("Start createSession()");
 
 		Map<String, String> lMapParameter = new HashMap<String, String>();
@@ -356,9 +361,10 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		lMapParameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
 		//lMapParameter.put(SessionParameter.LOCALE_ISO639_LANGUAGE, config.getAcceptedLanguageAsString());
 		//session Locale
-		lMapParameter.put(SessionParameter.LOCALE_ISO3166_COUNTRY, "IT");
-		lMapParameter.put(SessionParameter.LOCALE_ISO639_LANGUAGE, "it");
-
+		if(locale != null) {
+			lMapParameter.put(SessionParameter.LOCALE_ISO3166_COUNTRY, locale.getCountry());
+			lMapParameter.put(SessionParameter.LOCALE_ISO639_LANGUAGE, locale.getLanguage());
+		}
 		// creo la session factory
 		SessionFactory lSessionFactory = SessionFactoryImpl.newInstance();
 
@@ -863,8 +869,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 
 					if (lPropData != null) {
 						String lObjectId = (String) lPropData.getFirstValue();
-						CmisObject lObj = pSession.getObject(pSession.createObjectId(lObjectId));
-
+						CmisObject lObj = pSession.getObject(pSession.createObjectId(lObjectId)); 
 						lHashMapResults.put(lObjectId, (Document) lObj);
 					}
 				}

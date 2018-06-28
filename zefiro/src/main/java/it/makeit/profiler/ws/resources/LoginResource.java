@@ -4,11 +4,13 @@ import it.makeit.alfresco.AlfrescoConfig;
 import it.makeit.alfresco.AlfrescoHelper;
 import it.makeit.alfresco.publicapi.model.Person;
 import it.makeit.jbrick.http.SessionUtil;
+import it.makeit.jbrick.web.LocaleUtil;
 import it.makeit.jbrick.ws.resources.AbstractResource;
 import it.makeit.profiler.dao.UsersBean;
 import it.makeit.zefiro.Util;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -82,7 +84,8 @@ public class LoginResource extends AbstractResource {
 
 		AlfrescoConfig lAlfrescoConfig = Util.getDefaultAlfrescoConfig(lUsername, lPassword);
 		lSession.setAttribute("alfrescoConfig", lAlfrescoConfig);
-		lSession.setAttribute("alfrescoSession", AlfrescoHelper.createSession(lAlfrescoConfig));
+		Locale locale = LocaleUtil.getLocale(pRequest.getSession());
+		lSession.setAttribute("alfrescoSession", AlfrescoHelper.createSession(lAlfrescoConfig, locale));
 
 		return Response.ok(lUsersBean).build();
 	}

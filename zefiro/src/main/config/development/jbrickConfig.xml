@@ -13,8 +13,8 @@
 	</dataTypeConverters>
 
  <!--<alfresco baseTypeId="D:myca:calcio" host="http://127.0.0.1:8080" rootFolderId="5a556f1c-dce6-42bd-aea1-3d918660dbba"/> 	-->
-<alfresco baseTypeId="D:mio:mioDocument" host="http://10.232.1.210:8080" rootFolderId="dd44465f-7563-4130-b672-b49dfb254e06"/>
-
+<!--<alfresco baseTypeId="D:mio:mioDocument" host="http://10.232.1.210:8080" rootFolderId="dd44465f-7563-4130-b672-b49dfb254e06"/> -->
+	<alfresco baseTypeId="cmis:document" host="http://10.232.1.211:8080" rootFolderId="0e9621a2-1e16-4a6b-97c3-53bda3e49de7"/> 
 	<propertyBlacklist>
 		<entry name="alfcmis:nodeRef" />
 		<entry name="cmis:isImmutable" />

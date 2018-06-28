@@ -39,7 +39,7 @@ public class BaseAlfrescoHelper {
 	protected static Gson gsonParser = new GsonBuilder().setDateFormat(dateFormatParser).create();;
 
 	// UTILS METHODS BELOW
-	protected static <T> T loadObject(HttpRequestFactory pHttpRequestFactory, GenericUrl url, HttpHeaders headers,
+	public static <T> T loadObject(HttpRequestFactory pHttpRequestFactory, GenericUrl url, HttpHeaders headers,
 			Class<T> clz) {
 		return parse(ask(pHttpRequestFactory, url, HttpMethods.GET, headers), ResponseBodyPartEnum.ENTRY.partName(),
 				clz);

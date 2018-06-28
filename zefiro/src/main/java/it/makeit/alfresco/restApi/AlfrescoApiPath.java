@@ -6,7 +6,8 @@ package it.makeit.alfresco.restApi;
 public enum AlfrescoApiPath {
 
 	WORKFLOW("/alfresco/api/-default-/public/workflow/versions/1"), ALFRESCO(
-			"/alfresco/api/-default-/public/alfresco/versions/1"), SERVICE("/alfresco/s/api");
+			"/alfresco/api/-default-/public/alfresco/versions/1"), SERVICE("/alfresco/s/api"),
+	RENDITION("/api/-default-/public/alfresco/versions/1/nodes");
 
 	private String path;
 
