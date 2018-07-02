@@ -19,10 +19,10 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 
 import it.makeit.alfresco.AlfrescoConfig;
 import it.makeit.alfresco.AlfrescoHelper;
+import it.makeit.alfresco.RenditionKinds;
 import it.makeit.alfresco.restApi.AlfrescoApiPath;
 import it.makeit.jbrick.JBrickException;
 import it.makeit.jbrick.Log;
-import it.makeit.zefiro.MimeType;
 import it.makeit.zefiro.Util;
 
 /**
@@ -32,6 +32,7 @@ public final class AlfrescoRendition {
 
 	private static final com.google.api.client.json.JsonFactory JSON_FACTORY = new JacksonFactory();
 	private static final Log mLog = Log.getInstance(AlfrescoRendition.class);
+	public static final int RENDITION_ALREADY_EXISTS = 409;
 
 	/**
 	 * For Alfresco 5.2.* and next
@@ -41,6 +42,7 @@ public final class AlfrescoRendition {
 	 *            document reference
 	 * @param httpRequest
 	 * @return statusCode
+	 * @throws IOException
 	 */
 	public static int createRendition(String docRef, HttpServletRequest httpRequest) {
 		mLog.debug("creating rendition");
@@ -50,18 +52,19 @@ public final class AlfrescoRendition {
 		HttpContent content = new JsonHttpContent(JSON_FACTORY, content());
 		HttpRequest request = null;
 		HttpResponse response = null;
+		int status = -1;
 		try {
 			request = httpRequestFactory.buildPostRequest(buildUrl(docRef, alfrescoConfig), content)
 					.setHeaders(headers());
-			response = request.execute();
+			status = request.execute().getStatusCode();
 		} catch (IOException e) {
-			handleResponseError(e);
+			HttpResponseException httpResponseException = (HttpResponseException) e;
+			status = httpResponseException.getStatusCode();
 		} finally {
 			handleDisconnect(response);
 		}
 		mLog.debug("End creating rendition");
-		return response.getStatusCode();
-
+		return status;
 	}
 
 	private static void handleDisconnect(HttpResponse response) {
@@ -75,15 +78,9 @@ public final class AlfrescoRendition {
 		}
 	}
 
-	private static void handleResponseError(IOException e) {
-		HttpResponseException ex = (HttpResponseException) e;
-		mLog.debug("End creating rendition with error");
-		throw new JBrickException("jBrickException.Rendition.ResponseException", ex.getMessage());
-	}
-
 	private static Map<String, String> content() {
 		Map<String, String> data = new HashMap<>();
-		data.put("id", MimeType.PDF.value());
+		data.put("id", RenditionKinds.PDF);
 		return data;
 	}
 
@@ -95,12 +92,11 @@ public final class AlfrescoRendition {
 
 	private static GenericUrl buildUrl(String docRef, AlfrescoConfig alfrescoConfig) {
 		GenericUrl url = new GenericUrl(alfrescoConfig.getHost());
-		url.appendRawPath("/alfresco");
-		url.appendRawPath(AlfrescoApiPath.RENDITION.getPath());
-		url.appendRawPath("/");
+		url.appendRawPath(AlfrescoApiPath.ALFRESCO.getPath());
+		url.appendRawPath("/nodes/");
 		url.appendRawPath(docRef);
 		url.appendRawPath("/renditions");
 		return url;
-	}
-
+	}	
+	
 }

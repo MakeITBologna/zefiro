@@ -60,6 +60,7 @@ import it.makeit.alfresco.AlfrescoHelper;
 import it.makeit.alfresco.CmisQueryBuilder;
 import it.makeit.alfresco.CmisQueryPredicate;
 import it.makeit.alfresco.CmisQueryPredicate.Operator;
+import it.makeit.alfresco.RenditionKinds;
 import it.makeit.alfresco.webscriptsapi.services.ThumbnailDefinitions;
 import it.makeit.alfresco.workflow.AlfrescoRendition;
 import it.makeit.jbrick.JBrickConfigManager;
@@ -243,7 +244,6 @@ public class Document {
 		Map<String, String[]> lMapParams = new HashMap<String, String[]>(httpRequest.getParameterMap());
 
 		Session lSession = Util.getUserAlfrescoSession(httpRequest);
-		lSession.getLocale().setDefault(new Locale("it", "IT"));
 		// Session lSession =
 		// AlfrescoHelper.createSession(Util.getUserAlfrescoConfig(httpRequest),
 		// httpRequest);
@@ -298,7 +298,8 @@ public class Document {
 
 	@GET
 	@Path("/{id}/preview")
-	public Response getDocumentPreview(@PathParam("id") String pStrId, @Context ServletContext pServletContext) {
+	public Response getDocumentPreview(@PathParam("id") String pStrId, @Context ServletContext pServletContext)
+			throws IOException {
 		mLog.debug("begin preview document");
 		Session lSession = Util.getUserAlfrescoSession(httpRequest);
 
@@ -308,7 +309,7 @@ public class Document {
 		org.apache.chemistry.opencmis.client.api.Document lDocument = AlfrescoHelper.getDocumentById(lSession, pStrId);
 
 		if (lDocument != null) {
-			
+
 			String lStrDocMimeType = lDocument.getContentStreamMimeType();
 			if (lStrDocMimeType == null) {
 				lInputStream = null;
@@ -330,53 +331,52 @@ public class Document {
 				lMimeType = "image/jpg";
 
 			} else {
-				// // Il documento è altro: si serve l'anteprima PDF
-				// lInputStream =
-				// AlfrescoHelper.getThumbnail(Util.getUserAlfrescoConfig(httpRequest), pStrId,
-				// ThumbnailDefinitions.PDF, true);
-				// lMimeType = "application/pdf";
+
 				List<Rendition> renditions = AlfrescoHelper.getDocumentRenditions(lSession, pStrId);
 
 				mLog.debug("retrieving pdf rendition");
 				boolean founded = false;
 				if (renditions != null)
 					for (Rendition r : renditions) {
-						if (r.getMimeType().equalsIgnoreCase(MimeType.PDF.value())) {
+						if (r.getKind().equalsIgnoreCase(RenditionKinds.PDF)) {
 							lInputStream = r.getContentStream().getStream();
 							founded = true;
+							lMimeType = MimeType.PDF.value();
 							break;
 						}
 					}
-				
+
 				if (!founded) {
 					int statusCode = -1;
-					try {
-						statusCode = AlfrescoRendition.createRendition(pStrId, httpRequest);
-						if (HttpStatusCodes.isSuccess(statusCode)) {
-							int count = 0;
-							while (count < 3) {
-								mLog.debug("get rendition from alfresco, tentativo: " + (count + 1));
-								renditions = AlfrescoHelper.getDocumentRenditions(lSession, pStrId);
-								if (renditions != null)
-									for (Rendition r : renditions) {
-										if (r.getMimeType().equals("lInputStream"))
-											lInputStream = r.getContentStream().getStream();
-									}
 
-								if (lInputStream != null)
-									break;
-								try {
-									TimeUnit.MILLISECONDS.sleep(500);
-								} catch (InterruptedException e) {
-									throw new AlfrescoException(AlfrescoException.GENERIC_EXCEPTION);
+					statusCode = AlfrescoRendition.createRendition(pStrId, httpRequest);
+
+					if (HttpStatusCodes.isSuccess(statusCode)) {
+						int count = 0;
+						while (count < 5) {
+							mLog.debug("get rendition from alfresco, tentativo: " + (count + 1));
+							renditions = AlfrescoHelper.getDocumentRenditions(lSession, pStrId);
+							if (renditions != null)
+								for (Rendition r : renditions) {
+									if (r.getKind().equalsIgnoreCase(RenditionKinds.PDF))
+										lInputStream = r.getContentStream().getStream();
 								}
-								count++;
-							}
 
+							if (lInputStream != null)
+								break;
+							try {
+								TimeUnit.MILLISECONDS.sleep(1000);
+							} catch (InterruptedException e) {
+								throw new AlfrescoException(AlfrescoException.GENERIC_EXCEPTION);
+							}
+							count++;
 						}
-					} catch (JBrickException e) {
-						mLog.debug(String.format("La createRendition a riportata il seguente error: %s", e.getArgs()[0]));
-						lInputStream = null;
+
+					} else if (statusCode == 409) {
+						mLog.debug("pdf rendition already exists.");
+						lMimeType = "image/jpg";
+						lStreamingOutput = createContentStreamForPreviewUnavailable(pServletContext, lStreamingOutput);
+
 					}
 				}
 			}
@@ -389,16 +389,26 @@ public class Document {
 		if (lStreamingOutput == null) {
 
 			lMimeType = "image/jpg";
-			String lBasePath = pServletContext.getRealPath("/document/");
-			try {
-				lStreamingOutput = new StreamStreamingOutput(
-						new BufferedInputStream(new FileInputStream(lBasePath + "/preview_unavailable.jpg")));
-			} catch (FileNotFoundException e) {
-				throw new JBrickException(e, JBrickException.FATAL);
-			}
+			lStreamingOutput = createContentStreamForPreviewUnavailable(pServletContext, lStreamingOutput);
 		}
 		mLog.debug("end of preview document");
 		return Response.ok(lStreamingOutput).type(lMimeType).build();
+	}
+
+	private StreamingOutput createContentStreamForPreviewUnavailable(ServletContext pServletContext,
+			StreamingOutput lStreamingOutput) {
+		String lBasePath = pServletContext.getRealPath("/document/");
+		File file = new File(lBasePath + "/preview_unavailable.jpg");
+		try {
+			lStreamingOutput = new StreamStreamingOutput(
+					new BufferedInputStream(new FileInputStream(file)));
+		} catch (FileNotFoundException e) {
+			throw new JBrickException(e, JBrickException.FATAL);
+		} finally {
+			if (file.exists())
+				file.delete();
+		}
+		return lStreamingOutput;
 	}
 
 	@GET
@@ -447,12 +457,9 @@ public class Document {
 				lFile = new File(lBasePath, lFileName);
 				lFileContentType = TIKA.detect(lFile);
 				lInputStream = new FileInputStream(lFile);
-				
-				String mimeType = Files.probeContentType(lFile.toPath());
-				if(mimeType == null)
-					mimeType = MimeType.OCTET_STREAM.value();
-				lMapProperties.put(MimeType.OCTET_STREAM.value(), mimeType);
-				
+
+				lMapProperties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, lFileContentType);
+
 				lDocument = AlfrescoHelper.createDocument(lSession,
 						getOrCreateFolder(lSession, pDocumentBean.getType()), pDocumentBean.getName(), lFile.length(),
 						lFileContentType, lInputStream, lMapProperties, null, pDocumentBean.getType());

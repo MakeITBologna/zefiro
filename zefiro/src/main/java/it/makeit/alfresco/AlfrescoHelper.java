@@ -16,8 +16,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.DocumentType;
@@ -27,7 +25,6 @@ import org.apache.chemistry.opencmis.client.api.ItemIterable;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
-import org.apache.chemistry.opencmis.client.api.Property;
 import org.apache.chemistry.opencmis.client.api.QueryResult;
 import org.apache.chemistry.opencmis.client.api.Relationship;
 import org.apache.chemistry.opencmis.client.api.RelationshipType;
@@ -42,6 +39,7 @@ import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.data.CmisExtensionElement;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.data.PropertyData;
+import org.apache.chemistry.opencmis.commons.definitions.TypeDefinition;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.CapabilityContentStreamUpdates;
 import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
@@ -83,7 +81,7 @@ import it.makeit.alfresco.webscriptsapi.entities.GroupsUrl;
 import it.makeit.alfresco.webscriptsapi.model.GroupsList;
 import it.makeit.alfresco.webscriptsapi.services.NodeService;
 import it.makeit.jbrick.Log;
-import it.makeit.jbrick.web.LocaleUtil;
+
 
 public class AlfrescoHelper extends BaseAlfrescoHelper {
 
@@ -1038,7 +1036,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		}
 	}
 
-	public static ObjectType getTypeDefinition(Session pSession, String pStrId) {
+	public static ObjectType  getTypeDefinition(Session pSession, String pStrId) {
 		mLog.debug("START getDocumentType(String)");
 
 		ObjectType lType = null;
@@ -1067,16 +1065,33 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		return lRelationTypes;
 	}
 
-	private static List<String> getTypeAspectIds(Session pSession, String pStrTypeId) {
+	public static List<String> getTypeAspectIds(Session pSession, String pStrTypeId) {
 
-		List<String> lFoundAspectIds = new ArrayList<String>();
+		List<String> lFoundAspectIds = new ArrayList<>();
 
-		ObjectType lObjectType = getTypeDefinition(pSession, pStrTypeId);
+		TypeDefinition lObjectType = getTypeDefinition(pSession, pStrTypeId);
 
 		// cerco gli eventuali mandatoryAspect del tipo
 		List<CmisExtensionElement> lExtensions = lObjectType.getExtensions();
 		for (CmisExtensionElement lExtension : lExtensions) {
 			if (lExtension.getName().matches("(?i:.*aspect.*)")) {
+				for (CmisExtensionElement lAspectExtension : lExtension.getChildren()) {
+					lFoundAspectIds.add(lAspectExtension.getValue());
+				}
+			}
+		}
+
+		return lFoundAspectIds;
+	}
+	
+	public static List<String> getTypeAspects(ObjectType obj) {
+
+		List<String> lFoundAspectIds = new ArrayList<String>();
+
+		// cerco gli eventuali mandatoryAspect del tipo
+		List<CmisExtensionElement> lExtensions = obj.getExtensions();
+		for (CmisExtensionElement lExtension : lExtensions) {
+			 if(lExtension.getName().equals("mandatoryAspects")) {
 				for (CmisExtensionElement lAspectExtension : lExtension.getChildren()) {
 					lFoundAspectIds.add(lAspectExtension.getValue());
 				}
@@ -1169,7 +1184,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		OperationContext operationContext = pSession.createOperationContext();
 		operationContext.setFilterString(PropertyIds.NAME);
 		operationContext.setRenditionFilterString(pStrFilter);
-		CmisObject lCmisObject = pSession.getObject(pStrDocumentId);
+		CmisObject lCmisObject = pSession.getObject(pStrDocumentId, operationContext);
 		List<Rendition> lListResults = lCmisObject.getRenditions();
 
 		mLog.debug("END getDocumentRenditions(String)");

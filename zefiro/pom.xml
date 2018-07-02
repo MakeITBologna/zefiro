@@ -246,6 +246,7 @@
 
 	<build>
 		<finalName>zefiro</finalName>
+		
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
