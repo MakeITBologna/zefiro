@@ -13,7 +13,7 @@
 	</ol>
 	<div class="page-header ">
 		<div class="pull-right">
-			<button ng-if="!readOnly" class="btn btn-primary" type="button" ng-click="jbValidate.checkForm(jbDetailFormDocument) && saveDetail(jbDetailFormDocument)">
+			<button ng-if="!getUser().readOnly" class="btn btn-primary" type="button" ng-click="jbValidate.checkForm(jbDetailFormDocument) && saveDetail(jbDetailFormDocument)">
 				<span ng-hide="currentRownum == null"><i class="fa fa-floppy-o"></i> <fmt:message key="jsp.detail.update.submit"/></span>
 				<span ng-show="currentRownum == null"><i class="fa fa-floppy-o"></i> <fmt:message key="jsp.detail.insert.submit"/></span>
 			</button>
@@ -43,7 +43,7 @@
 					<label for="jbDetailFormDocument-file" class="control-label col-sm-4" title="<fmt:message key="jsp.document.file.title"/>"><fmt:message key="jsp.document.file.title"/></label>
 					<div class="col-sm-8">
 						<div class="input-group">
-						 <input id="jbDetailFormDocument-file" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="file" name="file" jb-upload="setCurrentFileName(newUrl, uploaded, userFilename)"/>
+						 <input id="jbDetailFormDocument-file" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="file" name="file" jb-upload="setCurrentFileName(newUrl, uploaded, userFilename)" />
 						 <span class="input-group-btn">
 						   <button class="btn btn-default" type="button" promise-btn="uploadPromise"><i class="fa fa-upload"></i> Upload</button>
 						 </span>
@@ -54,7 +54,7 @@
 				<div class="row jb-form-group">
 				  <label for="jbDetailFormDocument-name" class="control-label col-sm-4" title="<fmt:message key="jsp.document.name.title"/>"><fmt:message key="jsp.document.name.label" /></label>
 				  <div class="col-sm-8">
-				  	<input ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-name" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="text" name="name" ng-model="documentEditing.name" pattern="^\w+[\w\s\.-]*$"/>
+				  	<input ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-name" readonly="readonly" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="text" name="name" ng-model="documentEditing.name" pattern="^\w+[\w\s\.-]*$"/>
 				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.name)"><fmt:message key="js.validate.filename"/></label>
 				  	<p ng-if="readOnly" class="form-control-static">{{documentEditing.name}}</p>
 				  </div>
@@ -63,7 +63,7 @@
 				<div class="row jb-form-group">
 				  <label for="jbDetailFormDocument-description" class="control-label col-sm-4" title="<fmt:message key="jsp.document.description.title"/>"><fmt:message key="jsp.document.description.label" /></label>
 				  <div class="col-sm-8">
-				  	<input ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-description" class="form-control" title="<fmt:message key="jsp.document.description.title"/>" type="text" name="description" ng-model="documentEditing.description"/>
+				  	<input ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-description" readonly="readonly" class="form-control" title="<fmt:message key="jsp.document.description.title"/>" type="text" name="description" ng-model="documentEditing.description"/>
 				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.description)"><fmt:message key="js.validate.required"/></label>
 				  	<p ng-if="readOnly" class="form-control-static">{{documentEditing.description}}</p>
 				  </div>
@@ -198,11 +198,11 @@
 			<!-- Versioni documento -->
 			<br>
 			<div ng-if="currentRownum != null" >
-				<div class="row jb-toolbar">
+				<div class="row jb-toolbar" ng-if="!getUser().readOnly">
 					<div class="col-sm-6">
 						<h4><fmt:message key="jsp.document.version.sidemenu"/></h4>
 					</div>
-		  			<div class="col-sm-6 " ng-if="!readOnly">
+		  			<div class="col-sm-6 ">
 		  				<div class="pull-right">
 		  					<button class="btn btn-success btn-sm" type="button" ng-click="startContentReplace()"><i class="fa fa-plus"></i> <fmt:message key="jsp.document.update"/></button>
 		  				</div>

@@ -35,8 +35,11 @@ public final class Util {
 		String lStrUsername = pUsername;
 		String lStrPassword = pPassword;
 		String lStrRootFolderId = JBrickConfigManager.getInstance().getMandatoryProperty("alfresco/@rootFolderId");
-
-		return new AlfrescoConfig(lUrlHost, lStrUsername, lStrPassword, lStrRootFolderId);
+		
+		boolean toProcess = Boolean.valueOf(JBrickConfigManager.getInstance().getMandatoryProperty("properties/@process"));
+		boolean readOnly =  Boolean.valueOf(JBrickConfigManager.getInstance().getMandatoryProperty("properties/@readOnly"));
+		//return new AlfrescoConfig(lUrlHost, lStrUsername, lStrPassword, lStrRootFolderId);
+		return new AlfrescoConfig(lUrlHost, lStrUsername, lStrPassword, lStrRootFolderId, toProcess, readOnly);
 	}
 
 	public static AlfrescoConfig getUserAlfrescoConfig(HttpServletRequest httpRequest) {

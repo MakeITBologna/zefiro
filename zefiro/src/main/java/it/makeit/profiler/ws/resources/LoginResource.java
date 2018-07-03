@@ -10,7 +10,9 @@ import it.makeit.profiler.dao.UsersBean;
 import it.makeit.zefiro.Util;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -71,13 +73,12 @@ public class LoginResource extends AbstractResource {
 			        .entity(lUsersBeanFailed) // indica che il login è fallito
 			        .build();
 		}
-
+		
 		/** Read user's roles */
 		// lUsersBean.setRoles(lRolesManager.getUserRoles(lUsersBean.getIdUser()));
 		/** Read user's actions */
 		// lUsersBean.setActions(lActionsManager.getUserActions(lUsersBean.getIdUser()));
 
-		lSession.setAttribute("utente", lUsersBean);
 		// Per visualizzare il Guessed user nel Tomcat Manager
 		// (v. http://www.docjar.com/html/api/org/apache/catalina/manager/util/SessionUtils.java.html r. 63 e 168)
 		lSession.setAttribute("Login", lUsername);
@@ -86,7 +87,16 @@ public class LoginResource extends AbstractResource {
 		lSession.setAttribute("alfrescoConfig", lAlfrescoConfig);
 		Locale locale = LocaleUtil.getLocale(pRequest.getSession());
 		lSession.setAttribute("alfrescoSession", AlfrescoHelper.createSession(lAlfrescoConfig, locale));
-
+		
+		//only needed to send jBrickConfig's properties(readonly, process) to client 
+		Map<String, Object> jbrickConfigProperties =  lUsersBean.getParametersMap();
+		if(jbrickConfigProperties == null)
+			jbrickConfigProperties = new HashMap<>();
+		jbrickConfigProperties.put("readOnly", lAlfrescoConfig.isReadOnly());
+		jbrickConfigProperties.put("process", lAlfrescoConfig.isProcess());
+		lUsersBean.setParametersMap(jbrickConfigProperties);
+		
+		lSession.setAttribute("utente", lUsersBean);
 		return Response.ok(lUsersBean).build();
 	}
 

@@ -12,4 +12,5 @@ public class UsersBean extends UsersBaseBean implements IUsersBean{
     public UsersBean() {
         super();
     }
+    
 }

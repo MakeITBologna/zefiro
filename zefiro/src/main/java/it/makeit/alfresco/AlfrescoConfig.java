@@ -12,12 +12,21 @@ public class AlfrescoConfig {
 	private String rootFolderId;
 	private List<String> acceptedLanguages;
 	private final String SEPARATOR = ",";
+	
+	private boolean process;
+	private boolean readOnly;
 
 	public AlfrescoConfig(URL host, String username, String password, String rootFolderId) {
 		this.host = host;
 		this.username = username;
 		this.password = password;
 		this.rootFolderId = rootFolderId;
+	}
+	
+	public AlfrescoConfig(URL host, String username, String password, String rootFolderId, boolean process, boolean readOnly) {
+		this(host, username, password);
+		this.process = process;
+		this.readOnly = readOnly;
 	}
 
 	public AlfrescoConfig(URL host, String username, String password) {
@@ -70,6 +79,15 @@ public class AlfrescoConfig {
 	public void setAcceptedLanguages(String acceptedLanguages) {
 		String al = acceptedLanguages.replaceAll("\\s+", "");
 		this.acceptedLanguages = Arrays.asList(al.split(","));
+	}
+
+	
+	public boolean isProcess() {
+		return process;
+	}
+
+	public boolean isReadOnly() {
+		return readOnly;
 	}
 
 	public String getAcceptedLanguageAsString() {
