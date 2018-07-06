@@ -33,8 +33,10 @@ public class FileResource {
 		OutputStream lFileOutput = null;
 		String lFileName = lUsersBean.getUsername() + Calendar.getInstance().getTimeInMillis() + ".tmp";
 		String lBasePath = pServletContext.getRealPath("/document/");
+		File file = null;
 		try{
-			lFileOutput = new FileOutputStream(new File(lBasePath , lFileName));
+			file = new File(lBasePath , lFileName);
+			lFileOutput = new FileOutputStream(file);
 			IOUtils.copy(lFileInputStream, lFileOutput);
 		} catch(Exception e) {
 			e.printStackTrace();

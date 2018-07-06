@@ -4,7 +4,7 @@
 <div class="container-fluid">
 <div class="row" ng-hide="editing || contentReplace">
   <div class="page-header jb-page-header">
-    <div class="pull-right">
+    <div class="pull-right" ng-if="!getUser().readOnly">
   		<button ng-hide="relation" type="button" class="btn btn-success" title="<fmt:message key="jsp.results.insert.user"/>" ng-click="startInsert()"><i class="fa fa-plus"></i> <fmt:message key="jsp.document.insert"/></button>
   	  	<button ng-show="relation" type="button" class="btn btn-danger" title="<fmt:message key="js.dialog.annulla"/>" ng-click="closeAddRelation()"><i class="fa fa-times"></i> <fmt:message key="js.dialog.annulla"/></button>
   	</div>

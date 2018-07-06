@@ -54,7 +54,7 @@
 				<div class="row jb-form-group">
 				  <label for="jbDetailFormDocument-name" class="control-label col-sm-4" title="<fmt:message key="jsp.document.name.title"/>"><fmt:message key="jsp.document.name.label" /></label>
 				  <div class="col-sm-8">
-				  	<input ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-name" readonly="readonly" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="text" name="name" ng-model="documentEditing.name" pattern="^\w+[\w\s\.-]*$"/>
+				  	<input ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-name" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="text" name="name" ng-model="documentEditing.name" pattern="^\w+[\w\s\.-]*$"/>
 				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.name)"><fmt:message key="js.validate.filename"/></label>
 				  	<p ng-if="readOnly" class="form-control-static">{{documentEditing.name}}</p>
 				  </div>
@@ -63,7 +63,7 @@
 				<div class="row jb-form-group">
 				  <label for="jbDetailFormDocument-description" class="control-label col-sm-4" title="<fmt:message key="jsp.document.description.title"/>"><fmt:message key="jsp.document.description.label" /></label>
 				  <div class="col-sm-8">
-				  	<input ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-description" readonly="readonly" class="form-control" title="<fmt:message key="jsp.document.description.title"/>" type="text" name="description" ng-model="documentEditing.description"/>
+				  	<input ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-description" class="form-control" title="<fmt:message key="jsp.document.description.title"/>" type="text" name="description" ng-model="documentEditing.description"/>
 				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.description)"><fmt:message key="js.validate.required"/></label>
 				  	<p ng-if="readOnly" class="form-control-static">{{documentEditing.description}}</p>
 				  </div>
@@ -238,14 +238,14 @@
 						<tr ng-repeat="r in documentEditing.relationships | filter:isRelationOfType(rt, 'source', documentEditing.id)">
 							<td><a ng-click="showDocument({id: r.target.id, name: r.target.name, description: r.target.description})" href>{{r.target.description}}</a></td>
 							<td>{{r.target.createdBy}}</td>
-							<td ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
+							<td ng-if="readOnly" ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
 						</tr>
 						<tr ng-repeat="r in documentEditing.relationships | filter:isRelationOfType(rt, 'target', documentEditing.id)">
 							<td><a ng-click="showDocument({id: r.source.id, name: r.source.name, description: r.source.description})" href>{{r.source.description}}</a></td>
 							<td>{{r.source.createdBy}}</td>
-							<td ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
+							<td ng-if="readOnly" ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
 						</tr>
-						<tr ng-if="!readOnly && isTypeSpecific(rt, documentTypeEdit.id)">
+						<tr ng-if="readOnly && isTypeSpecific(rt, documentTypeEdit.id)">
 							<td colspan="3">
 								<button class="btn btn-success btn-sm" type="button" ng-click="startAddRelation(rt)"><i class="fa fa-plus"></i> <fmt:message key="jsp.document.addRelationship"/></button>
 							</td>

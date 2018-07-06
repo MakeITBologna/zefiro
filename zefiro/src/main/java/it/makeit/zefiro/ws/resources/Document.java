@@ -49,6 +49,7 @@ import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.definitions.PropertyDefinition;
 import org.apache.chemistry.opencmis.commons.definitions.TypeDefinition;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tika.Tika;
 
@@ -400,13 +401,11 @@ public class Document {
 		String lBasePath = pServletContext.getRealPath("/document/");
 		File file = new File(lBasePath + "/preview_unavailable.jpg");
 		try {
-			lStreamingOutput = new StreamStreamingOutput(
-					new BufferedInputStream(new FileInputStream(file)));
+			lStreamingOutput = new StreamStreamingOutput(new BufferedInputStream(new FileInputStream(file)));
 		} catch (FileNotFoundException e) {
 			throw new JBrickException(e, JBrickException.FATAL);
 		} finally {
-			if (file.exists())
-				file.delete();
+			deleteFile(file);
 		}
 		return lStreamingOutput;
 	}
@@ -472,6 +471,8 @@ public class Document {
 		} catch (Exception e) {
 			// TODO: log ...
 			throw new JBrickException(e, JBrickException.FATAL);
+		} finally {
+			deleteFile(lFile);
 		}
 
 		return Response.ok(lDocument).build();
@@ -569,9 +570,21 @@ public class Document {
 		} catch (Exception e) {
 			// TODO: log...
 			throw new JBrickException(e, JBrickException.FATAL);
+		} finally {
+			deleteFile(lFile);
 		}
 
 		return Response.ok(lDocument).build();
+	}
+
+	private void deleteFile(File lFile) {
+		if (lFile != null)
+			try {
+				FileUtils.forceDelete(lFile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 
 	@DELETE
