@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
 import javax.servlet.ServletContext;
@@ -141,29 +142,39 @@ public class Document {
 
 		List<CmisQueryPredicate<?>> lList = new LinkedList<CmisQueryPredicate<?>>();
 
+		
 		Map<String, PropertyDefinition<?>> lMapProperties = pTypeDef.getPropertyDefinitions();
+		
+		Map<String, String> propertyQueryNames = new HashMap<>(); // possono essere differenti: as4:filespool_x002d_as4 -> as4:filespool-x002d-as4
+		for(Entry<String, PropertyDefinition<?>> e: lMapProperties.entrySet()) {
+			propertyQueryNames.put(e.getValue().getQueryName(), e.getKey());
+		}
+		
 		List<QueryFilter> lListFilters = getQueryFiltersMap(pMapParams);
 		for (QueryFilter queryFilter : lListFilters) {
-			String lStrPropertyId = queryFilter.propertyId;
-
+			String propertyQueryName = queryFilter.propertyId;
+			String propertyId = propertyQueryNames.get(propertyQueryName);
+			
+			
 			CmisQueryPredicate<?> lPredicate = null;
 
-			if (lStrPropertyId.equals(CONTAINS_FIELD)) {
-				lPredicate = CmisQueryPredicate.contains(queryFilter.value);
-				lList.add(lPredicate);
-				continue;
-			}
-
-			PropertyDefinition<?> lPropDef = lMapProperties.get(lStrPropertyId);
+			PropertyDefinition<?> lPropDef = lMapProperties.get(propertyId);
 			if (lPropDef == null) {
 				// La proprietà richiesta come filtro non è definita per il tipo
 				// documento
 				continue;
 			}
 
+			if (propertyId.equals(CONTAINS_FIELD)) {
+				lPredicate = CmisQueryPredicate.contains(queryFilter.value);
+				lList.add(lPredicate);
+				continue;
+			}
+
+			
 			switch (lPropDef.getPropertyType()) {
 			case BOOLEAN:
-				lPredicate = CmisQueryPredicate.eqTo(lStrPropertyId, Boolean.valueOf(queryFilter.value));
+				lPredicate = CmisQueryPredicate.eqTo(propertyId, Boolean.valueOf(queryFilter.value));
 				break;
 
 			case DATETIME:
@@ -171,13 +182,13 @@ public class Document {
 				SimpleDateFormat lFormatter = new SimpleDateFormat(DATE_PATTERN);
 				Date lDate = lFormatter.parse(queryFilter.value);
 				if (queryFilter.operator == Operator.LE) {
-					lPredicate = CmisQueryPredicate.between(lStrPropertyId, null, lDate);
+					lPredicate = CmisQueryPredicate.between(propertyId, null, lDate);
 
 				} else if (queryFilter.operator == Operator.GE) {
-					lPredicate = CmisQueryPredicate.between(lStrPropertyId, lDate, null);
+					lPredicate = CmisQueryPredicate.between(propertyId, lDate, null);
 
 				} else {
-					lPredicate = CmisQueryPredicate.eqTo(lStrPropertyId, lDate);
+					lPredicate = CmisQueryPredicate.eqTo(propertyId, lDate);
 				}
 				break;
 
@@ -185,21 +196,21 @@ public class Document {
 			case INTEGER:
 				BigDecimal lBD = new BigDecimal(queryFilter.value);
 				if (queryFilter.operator == Operator.LE) {
-					lPredicate = CmisQueryPredicate.between(lStrPropertyId, null, lBD);
+					lPredicate = CmisQueryPredicate.between(propertyId, null, lBD);
 
 				} else if (queryFilter.operator.equals(Operator.GE)) {
-					lPredicate = CmisQueryPredicate.between(lStrPropertyId, lBD, null);
+					lPredicate = CmisQueryPredicate.between(propertyId, lBD, null);
 
 				} else {
-					lPredicate = CmisQueryPredicate.eqTo(lStrPropertyId, lBD);
+					lPredicate = CmisQueryPredicate.eqTo(propertyId, lBD);
 				}
 				break;
 
 			case STRING:
 				if (queryFilter.operator == Operator.EQ) {
-					lPredicate = CmisQueryPredicate.eqTo(lStrPropertyId, queryFilter.value);
+					lPredicate = CmisQueryPredicate.eqTo(propertyId, queryFilter.value);
 				} else {
-					lPredicate = CmisQueryPredicate.like(lStrPropertyId, "%" + queryFilter.value + "%");
+					lPredicate = CmisQueryPredicate.like(propertyId, "%" + queryFilter.value + "%");
 				}
 				break;
 
