@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,6 +39,7 @@ import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.data.CmisExtensionElement;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.data.PropertyData;
+import org.apache.chemistry.opencmis.commons.definitions.TypeDefinition;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.CapabilityContentStreamUpdates;
 import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
@@ -80,6 +82,7 @@ import it.makeit.alfresco.webscriptsapi.model.GroupsList;
 import it.makeit.alfresco.webscriptsapi.services.NodeService;
 import it.makeit.jbrick.Log;
 
+
 public class AlfrescoHelper extends BaseAlfrescoHelper {
 
 	public static enum VersioningMode {
@@ -96,7 +99,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 	private static final String LOGIN_URL_TEMPLATE = "%1$s/alfresco/service/api/login";
 
 	private static final String DEFAULT_BASE_DOC_TYPE = "cmis:document";
-
+	
 	private static final Gson mGson = new Gson();
 
 	@Deprecated
@@ -343,7 +346,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 
 	}
 
-	public static Session createSession(AlfrescoConfig config) {
+	public static Session createSession(AlfrescoConfig config, Locale locale) {
 		mLog.debug("Start createSession()");
 
 		Map<String, String> lMapParameter = new HashMap<String, String>();
@@ -354,7 +357,12 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		lMapParameter.put(SessionParameter.PASSWORD, config.getPassword());
 		lMapParameter.put(SessionParameter.ATOMPUB_URL, buildUrl(ATOMPUB_CMIS11_URL_TEMPLATE, config));
 		lMapParameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
-
+		//lMapParameter.put(SessionParameter.LOCALE_ISO639_LANGUAGE, config.getAcceptedLanguageAsString());
+		//session Locale
+		if(locale != null) {
+			lMapParameter.put(SessionParameter.LOCALE_ISO3166_COUNTRY, locale.getCountry());
+			lMapParameter.put(SessionParameter.LOCALE_ISO639_LANGUAGE, locale.getLanguage());
+		}
 		// creo la session factory
 		SessionFactory lSessionFactory = SessionFactoryImpl.newInstance();
 
@@ -859,8 +867,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 
 					if (lPropData != null) {
 						String lObjectId = (String) lPropData.getFirstValue();
-						CmisObject lObj = pSession.getObject(pSession.createObjectId(lObjectId));
-
+						CmisObject lObj = pSession.getObject(pSession.createObjectId(lObjectId)); 
 						lHashMapResults.put(lObjectId, (Document) lObj);
 					}
 				}
@@ -1029,7 +1036,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		}
 	}
 
-	public static ObjectType getTypeDefinition(Session pSession, String pStrId) {
+	public static ObjectType  getTypeDefinition(Session pSession, String pStrId) {
 		mLog.debug("START getDocumentType(String)");
 
 		ObjectType lType = null;
@@ -1058,16 +1065,33 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		return lRelationTypes;
 	}
 
-	private static List<String> getTypeAspectIds(Session pSession, String pStrTypeId) {
+	public static List<String> getTypeAspectIds(Session pSession, String pStrTypeId) {
 
-		List<String> lFoundAspectIds = new ArrayList<String>();
+		List<String> lFoundAspectIds = new ArrayList<>();
 
-		ObjectType lObjectType = getTypeDefinition(pSession, pStrTypeId);
+		TypeDefinition lObjectType = getTypeDefinition(pSession, pStrTypeId);
 
 		// cerco gli eventuali mandatoryAspect del tipo
 		List<CmisExtensionElement> lExtensions = lObjectType.getExtensions();
 		for (CmisExtensionElement lExtension : lExtensions) {
 			if (lExtension.getName().matches("(?i:.*aspect.*)")) {
+				for (CmisExtensionElement lAspectExtension : lExtension.getChildren()) {
+					lFoundAspectIds.add(lAspectExtension.getValue());
+				}
+			}
+		}
+
+		return lFoundAspectIds;
+	}
+	
+	public static List<String> getTypeAspects(ObjectType obj) {
+
+		List<String> lFoundAspectIds = new ArrayList<String>();
+
+		// cerco gli eventuali mandatoryAspect del tipo
+		List<CmisExtensionElement> lExtensions = obj.getExtensions();
+		for (CmisExtensionElement lExtension : lExtensions) {
+			 if(lExtension.getName().equals("mandatoryAspects")) {
 				for (CmisExtensionElement lAspectExtension : lExtension.getChildren()) {
 					lFoundAspectIds.add(lAspectExtension.getValue());
 				}
@@ -1160,7 +1184,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		OperationContext operationContext = pSession.createOperationContext();
 		operationContext.setFilterString(PropertyIds.NAME);
 		operationContext.setRenditionFilterString(pStrFilter);
-		CmisObject lCmisObject = pSession.getObject(pStrDocumentId);
+		CmisObject lCmisObject = pSession.getObject(pStrDocumentId, operationContext);
 		List<Rendition> lListResults = lCmisObject.getRenditions();
 
 		mLog.debug("END getDocumentRenditions(String)");

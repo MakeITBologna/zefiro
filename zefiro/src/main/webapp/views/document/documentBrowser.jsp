@@ -4,7 +4,7 @@
 <div class="container-fluid">
 <div class="row" ng-hide="editing || contentReplace">
   <div class="page-header jb-page-header">
-    <div class="pull-right">
+    <div class="pull-right" ng-if="!getUser().readOnly">
   		<button ng-hide="relation" type="button" class="btn btn-success" title="<fmt:message key="jsp.results.insert.user"/>" ng-click="startInsert()"><i class="fa fa-plus"></i> <fmt:message key="jsp.document.insert"/></button>
   	  	<button ng-show="relation" type="button" class="btn btn-danger" title="<fmt:message key="js.dialog.annulla"/>" ng-click="closeAddRelation()"><i class="fa fa-times"></i> <fmt:message key="js.dialog.annulla"/></button>
   	</div>
@@ -225,11 +225,13 @@
           <td>
 	        <div class="btn-group" uib-dropdown ng-show="row.id != null && !relation">
 	          <button type="button" class="btn btn-primary btn-xs" ng-click="startEdit($index)"><i class="fa fa-pencil-square-o fa-lg"></i></button>
+			  <div ng-if="!getUser().readOnly" class="display: inline-block">
 	          <button type="button" class="btn btn-default btn-xs" uib-dropdown-toggle><i class="fa fa-bars fa-lg"></i></button>
-			  <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
+			  <ul uib-dropdown-menu role="menu" class="dropdown-menu-right" >
 			    <li role="menuitem"><a href ng-click="startDuplicate($index)"><i class="fa fa-files-o fa-fw"></i> <fmt:message key="jsp.document.duplicate"/></a></li>
 			    <li role="menuitem"><a href ng-click="deleteRow($index)" confirm="{{jbMessages.confirmDelete}}"><i class="fa fa-trash fa-fw"></i> <fmt:message key="jsp.document.delete"/></a></li>
 			  </ul>
+			  </div>
 		    </div>
 		    <!-- Modalità aggiunta relazioni -->
 		    <div ng-show="relation">

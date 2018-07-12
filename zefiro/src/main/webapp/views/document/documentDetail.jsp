@@ -13,7 +13,7 @@
 	</ol>
 	<div class="page-header ">
 		<div class="pull-right">
-			<button ng-if="!readOnly" class="btn btn-primary" type="button" ng-click="jbValidate.checkForm(jbDetailFormDocument) && saveDetail(jbDetailFormDocument)">
+			<button ng-if="!getUser().readOnly" class="btn btn-primary" type="button" ng-click="jbValidate.checkForm(jbDetailFormDocument) && saveDetail(jbDetailFormDocument)">
 				<span ng-hide="currentRownum == null"><i class="fa fa-floppy-o"></i> <fmt:message key="jsp.detail.update.submit"/></span>
 				<span ng-show="currentRownum == null"><i class="fa fa-floppy-o"></i> <fmt:message key="jsp.detail.insert.submit"/></span>
 			</button>
@@ -43,7 +43,7 @@
 					<label for="jbDetailFormDocument-file" class="control-label col-sm-4" title="<fmt:message key="jsp.document.file.title"/>"><fmt:message key="jsp.document.file.title"/></label>
 					<div class="col-sm-8">
 						<div class="input-group">
-						 <input id="jbDetailFormDocument-file" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="file" name="file" jb-upload="setCurrentFileName(newUrl, uploaded, userFilename)"/>
+						 <input id="jbDetailFormDocument-file" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="file" name="file" jb-upload="setCurrentFileName(newUrl, uploaded, userFilename)" />
 						 <span class="input-group-btn">
 						   <button class="btn btn-default" type="button" promise-btn="uploadPromise"><i class="fa fa-upload"></i> Upload</button>
 						 </span>
@@ -198,11 +198,11 @@
 			<!-- Versioni documento -->
 			<br>
 			<div ng-if="currentRownum != null" >
-				<div class="row jb-toolbar">
+				<div class="row jb-toolbar" ng-if="!getUser().readOnly">
 					<div class="col-sm-6">
 						<h4><fmt:message key="jsp.document.version.sidemenu"/></h4>
 					</div>
-		  			<div class="col-sm-6 " ng-if="!readOnly">
+		  			<div class="col-sm-6 ">
 		  				<div class="pull-right">
 		  					<button class="btn btn-success btn-sm" type="button" ng-click="startContentReplace()"><i class="fa fa-plus"></i> <fmt:message key="jsp.document.update"/></button>
 		  				</div>
@@ -238,14 +238,14 @@
 						<tr ng-repeat="r in documentEditing.relationships | filter:isRelationOfType(rt, 'source', documentEditing.id)">
 							<td><a ng-click="showDocument({id: r.target.id, name: r.target.name, description: r.target.description})" href>{{r.target.description}}</a></td>
 							<td>{{r.target.createdBy}}</td>
-							<td ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
+							<td ng-if="readOnly" ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
 						</tr>
 						<tr ng-repeat="r in documentEditing.relationships | filter:isRelationOfType(rt, 'target', documentEditing.id)">
 							<td><a ng-click="showDocument({id: r.source.id, name: r.source.name, description: r.source.description})" href>{{r.source.description}}</a></td>
 							<td>{{r.source.createdBy}}</td>
-							<td ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
+							<td ng-if="readOnly" ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
 						</tr>
-						<tr ng-if="!readOnly && isTypeSpecific(rt, documentTypeEdit.id)">
+						<tr ng-if="readOnly && isTypeSpecific(rt, documentTypeEdit.id)">
 							<td colspan="3">
 								<button class="btn btn-success btn-sm" type="button" ng-click="startAddRelation(rt)"><i class="fa fa-plus"></i> <fmt:message key="jsp.document.addRelationship"/></button>
 							</td>

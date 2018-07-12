@@ -23,12 +23,12 @@
 			<form name="jbSearchWorkflowInstance" class="form-horizontal well" novalidate jb-print="a/Document/print">
 				<div class="row jb-form-group">
 
-					
+					<input type="hidden" id="jbSearchFormDocument-propertyNames" name="propertyNames" value="{{processFilter}}" />
 
 					<label class="col-sm-1 control-label" for="jbSearchWorkflowInstance" title="<fmt:message key="jsp.process.date.title"/>"><fmt:message key="jsp.process.date.label" /></label>
 					<div class="col-sm-2">
 						<div class="input-group">
-							<span class="input-group-addon"><fmt:message key="jsp.from.label" /></span> <input id="jbSearchWorkflowInstance-completed-from" class="form-control" title="<fmt:message key="jsp.process.completed.title"/> <fmt:message key="jsp.from.label"/>" type="text" name="completed-from" ng-model="processFilter['completed-from']" uib-datepicker-popup="${localePatternDate}" is-open="calendarPopups['completed-from']" /> <span class="input-group-btn">
+							<span class="input-group-addon"><fmt:message key="jsp.from.label" /></span> <input id="jbSearchWorkflowInstance-completed-from"  class="form-control" title="<fmt:message key="jsp.process.completed.title"/> <fmt:message key="jsp.from.label"/>" type="text" name="completed-from" ng-model="processFilter['completed-from']" uib-datepicker-popup="${localePatternDate}" is-open="calendarPopups['completed-from']" /> <span class="input-group-btn">
 								<button type="button" class="btn btn-default" ng-click="openCalendar('completed-from')">
 									<i class="fa fa-calendar"></i>
 								</button>
@@ -38,7 +38,7 @@
 
 					<div class="col-sm-2">
 						<div class="input-group">
-							<span class="input-group-addon"><fmt:message key="jsp.to.label" /></span> <input id="jbSearchFormDocument-completed-TO" class="form-control" title="<fmt:message key="jsp.document.completed.title"/> <fmt:message key="jsp.to.label"/>" type="text" name="cmis:creationDate|LE" ng-model="processFilter['completed-to']" uib-datepicker-popup="${localePatternDate}" is-open="calendarPopups['completed-to']" /> <span class="input-group-btn">
+							<span class="input-group-addon"><fmt:message key="jsp.to.label" /></span> <input id="jbSearchFormDocument-completed-TO"  class="form-control" title="<fmt:message key="jsp.document.completed.title"/> <fmt:message key="jsp.to.label"/>" type="text" name="cmis:creationDate|LE" ng-model="processFilter['completed-to']" uib-datepicker-popup="${localePatternDate}" is-open="calendarPopups['completed-to']" /> <span class="input-group-btn">
 								<button type="button" class="btn btn-default" ng-click="openCalendar('completed-to')">
 									<i class="fa fa-calendar"></i>
 								</button>
@@ -66,9 +66,9 @@
 
 		<div ng-init="initList()" class="panel ">
 
-			<uib-tabset active="active" justified="true"> <uib-tab index="0" heading="<fmt:message key="jsp.active.label" />" select="jbctrl.table = jbctrl.processTable">
+			<uib-tabset active="active" justified="true"> <uib-tab index="0" heading="<fmt:message key="jsp.active.label" />" select="jbctrl.table = jbctrl.processTable; jbctrl.choice = 1">
 			<div ng-if="jbctrl.table === jbctrl.processTable" ng-include="'views/process/processListBody.jsp'"></div>
-			</uib-tab> <uib-tab index="1" heading="<fmt:message key="jsp.completed.label" />" select="jbctrl.table = jbctrl.processCompletedTable">
+			</uib-tab> <uib-tab index="1" heading="<fmt:message key="jsp.completed.label" />" select="jbctrl.table = jbctrl.processCompletedTable; jbctrl.choice = 2">
 			<div ng-show="jbctrl.table === jbctrl.processCompletedTable" ng-include="'views/process/processListBody.jsp'"></div>
 			</uib-tab> </uib-tabset>
 

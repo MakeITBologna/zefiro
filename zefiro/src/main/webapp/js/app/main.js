@@ -300,7 +300,7 @@ angular.module('main', [
 				return $cookies.getObject(storedUserLabel);
 			},
 			storeUser: function(jbuser){
-				$cookies.putObject(storedUserLabel, { idUser: jbuser.idUser, username: jbuser.username, enabled: jbuser.enabled, fullName: jbuser.fullName });
+				$cookies.putObject(storedUserLabel, { idUser: jbuser.idUser, username: jbuser.username, enabled: jbuser.enabled, fullName: jbuser.fullName, process: jbuser.parametersMap.process, readOnly: jbuser.parametersMap.readOnly });
 			},
 			removeUser(){
 				$cookies.remove(storedUserLabel);

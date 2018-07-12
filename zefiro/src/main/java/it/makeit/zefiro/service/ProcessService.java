@@ -2,9 +2,12 @@ package it.makeit.zefiro.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gson.Gson;
 
@@ -30,6 +33,7 @@ import it.makeit.zefiro.Util;
 import it.makeit.zefiro.dao.WorkFlowProcessComplete;
 
 public class ProcessService extends ZefiroAbstractServcie {
+	Map<String, Object> params = new HashMap<>();
 
 	public ProcessService(AlfrescoConfig pConfig) {
 		super(pConfig);
@@ -113,8 +117,8 @@ public class ProcessService extends ZefiroAbstractServcie {
 				.getData();
 	}
 
-	public List<WorkflowInstance> loadWorkflowInstances() {
-		return loadWorkflowInstances(new HashMap<String, Object>());
+	public List<WorkflowInstance> loadWorkflowInstances(HashMap<String, Object> params) {
+		return loadWorkflowInstances(params);
 	}
 
 	public WorkflowInstance loadWorkflowInstance(String id) {
@@ -124,26 +128,39 @@ public class ProcessService extends ZefiroAbstractServcie {
 		return AlfrescoWorkflowHelper.getWorkflowInstance(id, httpRequestFactory, alfrescoConfig, params);
 	}
 
-	public List<WorkflowInstance> loadCompletedWorkflows() {
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put(AlfrescoWorkflowInstanceQueryParamsEnum.STATE.getName(), "COMPLETED");
+	public List<WorkflowInstance> loadCompletedWorkflows(String from, String to) {
+		params.clear();
+		addParameter(AlfrescoWorkflowInstanceQueryParamsEnum.STATE.getName(), "COMPLETED");
 		// Warkaround per evitare errori quando è stata effettuata un undeploy
 		// di definizioni con instanze attive
-		params.put(AlfrescoRESTQueryParamsEnum.EXCLUDE.getName(), "activity$jbpippo");
-		
-		return loadWorkflowInstances(params);
+		addParameter(AlfrescoRESTQueryParamsEnum.EXCLUDE.getName(), "activity$jbpippo");
+
+		addParameter(AlfrescoWorkflowInstanceQueryParamsEnum.INITIATOR.getName(), alfrescoConfig.getUsername());
+		addParameter(AlfrescoWorkflowInstanceQueryParamsEnum.COMPLETED_AFTER.getName(), from);
+		addParameter(AlfrescoWorkflowInstanceQueryParamsEnum.COMPLETED_BEFORE.getName(), to);
+		return workflowInstances();
 	}
 
-	private List<WorkflowInstance> loadWorkflowInstances(Map<String, Object> params) {
-		params.put(AlfrescoWorkflowInstanceQueryParamsEnum.INITIATOR.getName(), alfrescoConfig.getUsername());
+	public List<WorkflowInstance> loadWorkflowInstances(String from, String to) {
+		params.clear();
+		addParameter(AlfrescoWorkflowInstanceQueryParamsEnum.STARTED_AFTER.getName(), from);
+		addParameter(AlfrescoWorkflowInstanceQueryParamsEnum.STARTED_BEFORE.getName(), to);
+		addParameter(AlfrescoWorkflowInstanceQueryParamsEnum.INITIATOR.getName(), alfrescoConfig.getUsername());
 
+		return workflowInstances();
+	}
+
+	private List<WorkflowInstance> workflowInstances() {
 		WorkflowInstanceList objectList = AlfrescoWorkflowHelper.getWorkflowInstances(httpRequestFactory,
 				alfrescoConfig, params);
 		List<WorkflowInstance> list = objectList.getData();
-		if (list == null) {
-			list = new ArrayList<WorkflowInstance>();
-		}
-		return list;
+		
+		return list == null ? Collections.<WorkflowInstance>emptyList() : list;
+	}
+
+	private void addParameter(String alfrescoQueryParam, String dateValue) {
+		if (dateValue != null)
+			params.put(alfrescoQueryParam, dateValue);
 	}
 
 	public List<WorkflowDefinition> loadWorkflowDefinitions() {

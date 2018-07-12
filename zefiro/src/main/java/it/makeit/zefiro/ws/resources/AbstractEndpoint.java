@@ -1,5 +1,6 @@
 package it.makeit.zefiro.ws.resources;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,11 +17,11 @@ public class AbstractEndpoint {
 
 	protected ZefiroAbstractServcie getServiceInstance(Class<? extends ZefiroAbstractServcie> sClass) {
 		AlfrescoConfig pConfig = Util.getUserAlfrescoConfig(httpRequest);
-
 		try {
+			httpRequest.setCharacterEncoding("UTF-8");
 			return sClass.getDeclaredConstructor(AlfrescoConfig.class).newInstance(pConfig);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
+				| NoSuchMethodException | SecurityException | UnsupportedEncodingException e) {
 			throw new JBrickException(e, JBrickException.REFLECTION_EXCEPTION);
 		}
 	}
