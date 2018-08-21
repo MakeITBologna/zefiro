@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,7 +55,6 @@ import org.apache.tika.Tika;
 
 import com.google.api.client.http.HttpStatusCodes;
 
-import it.makeit.alfresco.AlfrescoConfig;
 import it.makeit.alfresco.AlfrescoException;
 import it.makeit.alfresco.AlfrescoHelper;
 import it.makeit.alfresco.CmisQueryBuilder;
@@ -71,7 +69,6 @@ import it.makeit.jbrick.Log;
 import it.makeit.jbrick.print.PrintFormat;
 import it.makeit.jbrick.print.PrintUtil;
 import it.makeit.jbrick.web.LocaleUtil;
-import it.makeit.profiler.dao.PasswordBaseBean;
 import it.makeit.zefiro.MimeType;
 import it.makeit.zefiro.Util;
 import it.makeit.zefiro.dao.DocumentBean;
@@ -172,16 +169,16 @@ public class Document {
 			
 			CmisQueryPredicate<?> lPredicate = null;
 
+			if (propertyQueryName.equals(CONTAINS_FIELD)) {
+				lPredicate = CmisQueryPredicate.contains(queryFilter.value);
+				lList.add(lPredicate);
+				continue;
+			}
+			
 			PropertyDefinition<?> lPropDef = lMapProperties.get(propertyId);
 			if (lPropDef == null) {
 				// La proprietà richiesta come filtro non è definita per il tipo
 				// documento
-				continue;
-			}
-
-			if (propertyId.equals(CONTAINS_FIELD)) {
-				lPredicate = CmisQueryPredicate.contains(queryFilter.value);
-				lList.add(lPredicate);
 				continue;
 			}
 
