@@ -1,6 +1,6 @@
 <!-- datail start -->
 <%@ include file="/include/directive.jsp" %>
-
+<html ng-app="main" ng-controller="MainController">
 <div class="container-fluid">
 
 	<ol class="breadcrumb">
@@ -13,7 +13,7 @@
 	</ol>
 	<div class="page-header ">
 		<div class="pull-right">
-			<button ng-if="!getUser().readOnly" class="btn btn-primary" type="button" ng-click="jbValidate.checkForm(jbDetailFormDocument) && saveDetail(jbDetailFormDocument)">
+			<button ng-if="!isReadOnly()" class="btn btn-primary" type="button" ng-click="jbValidate.checkForm(jbDetailFormDocument) && saveDetail(jbDetailFormDocument)">
 				<span ng-hide="currentRownum == null"><i class="fa fa-floppy-o"></i> <fmt:message key="jsp.detail.update.submit"/></span>
 				<span ng-show="currentRownum == null"><i class="fa fa-floppy-o"></i> <fmt:message key="jsp.detail.insert.submit"/></span>
 			</button>
@@ -54,7 +54,8 @@
 				<div class="row jb-form-group">
 				  <label for="jbDetailFormDocument-name" class="control-label col-sm-4" title="<fmt:message key="jsp.document.name.title"/>"><fmt:message key="jsp.document.name.label" /></label>
 				  <div class="col-sm-8">
-				  	<input ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-name" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="text" name="name" ng-model="documentEditing.name" pattern="^\w+[\w\s\.-]*$"/>
+				  <p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.name}}</p>
+				  	<input  ng-if="!isReadOnly()" ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-name" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="text" name="name" ng-model="documentEditing.name" pattern="^\w+[\w\s\.-]*$"/>
 				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.name)"><fmt:message key="js.validate.filename"/></label>
 				  	<p ng-if="readOnly" class="form-control-static">{{documentEditing.name}}</p>
 				  </div>
@@ -63,7 +64,8 @@
 				<div class="row jb-form-group">
 				  <label for="jbDetailFormDocument-description" class="control-label col-sm-4" title="<fmt:message key="jsp.document.description.title"/>"><fmt:message key="jsp.document.description.label" /></label>
 				  <div class="col-sm-8">
-				  	<input ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-description" class="form-control" title="<fmt:message key="jsp.document.description.title"/>" type="text" name="description" ng-model="documentEditing.description"/>
+				   <p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.description}}</p>
+				  	<input ng-if="!isReadOnly()" ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-description" class="form-control" title="<fmt:message key="jsp.document.description.title"/>" type="text" name="description" ng-model="documentEditing.description"/>
 				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.description)"><fmt:message key="js.validate.required"/></label>
 				  	<p ng-if="readOnly" class="form-control-static">{{documentEditing.description}}</p>
 				  </div>
@@ -105,16 +107,19 @@
 				</div>
 				
 				<!-- Proprietà aggiuntive -->
-				<div class="row jb-form-group" ng-repeat="p in documentTypeEdit.propertyList">
+				<div class="row jb-form-group" ng-repeat="p in documentTypeEdit.propertyList ">
 				  <label for="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="control-label col-sm-4" title="{{p.description}}">{{p.displayName}}</label>
 				  <div class="col-sm-8">
-					  
+					 
 					  <div ng-if="p.propertyType == 'STRING'">
 					  	<div ng-if="!readOnly" ng-class="jbValidate.getClass(jbDetailFormDocument[p.queryName])">
-					  	    <input ng-required="p.required" ng-if="jbUtil.isEmptyObject(p.choices) && !p.linkType" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value" />
-					  	  	<select ng-required="p.required" ng-if="!jbUtil.isEmptyObject(p.choices)" class="form-control" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value">
-						    	<option></option>
-						    	<option ng-repeat="c in p.choices" value="{{c}}">{{c}}</option>
+					  		
+					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value}}</p>
+					  	    <input ng-if="!isReadOnly()" ng-required="p.required" ng-if="jbUtil.isEmptyObject(p.choices) && !p.linkType" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value" />
+					  	  	<select ng-if="!isReadOnly()" ng-required="p.required" ng-if="!jbUtil.isEmptyObject(p.choices)" class="form-control" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value">
+						        <option></option>
+						    	<option ng-repeat="c in p.choices" value="{{c}}">{{c}}</option> 
+						    	
 						  	</select>
 							<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument[p.queryName])"><fmt:message key="js.validate.required"/></label>
 						</div>
@@ -128,7 +133,8 @@
 					  
 					  <div ng-if="p.propertyType == 'INTEGER'">
 					  	<div ng-if="!readOnly"  ng-class="jbValidate.getClass(jbDetailFormDocument[p.queryName])">
-						  	<input ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value" ng-pattern="jbPatterns.number(0)" jb-number="0"/>
+					  	<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value}}</p>
+						  	<input ng-if="!isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value" ng-pattern="jbPatterns.number(0)" jb-number="0"/>
 						 	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument[p.queryName])"><fmt:message key="js.validate.number"/></label>
 						</div>
 						<div ng-if="readOnly">
@@ -139,11 +145,12 @@
 					  
 					  <div ng-if="p.propertyType == 'BOOLEAN'">
 					  	<div ng-if="!readOnly">
-					  		<select ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value" jb-boolean>
+					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value |yesOrNo}}</p>
+					  		 <select  ng-if="!isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value" jb-boolean>
 					  			<option></option>
 								<option value="true"><fmt:message key="jsp.boolean.1"/></option>
 								<option value="false"><fmt:message key="jsp.boolean.0"/></option>
-				  			</select>
+				  			</select> 
 				  			<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument[p.queryName])"><fmt:message key="js.validate.required"/></label>
 					  	</div>
 				  		<div ng-if="readOnly">
@@ -154,7 +161,8 @@
 					  
 					  <div ng-if="p.propertyType == 'DECIMAL'" >
 					  	<div ng-if="!readOnly" ng-class="jbValidate.getClass(jbDetailFormDocument[p.queryName])">
-					  		<input ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value" ng-pattern="jbPatterns.number(2)" jb-number="2"/>
+					  	<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value}}</p>
+					  		<input ng-if="!isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value" ng-pattern="jbPatterns.number(2)" jb-number="2"/>
 					  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument[p.queryName])"><fmt:message key="js.validate.number"/></label>
 					  	</div>
 					 	<div ng-if="readOnly">
@@ -164,8 +172,9 @@
 					  
 					  <div ng-if="p.propertyType == 'DATETIME'">
 					  	<div class="input-group" ng-if="!readOnly">
-					  		<input ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" readonly datetime-picker="${localePatternTimestamp}" ng-model="documentEditing.properties[p.queryName].value" is-open="calendarPopups['jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName)]" />
-					  		<span class="input-group-btn">
+					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value | date: '${localePatternTimestamp}'}}</p>
+					  		<input ng-if="!isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" readonly datetime-picker="${localePatternTimestamp}" ng-model="documentEditing.properties[p.queryName].value" is-open="calendarPopups['jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName)]" />
+					  		<span ng-if="!isReadOnly() class="input-group-btn">
 	       						<button type="button" class="btn btn-default" ng-click="openCalendar('jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName))"><i class="fa fa-calendar"></i></button>
 	      					</span>
 	      					<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument[p.queryName])"><fmt:message key="js.validate.required"/></label>
@@ -177,7 +186,8 @@
 					  
 					  <div ng-if="p.propertyType == 'DATE'">
 					  	<div class="input-group" ng-if="!readOnly">
-					  		<input ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" readonly uib-datepicker-popup="${localePatternDate}" ng-model="documentEditing.properties[p.queryName].value" is-open="calendarPopups['jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName)]"/>
+					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value | date: '${localePatternTimestamp}'}}</p>
+					  		<input  ng-if="isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" readonly uib-datepicker-popup="${localePatternDate}" ng-model="documentEditing.properties[p.queryName].value" is-open="calendarPopups['jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName)]"/>
 					  		<span class="input-group-btn">
 	       						<button type="button" class="btn btn-default" ng-click="openCalendar('jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName))"><i class="fa fa-calendar"></i></button>
 	      					</span>
@@ -189,6 +199,7 @@
 					  </div>
 				  	
 				  </div>
+			
 				</div>
 				<!-- Fine Proprietà aggiuntive -->
 			 
@@ -198,12 +209,12 @@
 			<!-- Versioni documento -->
 			<br>
 			<div ng-if="currentRownum != null" >
-				<div class="row jb-toolbar" ng-if="!getUser().readOnly">
+				<div class="row jb-toolbar" >
 					<div class="col-sm-6">
 						<h4><fmt:message key="jsp.document.version.sidemenu"/></h4>
 					</div>
-		  			<div class="col-sm-6 ">
-		  				<div class="pull-right">
+		  			<div  class="col-sm-6 ">
+		  				<div  ng-if="!isReadOnly()" class="pull-right">
 		  					<button class="btn btn-success btn-sm" type="button" ng-click="startContentReplace()"><i class="fa fa-plus"></i> <fmt:message key="jsp.document.update"/></button>
 		  				</div>
 					</div>

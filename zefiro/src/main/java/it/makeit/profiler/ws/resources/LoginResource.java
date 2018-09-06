@@ -1,22 +1,32 @@
 package it.makeit.profiler.ws.resources;
 
 import it.makeit.alfresco.AlfrescoConfig;
+import it.makeit.alfresco.AlfrescoException;
 import it.makeit.alfresco.AlfrescoHelper;
 import it.makeit.alfresco.publicapi.model.Person;
+import it.makeit.jbrick.JBrickException;
 import it.makeit.jbrick.http.SessionUtil;
 import it.makeit.jbrick.web.LocaleUtil;
 import it.makeit.jbrick.ws.resources.AbstractResource;
 import it.makeit.profiler.dao.UsersBean;
 import it.makeit.zefiro.Util;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -25,12 +35,19 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.tools.ant.taskdefs.optional.ejb.JonasDeploymentTool;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.http.BasicAuthentication;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpResponseException;
+import com.google.api.client.json.Json;
 import com.google.api.client.json.JsonObjectParser;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 /**
  * @author MAKE IT
@@ -38,10 +55,24 @@ import com.google.api.client.json.JsonObjectParser;
 @Path("/Login")
 public class LoginResource extends AbstractResource {
 
-	@GET
+	@GET	
 	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-	public Response login(@Context HttpServletRequest pRequest) {
-
+	//@Context HttpServletRequest pRequest
+	public Response login(@Context HttpServletRequest pRequest, @Context HttpServletResponse pResponse) throws UnsupportedEncodingException, JsonProcessingException {
+		String authHeader = pRequest.getHeader("Authorization");
+		if(authHeader == null)
+			throw new JBrickException(JBrickException.FATAL, "Username o password inseriti risultano errati!");
+		String token = authHeader.replaceFirst("Basic ", "");
+		
+		byte[] decoded = null;
+		try {
+		 decoded = Base64.getMimeDecoder().decode(token.trim().getBytes("UTF-8"));
+		}catch(IllegalArgumentException argExcep) {
+			throw new JBrickException(JBrickException.FATAL, argExcep.getLocalizedMessage());
+		}
+		String userpassword = new String(decoded);
+		String[] creadentials = userpassword.split(":");
+		
 		HttpSession lSession = pRequest.getSession();
 
 		String lAction = pRequest.getParameter("action");
@@ -59,15 +90,21 @@ public class LoginResource extends AbstractResource {
 		// ActionsManager lActionsManager = ActionsManager.getInstance();
 		// TODO gestione ruoli
 
-		String lUsername = pRequest.getParameter("username");
-		String lPassword = pRequest.getParameter("password");
+		//String lUsername = pRequest.getParameter("username");
+		String lUsername = creadentials[0];
+		String lPassword = creadentials[1];
 
 		// lUsersBean = lUsersManager.checkLogin(lUsername, lPassword);
+		try {
 		lUsersBean = checkLogin(lUsername, lPassword);
-
+		}catch (AlfrescoException e) {
+			lUsersBean = null;
+		}catch (HttpResponseException ex) {
+			lUsersBean = null;
+		}
 		if (lUsersBean == null) {
 			UsersBean lUsersBeanFailed = new UsersBean();
-			lUsersBeanFailed.setUsername(lUsername);
+			
 			return Response
 			        .status(Status.FORBIDDEN)
 			        .entity(lUsersBeanFailed) // indica che il login è fallito
@@ -95,12 +132,14 @@ public class LoginResource extends AbstractResource {
 		jbrickConfigProperties.put("readOnly", lAlfrescoConfig.isReadOnly());
 		jbrickConfigProperties.put("process", lAlfrescoConfig.isProcess());
 		lUsersBean.setParametersMap(jbrickConfigProperties);
-		
+		lUsersBean.setNotLoggedIn(false);
+		lUsersBean.setEnabled(1);
 		lSession.setAttribute("utente", lUsersBean);
 		return Response.ok(lUsersBean).build();
 	}
+	
 
-    private UsersBean checkLogin(final String pStrUsername, final String pStrPassword){    	
+    private UsersBean checkLogin(final String pStrUsername, final String pStrPassword) throws HttpResponseException{    	
     	Person lPerson = null;
     	try {
     		AlfrescoConfig lAlfrescoConfig = Util.getDefaultAlfrescoConfig(pStrUsername,pStrPassword);
@@ -115,8 +154,8 @@ public class LoginResource extends AbstractResource {
     	    });
     		
     		lPerson = AlfrescoHelper.getUser(pStrUsername, lHttpRequestFactory, lAlfrescoConfig);    		
-		} catch (Exception e) {
-			return null; // TODO: gestire meglio
+		} catch (AlfrescoException e) {
+			throw new AlfrescoException(e, AlfrescoException.GENERIC_EXCEPTION);
 		}
     	
     	if (lPerson == null || !lPerson.isEnabled()) {

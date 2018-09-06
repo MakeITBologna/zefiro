@@ -29,7 +29,7 @@ angular.module('main', [
 					templateUrl: 'views/document/documentBrowser.jsp',
 					controller: 'DocumentController'
 				})
-
+			
 				//Errore generico
 				.when('/error', {
 					templateUrl: 'views/error.jsp'
@@ -76,6 +76,8 @@ angular.module('main', [
 				});
 
 			$httpProvider.interceptors.push('responseErrorHandler');
+			
+			$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 
 			uibDatepickerPopupConfig.currentText = jbMessages.today;
 			uibDatepickerPopupConfig.clearText = jbMessages.clear;
@@ -141,6 +143,7 @@ angular.module('main', [
 
 				return true;
 			},
+			
 			getModelIndex: function (table, i) {
 				return i + (table.page() - 1) * table.count();
 			},
@@ -262,6 +265,12 @@ angular.module('main', [
 					}
 				}
 				return dlProx;
+			},
+			b64EncodeUnicode: function (toEncode) {
+				return btoa(encodeURIComponent(toEncode).replace(/%([0-9A-F]{2})/g,
+				        function toSolidBytes(match, p1) {
+				            return String.fromCharCode('0x' + p1);
+				    }));
 			}
 		}
 	})
@@ -290,8 +299,7 @@ angular.module('main', [
 			}
 		}
 	})
-	
-	//jbValidate, contiene funzioni di validazione input
+	//jbValidate, contiene funzioni di validazione input // factory('jbAuthFactory', ['$cookies', function ($cookies) {..}
 	.factory('jbAuthFactory', ['$cookies', function ($cookies) {
 		var storedUserLabel = "jbuser"; 
 		
@@ -299,12 +307,13 @@ angular.module('main', [
 			getUser: function () {
 				return $cookies.getObject(storedUserLabel);
 			},
-			storeUser: function(jbuser){
+			storeUser: function(jbuser){ 
 				$cookies.putObject(storedUserLabel, { idUser: jbuser.idUser, username: jbuser.username, enabled: jbuser.enabled, fullName: jbuser.fullName, process: jbuser.parametersMap.process, readOnly: jbuser.parametersMap.readOnly });
 			},
 			removeUser(){
 				$cookies.remove(storedUserLabel);
 			}
+			
 		}
 	}])
 
@@ -313,16 +322,19 @@ angular.module('main', [
 	//CONTROLLER
 
 	//Logincontroller
-	.controller('LoginController', [ '$scope', '$http', '$location', 'jbValidate', 'jbAuthFactory', function ( $scope, $http, $location, jbValidate, jbAuthFactory) {
+	.controller('LoginController', [ '$scope', '$http', '$location', 'jbValidate', 'jbAuthFactory', 'jbUtil', function ( $scope, $http, $location, jbValidate, jbAuthFactory, jbUtil) {
 
 		$scope.jbValidate = jbValidate;
 
 		$scope.credentials = {};
 
 		$scope.login = function () {
+			 var headers =  {Authorization : "Basic "
+			        + jbUtil.b64EncodeUnicode($scope.credentials.username+ ":" +$scope.credentials.password)
+			    };
+			    
 			$scope.loginPromise =
-				$http
-					.get('a/Login', { params: $scope.credentials })
+				$http.get('a/Login',{headers: headers} )
 					.then(function (response) {
 						var jbuser = response.data;
 						jbAuthFactory.storeUser(jbuser);
@@ -353,12 +365,14 @@ angular.module('main', [
 
 		$scope.isUserLogged = function () {
 			var user = $scope.getUser();
-			return !!user && !!user.enabled;
+			return !!user && user.enabled == 1;
 		};
-
+		$scope.isReadOnly = function () {var user = $scope.getUser();return user.readOnly; };
+		
 		$scope.loginError = function () {
 			var user = $scope.getUser();
-			return !!user && !user.enabled && !!user.username;
+			
+			return !!user && !user.enabled && !user.notLoggedIn;
 		};
 
 		$scope.logout = function () {
@@ -498,4 +512,9 @@ angular.module('main', [
 			return $sce.trustAsHtml(url);
 		};
 
-	}]);
+	}]).filter('yesOrNo',function () {
+		return function (input) {
+			return input ? 'yes' : 'no';
+		};
+
+	});

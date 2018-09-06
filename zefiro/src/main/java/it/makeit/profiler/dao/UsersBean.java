@@ -12,5 +12,14 @@ public class UsersBean extends UsersBaseBean implements IUsersBean{
     public UsersBean() {
         super();
     }
+    boolean notLoggedIn = true;
+	public boolean isNotLoggedIn() {
+		return notLoggedIn;
+	}
+	public void setNotLoggedIn(boolean notLoggedIn) {
+		this.notLoggedIn = notLoggedIn;
+	}
+    
+    
     
 }

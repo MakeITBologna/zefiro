@@ -61,6 +61,7 @@ import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -230,7 +231,11 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 			mLog.debug("END getUser(String)");
 			return lResponse.getEntry();
 
-		} catch (Exception e) {
+		}catch (HttpResponseException ex) {
+			mLog.error("Unexpected failure", ex);
+			throw new AlfrescoException(ex, AlfrescoException.GENERIC_EXCEPTION);
+		}
+		catch (Exception e) {
 			mLog.error("Unexpected failure", e);
 			throw new AlfrescoException(e, AlfrescoException.GENERIC_EXCEPTION);
 		}
