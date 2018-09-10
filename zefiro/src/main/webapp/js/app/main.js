@@ -104,15 +104,18 @@ angular.module('main', [
 	.factory('responseErrorHandler', ['$q', '$location', '$rootScope','jbAuthFactory', function responseErrorHandler($q, $location, $rootScope, jbAuthFactory) {
 		return {
 			'responseError': function (response) {
-				switch (response.status) {
+				//console.log(response.data);
+				switch (response.status) {	
 					case 403:
 						var rdata = response.data;
 						if (rdata.username) { // login fallito
 							jbAuthFactory.storeUser({ username: rdata.username })
 							$location.url('/login', true);
 						} else if (rdata.notLoggedIn) { // non autenticato
+							jbAuthFactory.storeUser(rdata );
 							$location.url('/login', true);
 						} else { // accesso non consentito
+							
 							$location.url('/forbidden', true);
 						}
 						break;
@@ -365,14 +368,14 @@ angular.module('main', [
 
 		$scope.isUserLogged = function () {
 			var user = $scope.getUser();
-			return !!user && user.enabled == 1;
+			return !!user && !!user.enabled;
 		};
 		$scope.isReadOnly = function () {var user = $scope.getUser();return user.readOnly; };
 		
 		$scope.loginError = function () {
 			var user = $scope.getUser();
-			
-			return !!user && !user.enabled && !user.notLoggedIn;
+			//return !!user && !!user.enabled && !!user.username;
+			return !!user && user.enabled === null && user.username === null;
 		};
 
 		$scope.logout = function () {

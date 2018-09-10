@@ -102,9 +102,15 @@ public class LoginResource extends AbstractResource {
 		}catch (HttpResponseException ex) {
 			lUsersBean = null;
 		}
+		AlfrescoConfig lAlfrescoConfig = Util.getDefaultAlfrescoConfig(lUsername, lPassword);
 		if (lUsersBean == null) {
 			UsersBean lUsersBeanFailed = new UsersBean();
-			
+			Map<String, Object> jbrickConfigProperties =  lUsersBeanFailed.getParametersMap();
+			if(jbrickConfigProperties == null)
+				jbrickConfigProperties = new HashMap<>();
+			jbrickConfigProperties.put("readOnly", lAlfrescoConfig.isReadOnly());
+			jbrickConfigProperties.put("process", lAlfrescoConfig.isProcess());
+			lUsersBeanFailed.setParametersMap(jbrickConfigProperties);
 			return Response
 			        .status(Status.FORBIDDEN)
 			        .entity(lUsersBeanFailed) // indica che il login è fallito
@@ -120,7 +126,7 @@ public class LoginResource extends AbstractResource {
 		// (v. http://www.docjar.com/html/api/org/apache/catalina/manager/util/SessionUtils.java.html r. 63 e 168)
 		lSession.setAttribute("Login", lUsername);
 
-		AlfrescoConfig lAlfrescoConfig = Util.getDefaultAlfrescoConfig(lUsername, lPassword);
+		
 		lSession.setAttribute("alfrescoConfig", lAlfrescoConfig);
 		Locale locale = LocaleUtil.getLocale(pRequest.getSession());
 		lSession.setAttribute("alfrescoSession", AlfrescoHelper.createSession(lAlfrescoConfig, locale));
