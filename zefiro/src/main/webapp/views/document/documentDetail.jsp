@@ -145,7 +145,7 @@
 					  
 					  <div ng-if="p.propertyType == 'BOOLEAN'">
 					  	<div ng-if="!readOnly">
-					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value |yesOrNo}}</p>
+					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value |yesOrNo }}</p>
 					  		 <select  ng-if="!isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value" jb-boolean>
 					  			<option></option>
 								<option value="true"><fmt:message key="jsp.boolean.1"/></option>

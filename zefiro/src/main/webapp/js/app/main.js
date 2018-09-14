@@ -516,8 +516,9 @@ angular.module('main', [
 		};
 
 	}]).filter('yesOrNo',function () {
+		
 		return function (input) {
-			return input ? 'yes' : 'no';
+			return input ? 'Sì' : 'No';
 		};
 
 	});
