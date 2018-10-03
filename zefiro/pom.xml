@@ -30,6 +30,19 @@
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>it.makeit.alfresco.addon</groupId>
+			<artifactId>zefiro-sdk</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.11</version>
+		</dependency>
+
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -216,9 +229,9 @@
 			<version>2.2.4</version>
 		</dependency>
 		<dependency>
-    		<groupId>com.google.http-client</groupId>
-    		<artifactId>google-http-client-gson</artifactId>
-    		<version>1.21.0</version>
+			<groupId>com.google.http-client</groupId>
+			<artifactId>google-http-client-gson</artifactId>
+			<version>1.21.0</version>
 		</dependency>
 
 		<dependency>
@@ -246,7 +259,7 @@
 
 	<build>
 		<finalName>zefiro</finalName>
-		
+
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -299,10 +312,10 @@
 				</configuration>
 			</plugin>
 			<plugin>
-    			<groupId>org.apache.maven.plugins</groupId>
-    			<artifactId>maven-javadoc-plugin</artifactId>
-    			<version>3.0.1</version>
-    		</plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.0.1</version>
+			</plugin>
 		</plugins>
 	</build>
 	<profiles>

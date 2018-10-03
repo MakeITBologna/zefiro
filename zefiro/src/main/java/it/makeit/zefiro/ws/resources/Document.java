@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -61,6 +62,7 @@ import it.makeit.alfresco.CmisQueryBuilder;
 import it.makeit.alfresco.CmisQueryPredicate;
 import it.makeit.alfresco.CmisQueryPredicate.Operator;
 import it.makeit.alfresco.RenditionKinds;
+import it.makeit.alfresco.addon.DocumentListenener;
 import it.makeit.alfresco.webscriptsapi.services.ThumbnailDefinitions;
 import it.makeit.alfresco.workflow.AlfrescoRendition;
 import it.makeit.jbrick.JBrickConfigManager;
@@ -95,6 +97,10 @@ public class Document {
 
 	@Context
 	private HttpServletRequest httpRequest;
+	
+	
+	@Inject DocumentListenener documentListenener;
+	
 
 	private List<QueryFilter> getQueryFiltersMap(Map<String, String[]> pMapParams) {
 		List<QueryFilter> lListFilters = new LinkedList<QueryFilter>();
@@ -302,6 +308,8 @@ public class Document {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 		lMimeType = lContentStream.getMimeType();
+		
+		documentListenener.onDocumentDownload();
 		return Response.ok(lContentStream.getStream()).type(lMimeType).build();
 	}
 

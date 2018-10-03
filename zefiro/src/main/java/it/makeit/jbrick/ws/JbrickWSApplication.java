@@ -1,14 +1,24 @@
 package it.makeit.jbrick.ws;
 
-import it.makeit.jbrick.ws.filters.AuthenticationFilter;
-import it.makeit.jbrick.ws.filters.JbrickExceptionMapper;
-import it.makeit.jbrick.ws.filters.LogFilter;
+import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
 
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.reflections.Reflections;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Sets;
+
+import it.makeit.alfresco.addon.DoNothingDocumentListener;
+import it.makeit.alfresco.addon.DocumentListenener;
+import it.makeit.alfresco.addon.ZefiroExtension;
+import it.makeit.jbrick.ws.filters.AuthenticationFilter;
+import it.makeit.jbrick.ws.filters.JbrickExceptionMapper;
+import it.makeit.jbrick.ws.filters.LogFilter;
 
 
 /**
@@ -44,6 +54,40 @@ public class JbrickWSApplication extends ResourceConfig {
 		// Registrazione filtri
 		register(AuthenticationFilter.class);
 		register(LogFilter.class);
+		
+		register(new SdkBinder());
+		
+		
 	}
 
+	public static class SdkBinder extends AbstractBinder {
+
+		@Override
+		protected void configure() {
+			Reflections reflections = new Reflections();
+
+			Set<Class<? extends DocumentListenener>> documentListenerClasses = reflections.getSubTypesOf(DocumentListenener.class);
+			
+			documentListenerClasses = Sets.filter(documentListenerClasses, zefiroExtension());
+			
+			switch(documentListenerClasses.size()) {
+				case 0: {bind(DoNothingDocumentListener.class).to(DocumentListenener.class); break;	} // dafult do nothing
+				case 1: {bind(documentListenerClasses.iterator().next()).to(DocumentListenener.class); break;} // zefiro extension
+				default: {throw new IllegalArgumentException("Sono stati definiti 2 o più DocumentListenener");	} // errore
+			}
+			
+		}
+		
+	}
+	
+	
+	private static <T> Predicate<Class<? extends T>> zefiroExtension(){
+		return new Predicate<Class<? extends T>>() {
+			@Override
+			public boolean apply(Class<? extends T> c) {
+				return c.isAnnotationPresent(ZefiroExtension.class);
+			}
+		};
+	}
+	
 }
