@@ -14,7 +14,9 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
 
 import it.makeit.alfresco.addon.DoNothingDocumentListener;
+import it.makeit.alfresco.addon.DoNothingUserSessionListener;
 import it.makeit.alfresco.addon.DocumentListenener;
+import it.makeit.alfresco.addon.UserSessionListener;
 import it.makeit.alfresco.addon.ZefiroExtension;
 import it.makeit.jbrick.ws.filters.AuthenticationFilter;
 import it.makeit.jbrick.ws.filters.JbrickExceptionMapper;
@@ -74,6 +76,19 @@ public class JbrickWSApplication extends ResourceConfig {
 				case 0: {bind(DoNothingDocumentListener.class).to(DocumentListenener.class); break;	} // dafult do nothing
 				case 1: {bind(documentListenerClasses.iterator().next()).to(DocumentListenener.class); break;} // zefiro extension
 				default: {throw new IllegalArgumentException("Sono stati definiti 2 o più DocumentListenener");	} // errore
+			}
+			
+			
+			
+			
+			Set<Class<? extends UserSessionListener>> userSessionListenerClasses = reflections.getSubTypesOf(UserSessionListener.class);
+			
+			userSessionListenerClasses = Sets.filter(userSessionListenerClasses, zefiroExtension());
+			
+			switch(userSessionListenerClasses.size()) {
+				case 0: {bind(DoNothingUserSessionListener.class).to(UserSessionListener.class); break;	} // dafult do nothing
+				case 1: {bind(userSessionListenerClasses.iterator().next()).to(UserSessionListener.class); break;} // zefiro extension
+				default: {throw new IllegalArgumentException("Sono stati definiti 2 o più UserSessionListener");	} // errore
 			}
 			
 		}

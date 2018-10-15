@@ -12,18 +12,13 @@
 		<dataTypeConverter dataType="java.lang.Integer" pattern="pattern.integer" converter="org.apache.commons.beanutils.locale.converters.IntegerLocaleConverter"/>
 	</dataTypeConverters>
 
-<<<<<<< HEAD
  
- 
- 	<alfresco baseTypeId="D:ct:documentoTreviso" host="http://localhost:8080" rootFolderId="6cce148d-6e43-4a09-8149-facb195085e0"/> 
+ 	<alfresco baseTypeId="D:cmis:document" host="http://zefiro.yacme.com" rootFolderId="6a2e109c-9ada-4a93-8310-e4bbf327c2ee"/> 
  
  
  
   <properties process="false" readOnly="false" />
-=======
-<!-- <alfresco baseTypeId="D:myca:calcio" host="http://127.0.0.1:8080" rootFolderId="41f43af3-7894-4a65-bde0-9a86142429c5"/> -->	
-<alfresco baseTypeId="D:ct:documentoTreviso" host="http://localhost:8080" rootFolderId="6cce148d-6e43-4a09-8149-facb195085e0"/>
->>>>>>> refs/heads/processes
+
 
 	<propertyBlacklist>
 		<entry name="alfcmis:nodeRef" />

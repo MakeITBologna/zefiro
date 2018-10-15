@@ -309,7 +309,7 @@ public class Document {
 		}
 		lMimeType = lContentStream.getMimeType();
 		
-		documentListenener.onDocumentDownload();
+		documentListenener.onDocumentDownload(lDocument);
 		return Response.ok(lContentStream.getStream()).type(lMimeType).build();
 	}
 
@@ -483,6 +483,8 @@ public class Document {
 						getOrCreateFolder(lSession, pDocumentBean.getType()), pDocumentBean.getName(), -1, null, null,
 						lMapProperties, null, pDocumentBean.getType());
 			}
+			
+			documentListenener.onDocumentUpload(lDocument);
 
 		} catch (Exception e) {
 			// TODO: log ...
@@ -607,7 +609,10 @@ public class Document {
 	@Path("/{id}")
 	public Response deleteById(@PathParam("id") String pStrId) {
 		Session lSession = Util.getUserAlfrescoSession(httpRequest);
-		AlfrescoHelper.deleteDocument(lSession, pStrId, true);
+		org.apache.chemistry.opencmis.client.api.Document lDocument = AlfrescoHelper.deleteDocument(lSession, pStrId, true);
+		
+		documentListenener.onDocumentDelete(lDocument);
+		
 		return Response.ok().build();
 	}
 

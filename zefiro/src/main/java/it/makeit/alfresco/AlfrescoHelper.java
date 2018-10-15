@@ -655,13 +655,15 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		mLog.debug("EXIT renameDocument(<Session>, " + pStrNodeRef + ", " + pStrNewName + ")");
 	}
 
-	public static void deleteDocument(Session pSession, String pStrNodeRef, boolean pBlnAllVersions) {
+	public static Document deleteDocument(Session pSession, String pStrNodeRef, boolean pBlnAllVersions) {
 		mLog.debug("ENTER deleteDocument(<Session>, " + pStrNodeRef + ", " + pBlnAllVersions + ")");
 
 		Document lDocument = (Document) pSession.getObject(pStrNodeRef);
 		lDocument.delete(pBlnAllVersions);
 
 		mLog.debug("EXIT deleteDocument(<Session>, " + pStrNodeRef + ", " + pBlnAllVersions + ")");
+		
+		return lDocument;
 	}
 
 	public static Document getDocumentByPath(Session pSession, String pStrPath) {
