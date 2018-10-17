@@ -13,7 +13,7 @@
 	</dataTypeConverters>
 
  
- 	<alfresco baseTypeId="D:cmis:document" host="http://zefiro.yacme.com" rootFolderId="6a2e109c-9ada-4a93-8310-e4bbf327c2ee"/> 
+ 	<alfresco baseTypeId="cmis:document" host="http://zefiro.yacme.com" rootFolderId="6a2e109c-9ada-4a93-8310-e4bbf327c2ee"/> 
  
  
  

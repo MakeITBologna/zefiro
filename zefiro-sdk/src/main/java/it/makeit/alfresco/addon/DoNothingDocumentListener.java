@@ -8,11 +8,11 @@ public class DoNothingDocumentListener implements DocumentListenener {
 		
 	}
 
-	public void onDocumentDelete(Document lDocument) {
+	public void onDocumentDelete(Document document) {
 		
 	}
 
-	public void onDocumentUpload(Document lDocument) {
+	public void onDocumentUpload(Document document) {
 		
 	}
 	

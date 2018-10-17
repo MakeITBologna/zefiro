@@ -290,6 +290,7 @@ public class Document {
 		org.apache.chemistry.opencmis.client.api.Document lDocument = AlfrescoHelper.getDocumentById(lSession, pStrId,
 				true);
 
+		documentListenener.onDocumentDownload(lDocument);
 		return Response.ok(lDocument).build();
 	}
 
