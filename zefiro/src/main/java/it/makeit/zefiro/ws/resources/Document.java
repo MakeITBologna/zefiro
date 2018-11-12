@@ -273,8 +273,7 @@ public class Document {
 		CmisQueryBuilder lQB = new CmisQueryBuilder(lSession);
 		String lStrQuery = lQB.selectFrom(lStrTypeId, (String[]) null).where(lListPredicates).build();
 
-		List<org.apache.chemistry.opencmis.client.api.Document> lList = AlfrescoHelper.searchDocuments(lSession,
-				lStrQuery);
+		List<org.apache.chemistry.opencmis.client.api.Document> lList = AlfrescoHelper.searchDocuments(lSession, lStrQuery);
 		return lList;
 	}
 

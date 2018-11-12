@@ -28,10 +28,8 @@ import org.apache.chemistry.opencmis.commons.definitions.TypeDefinition;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class DocumentType {
 	// Ottengo la lista delle proprietà che non voglio visualizzare sul client
-	private String[] mPropertyBlacklist = JBrickConfigManager.getInstance().getPropertyList("propertyBlacklist/entry",
-			"@name");
-	private static final String mAlfrescoBaseTypeId = JBrickConfigManager.getInstance()
-			.getMandatoryProperty("alfresco/@baseTypeId");
+	private String[] mPropertyBlacklist = JBrickConfigManager.getInstance().getPropertyList("propertyBlacklist/entry",	"@name");
+	private static final String mAlfrescoBaseTypeId = JBrickConfigManager.getInstance().getMandatoryProperty("alfresco/@baseTypeId");
 
 	@Context
 	private HttpServletRequest httpRequest;
@@ -51,6 +49,18 @@ public class DocumentType {
 		Session lSession = Util.getUserAlfrescoSession(httpRequest);
 
 		List<ObjectType> lObjectTypeTreeLeaves = AlfrescoHelper.getTypesTreeLeaves(lSession, mAlfrescoBaseTypeId, true);
+		
+		
+		
+		
+		/*
+		
+		
+		List<ObjectType> itemTreeLeaves = AlfrescoHelper.getTypesTreeLeaves(lSession, "I:makeit:cliente", true);
+		lObjectTypeTreeLeaves.addAll(itemTreeLeaves);
+		*/
+		
+		
 		for (ObjectType lObjectType : lObjectTypeTreeLeaves)
 			addAspects(lSession, lObjectType);
 

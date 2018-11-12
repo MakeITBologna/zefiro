@@ -2,6 +2,7 @@ package it.makeit.jbrick.ws;
 
 import java.util.Set;
 
+import javax.inject.Singleton;
 import javax.ws.rs.ApplicationPath;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -74,7 +75,7 @@ public class JbrickWSApplication extends ResourceConfig {
 			
 			switch(documentListenerClasses.size()) {
 				case 0: {bind(DoNothingDocumentListener.class).to(DocumentListenener.class); break;	} // dafult do nothing
-				case 1: {bind(documentListenerClasses.iterator().next()).to(DocumentListenener.class); break;} // zefiro extension
+				case 1: {bind(documentListenerClasses.iterator().next()).to(DocumentListenener.class).in(Singleton.class); break;} // zefiro extension
 				default: {throw new IllegalArgumentException("Sono stati definiti 2 o più DocumentListenener");	} // errore
 			}
 			
@@ -87,7 +88,7 @@ public class JbrickWSApplication extends ResourceConfig {
 			
 			switch(userSessionListenerClasses.size()) {
 				case 0: {bind(DoNothingUserSessionListener.class).to(UserSessionListener.class); break;	} // dafult do nothing
-				case 1: {bind(userSessionListenerClasses.iterator().next()).to(UserSessionListener.class); break;} // zefiro extension
+				case 1: {bind(userSessionListenerClasses.iterator().next()).to(UserSessionListener.class).in(Singleton.class); break;} // zefiro extension
 				default: {throw new IllegalArgumentException("Sono stati definiti 2 o più UserSessionListener");	} // errore
 			}
 			
