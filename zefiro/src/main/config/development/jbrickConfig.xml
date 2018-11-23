@@ -13,7 +13,7 @@
 	</dataTypeConverters>
 
  
- 	<alfresco baseTypeId="D:ct:documentoTreviso" host="http://localhost:8080" rootFolderId="cd3db776-c544-4932-8766-2a8adde6acc5"/> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" host="http://zefiro.yacme.com" rootFolderId="dbcdd59b-53e5-4392-aa28-80089751d8a0"/> 
  
  
  

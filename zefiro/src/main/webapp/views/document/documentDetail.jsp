@@ -57,7 +57,6 @@
 				  <p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.name}}</p>
 				  	<input  ng-if="!isReadOnly()" ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-name" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="text" name="name" ng-model="documentEditing.name" pattern="^\w+[\w\s\.-]*$"/>
 				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.name)"><fmt:message key="js.validate.filename"/></label>
-				  	<p ng-if="readOnly" class="form-control-static">{{documentEditing.name}}</p>
 				  </div>
 				</div>
 				
@@ -67,7 +66,6 @@
 				   <p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.description}}</p>
 				  	<input ng-if="!isReadOnly()" ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-description" class="form-control" title="<fmt:message key="jsp.document.description.title"/>" type="text" name="description" ng-model="documentEditing.description"/>
 				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.description)"><fmt:message key="js.validate.required"/></label>
-				  	<p ng-if="readOnly" class="form-control-static">{{documentEditing.description}}</p>
 				  </div>
 				</div>
 				
@@ -115,8 +113,8 @@
 					  	<div ng-if="!readOnly" ng-class="jbValidate.getClass(jbDetailFormDocument[p.queryName])">
 					  		
 					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value}}</p>
-					  	    <input ng-if="!isReadOnly()" ng-required="p.required" ng-if="jbUtil.isEmptyObject(p.choices) && !p.linkType" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value" />
-					  	  	<select ng-if="!isReadOnly()" ng-required="p.required" ng-if="!jbUtil.isEmptyObject(p.choices)" class="form-control" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value">
+					  	    <input ng-required="p.required" ng-if="!isReadOnly() && jbUtil.isEmptyObject(p.choices) && !p.linkType" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value" />
+					  	  	<select ng-required="p.required" ng-if="!isReadOnly() && !jbUtil.isEmptyObject(p.choices)" class="form-control" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value">
 						        <option></option>
 						    	<option ng-repeat="c in p.choices" value="{{c}}">{{c}}</option> 
 						    	
@@ -174,7 +172,7 @@
 					  	<div class="input-group" ng-if="!readOnly">
 					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value | date: '${localePatternTimestamp}'}}</p>
 					  		<input ng-if="!isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" readonly datetime-picker="${localePatternTimestamp}" ng-model="documentEditing.properties[p.queryName].value" is-open="calendarPopups['jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName)]" />
-					  		<span ng-if="!isReadOnly() class="input-group-btn">
+					  		<span ng-if="!isReadOnly()" class="input-group-btn">
 	       						<button type="button" class="btn btn-default" ng-click="openCalendar('jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName))"><i class="fa fa-calendar"></i></button>
 	      					</span>
 	      					<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument[p.queryName])"><fmt:message key="js.validate.required"/></label>
