@@ -13,8 +13,8 @@
 	</dataTypeConverters>
 
  
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="79cf3e2d-005d-40ab-b0fa-c3d1008426de"/> 
- 
+ 	<!--alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="79cf3e2d-005d-40ab-b0fa-c3d1008426de"/--> 
+ <alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://zefiro.yacme.com" rootFolderId="31aff755-357b-49fb-a447-1bb83a663bfa"/>
  
  
   <properties process="false" readOnly="false" />

@@ -90,15 +90,8 @@ public class DocumentType {
 
 	@Path("/{id}/relation")
 	public RelationType getAllowedRelationTypes(@PathParam("id") String pStrId) {
-		return new RelationType(pStrId, httpRequest);
+		return new RelationType(pStrId, httpRequest, mAlfrescoBaseTypeId, mAlfrescoBaseTypeItemId);
 	}
 
-	// Non più usato: logica trasferita a front-end
-	// Rimuovo dall' ObjectType le proprietà nella blackslist
-	private void removeBlacklistProperties(ObjectType pObjectType) {
-
-		for (String lPropertyName : mPropertyBlacklist) {
-			pObjectType.getPropertyDefinitions().remove(lPropertyName);
-		}
-	}
+	
 }

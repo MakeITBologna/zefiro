@@ -3,6 +3,7 @@ package it.makeit.zefiro.ws.resources;
 import it.makeit.alfresco.AlfrescoHelper;
 import it.makeit.zefiro.Util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,13 +24,19 @@ import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 public class RelationType {
 	
 	private String mDocumentTypeId = null;
+	private String alfrescobasetypeid = null;
+	private String alfrescobasetypeitemid = null;
 
 	@Context
 	private HttpServletRequest httpRequest;
 
-	public RelationType(String pStrDocumentTypeId, HttpServletRequest pHttpRequest) {
+	public RelationType(String pStrDocumentTypeId, HttpServletRequest pHttpRequest, String malfrescobasetypeid, String malfrescobasetypeitemid) {
 		mDocumentTypeId = pStrDocumentTypeId;
 		httpRequest = pHttpRequest;
+		
+		this.alfrescobasetypeid = malfrescobasetypeid;
+		this.alfrescobasetypeitemid = malfrescobasetypeitemid;
+		
 	}
 
 	@GET
@@ -37,11 +44,33 @@ public class RelationType {
 	public Response getRelationshipTypes() {
 		Session lSession = Util.getUserAlfrescoSession(httpRequest);
 
-		List<RelationshipType> lRelationshipTypes =
-			(mDocumentTypeId == null)
-			? AlfrescoHelper.getRelationshipTypes(lSession, BaseTypeId.CMIS_RELATIONSHIP.value())
-		    : AlfrescoHelper.getAllowedRelationshipTypes(lSession, BaseTypeId.CMIS_RELATIONSHIP.value(), mDocumentTypeId);
+		
+		if(mDocumentTypeId == null) {
+			List<RelationshipType> lRelationshipTypes   = AlfrescoHelper.getRelationshipTypes(lSession, BaseTypeId.CMIS_RELATIONSHIP.value());
+			return Response.ok(lRelationshipTypes).build(); 
+		} else {
+			List<RelationshipType> lRelationshipTypes = new ArrayList<>(); 
+			
+			lRelationshipTypes.addAll(AlfrescoHelper.getAllowedRelationshipTypes(lSession, BaseTypeId.CMIS_RELATIONSHIP.value(), mDocumentTypeId));
+		
+			List<String> parentTypeIds = AlfrescoHelper.getParentTypeIds(lSession, mDocumentTypeId);
+			
+			for(String parentTypeId: parentTypeIds) {
+				
+				
+				lRelationshipTypes.addAll(AlfrescoHelper.getAllowedRelationshipTypes(lSession, BaseTypeId.CMIS_RELATIONSHIP.value(), parentTypeId));
+				
+				if(parentTypeId.equals(alfrescobasetypeid) || parentTypeId.equals(alfrescobasetypeitemid)) {
+					break; // non controlliamo i tipi al di fuori della root
+				}
+				
+			}
+			
+			return Response.ok(lRelationshipTypes).build();
+		}
+		
+		
 
-		return Response.ok(lRelationshipTypes).build();
+		
 	}
 }
