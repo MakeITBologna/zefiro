@@ -3,6 +3,7 @@ package it.makeit.zefiro.ws;
 import it.makeit.zefiro.dao.DocumentPropertyBean;
 import it.makeit.zefiro.ws.deserializers.DocumentPropertyDeserializer;
 import it.makeit.zefiro.ws.serializers.DocumentSerializer;
+import it.makeit.zefiro.ws.serializers.ItemSerializer;
 import it.makeit.zefiro.ws.serializers.ObjectTypeSerializer;
 import it.makeit.zefiro.ws.serializers.PropertyDefinitionSerializer;
 import it.makeit.zefiro.ws.serializers.PropertyDefinitionSerializer.PropertyDecimalDefinitionSerializer;
@@ -34,7 +35,8 @@ public class ZefiroModule extends SimpleModule {
 		addSerializer(new DocumentSerializer());
 		addSerializer(new PropertySerializer());
 		addSerializer(new RelationshipSerializer());
-
+		addSerializer(new ItemSerializer());
+		
 		// PropertyDefinition
 		addSerializer(new PropertyDefinitionSerializer());
 		addSerializer(new PropertyDecimalDefinitionSerializer());

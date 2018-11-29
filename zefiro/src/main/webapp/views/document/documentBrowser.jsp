@@ -13,7 +13,7 @@
   <div id="query">
 	<div class="panel">
 	  <div class="panel-body">
-		<form name="jbSearchFormDocument" class="form-horizontal well" novalidate jb-print="a/Document/print">
+		<form name="jbSearchFormDocument" class="form-horizontal well" novalidate jb-print="a/Search/print">
 		<input type="hidden" id="jbSearchFormDocument-propertyNames" name="propertyNames" value="{{documentTemplate.propertyNames}}" />				
 		    <div class="row jb-form-group">
 		    

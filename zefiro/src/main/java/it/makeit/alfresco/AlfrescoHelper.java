@@ -102,6 +102,8 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 	private static final String DEFAULT_BASE_DOC_TYPE = "cmis:document";
 	
 	private static final Gson mGson = new Gson();
+	
+	private static final Integer ALFRESCORESULTSLIMIT = 100;
 
 	@Deprecated
 	private static String buildUrl(String pTemplate, AlfrescoConfig pConfig, String... pListParameters) {
@@ -859,16 +861,13 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		LinkedHashMap<String, Document> lHashMapResults = new LinkedHashMap<String, Document>();
 
 		ItemIterable<QueryResult> lResults = pSession.query(pQuery, false);
-		// XXX (Alessio): sarà il modo giusto? Prestazioni?
-
-		if (lResults != null) {
-			int i = 0;
+		Iterator<QueryResult> iterator = lResults.iterator();
+			
+		int i = 0;
 			//
-			for (Iterator<QueryResult> iterator = lResults.iterator(); i < ((CollectionIterator<QueryResult>) iterator)
-					.getTotalNumItems();) {
+			while (iterator.hasNext()) {
 				QueryResult qResult = iterator.next();
 
-				// } (QueryResult qResult : lResults) {
 				if (qResult != null) {
 					PropertyData<?> lPropData = qResult.getPropertyById("cmis:objectId");
 
@@ -880,7 +879,9 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 				}
 
 				i++;
-			}
+				if (i == ALFRESCORESULTSLIMIT) {
+					break;
+				}
 		}
 
 		mLog.debug("END searchDocuments(String");

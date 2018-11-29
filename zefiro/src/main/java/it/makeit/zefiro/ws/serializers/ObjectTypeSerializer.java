@@ -37,6 +37,7 @@ public class ObjectTypeSerializer extends StdSerializer<ObjectType> {
 		gen.writeStringField("id", value.getId());
 		gen.writeStringField("name", value.getDisplayName());
 		gen.writeStringField("description", value.getDescription());
+		gen.writeStringField("baseType", value.getBaseType().getId());
 		
 		gen.writeBooleanField("isSecondary",
 			(value.getBaseTypeId() == null)? false : BaseTypeId.CMIS_SECONDARY.value().equals(value.getBaseTypeId().value()));

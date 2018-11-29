@@ -80,19 +80,12 @@ import it.makeit.zefiro.dao.DocumentPropertyBean;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class Document {
 
-	private static final String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 	private static final Tika TIKA = new Tika();
 
-	private static final String CONTAINS_FIELD = "contains";
-	private static final String EQ = "eq";
-	private static final String FROM = "ge";
-	private static final String TO = "le";
-	private static final String LIKE = "lk";
+
 
 	private static final String mAlfrescoRootFolderID = JBrickConfigManager.getInstance()
 			.getMandatoryProperty("alfresco/@rootFolderId");
-	private static final String mAlfrescoBaseTypeId = JBrickConfigManager.getInstance()
-			.getMandatoryProperty("alfresco/@baseTypeId");
 	private static Log mLog = Log.getInstance(Document.class);
 
 	@Context
@@ -102,147 +95,7 @@ public class Document {
 	@Inject DocumentListenener documentListenener;
 	
 
-	private List<QueryFilter> getQueryFiltersMap(Map<String, String[]> pMapParams) {
-		List<QueryFilter> lListFilters = new LinkedList<QueryFilter>();
-		for (String prop : pMapParams.keySet()) {
-
-			// Decodifica FROM/TO
-			String[] lDecodedProp = prop.split("\\|");
-			String lStrPropertyId = lDecodedProp[0];
-			String lStrOperator = lDecodedProp.length > 1 ? lDecodedProp[lDecodedProp.length - 1].toLowerCase()
-					: "default";
-
-			// Non gestiti i parametri con cardinalità multipla
-			String lStrParamValue = pMapParams.get(prop)[0];
-
-			// Eventuali criteri per valori nulli o vuoti vanno gestiti ad hoc
-			if (StringUtils.isBlank(lStrParamValue)) {
-				continue;
-			}
-
-			QueryFilter lQueryFilter = new QueryFilter();
-			lQueryFilter.propertyId = lStrPropertyId;
-			// Se è stato specificato un operatore
-			switch (lStrOperator) {
-			case EQ:
-				lQueryFilter.operator = Operator.EQ;
-				break;
-			case FROM:
-				lQueryFilter.operator = Operator.GE;
-				break;
-			case TO:
-				lQueryFilter.operator = Operator.LE;
-				break;
-			case LIKE:
-				lQueryFilter.operator = Operator.LIKE;
-				break;
-			default:
-				// Niente: verrà usaro l'operatore predefinito per il tipo di
-				// dato
-				break;
-			}
-
-			if (lStrPropertyId.equals(CONTAINS_FIELD)) {
-				lQueryFilter.operator = Operator.CONTAINS;
-			}
-
-			lQueryFilter.value = lStrParamValue;
-
-			lListFilters.add(lQueryFilter);
-		}
-
-		return lListFilters;
-	}
-
-	private List<CmisQueryPredicate<?>> getQueryPredicates(TypeDefinition pTypeDef, Map<String, String[]> pMapParams)
-			throws ParseException {
-
-		List<CmisQueryPredicate<?>> lList = new LinkedList<CmisQueryPredicate<?>>();
-
-		
-		Map<String, PropertyDefinition<?>> lMapProperties = pTypeDef.getPropertyDefinitions();
-		
-		Map<String, String> propertyQueryNames = new HashMap<>(); // possono essere differenti: as4:filespool_x002d_as4 -> as4:filespool-x002d-as4
-		for(Entry<String, PropertyDefinition<?>> e: lMapProperties.entrySet()) {
-			propertyQueryNames.put(e.getValue().getQueryName(), e.getKey());
-		}
-		
-		List<QueryFilter> lListFilters = getQueryFiltersMap(pMapParams);
-		for (QueryFilter queryFilter : lListFilters) {
-			String propertyQueryName = queryFilter.propertyId;
-			String propertyId = propertyQueryNames.get(propertyQueryName);
-			
-			
-			CmisQueryPredicate<?> lPredicate = null;
-
-			if (propertyQueryName.equals(CONTAINS_FIELD)) {
-				lPredicate = CmisQueryPredicate.contains(queryFilter.value);
-				lList.add(lPredicate);
-				continue;
-			}
-			
-			PropertyDefinition<?> lPropDef = lMapProperties.get(propertyId);
-			if (lPropDef == null) {
-				// La proprietà richiesta come filtro non è definita per il tipo
-				// documento
-				continue;
-			}
-
-			
-			switch (lPropDef.getPropertyType()) {
-			case BOOLEAN:
-				lPredicate = CmisQueryPredicate.eqTo(propertyId, Boolean.valueOf(queryFilter.value));
-				break;
-
-			case DATETIME:
-				// XXX (Alessio): usare un'istanza statica di SimpleDateFormat?
-				SimpleDateFormat lFormatter = new SimpleDateFormat(DATE_PATTERN);
-				Date lDate = lFormatter.parse(queryFilter.value);
-				if (queryFilter.operator == Operator.LE) {
-					lPredicate = CmisQueryPredicate.between(propertyId, null, lDate);
-
-				} else if (queryFilter.operator == Operator.GE) {
-					lPredicate = CmisQueryPredicate.between(propertyId, lDate, null);
-
-				} else {
-					lPredicate = CmisQueryPredicate.eqTo(propertyId, lDate);
-				}
-				break;
-
-			case DECIMAL:
-			case INTEGER:
-				BigDecimal lBD = new BigDecimal(queryFilter.value);
-				if (queryFilter.operator == Operator.LE) {
-					lPredicate = CmisQueryPredicate.between(propertyId, null, lBD);
-
-				} else if (queryFilter.operator.equals(Operator.GE)) {
-					lPredicate = CmisQueryPredicate.between(propertyId, lBD, null);
-
-				} else {
-					lPredicate = CmisQueryPredicate.eqTo(propertyId, lBD);
-				}
-				break;
-
-			case STRING:
-				if (queryFilter.operator == Operator.EQ) {
-					lPredicate = CmisQueryPredicate.eqTo(propertyId, queryFilter.value);
-				} else {
-					lPredicate = CmisQueryPredicate.like(propertyId, "%" + queryFilter.value + "%");
-				}
-				break;
-
-			default:
-				throw new IllegalArgumentException("Tipo di dato non supportato: " + lPropDef.getPropertyType());
-			}
-
-			lList.add(lPredicate);
-		}
-
-		// La ricerca viene limitata alla cartella radice
-		lList.add(CmisQueryPredicate.inTree(mAlfrescoRootFolderID));
-
-		return lList;
-	}
+	
 
 	private String getOrCreateFolder(Session pSession, String pStrDocumentType) {
 		String lFileName = pStrDocumentType.substring(pStrDocumentType.lastIndexOf(':') + 1);
@@ -254,33 +107,6 @@ public class Document {
 		return lFolder.getId();
 	}
 
-	private List<org.apache.chemistry.opencmis.client.api.Document> searchDocuments() throws ParseException {
-		// Copia mappa parametri poiché l'originale è immutabile
-		Map<String, String[]> lMapParams = new HashMap<String, String[]>(httpRequest.getParameterMap());
-
-		Session lSession = Util.getUserAlfrescoSession(httpRequest);
-		// Session lSession =
-		// AlfrescoHelper.createSession(Util.getUserAlfrescoConfig(httpRequest),
-		// httpRequest);
-		String[] lStrTypeFilter = lMapParams.remove("type");
-		String lStrTypeId = lStrTypeFilter != null && StringUtils.isNotBlank(lStrTypeFilter[0]) ? lStrTypeFilter[0]
-				: mAlfrescoBaseTypeId;
-
-		// TODO (Alessio): gestione CmisNotFound
-		TypeDefinition lTypeDef = lSession.getTypeDefinition(lStrTypeId);
-		List<CmisQueryPredicate<?>> lListPredicates = getQueryPredicates(lTypeDef, lMapParams);
-
-		CmisQueryBuilder lQB = new CmisQueryBuilder(lSession);
-		String lStrQuery = lQB.selectFrom(lStrTypeId, (String[]) null).where(lListPredicates).build();
-
-		List<org.apache.chemistry.opencmis.client.api.Document> lList = AlfrescoHelper.searchDocuments(lSession, lStrQuery);
-		return lList;
-	}
-
-	@GET
-	public Response getDocuments() throws ParseException {
-		return Response.ok(searchDocuments()).build();
-	}
 
 	@GET
 	@Path("/{id}")
@@ -616,171 +442,10 @@ public class Document {
 		return Response.ok().build();
 	}
 
-	@GET
-	@Path("/print/xls/")
-	public Response printXls(@Context HttpServletRequest pRequest, @Context ServletContext pServletContext)
-			throws IOException {
 
-		StreamingOutput lStreamingOutput = print(pRequest, pServletContext, PrintFormat.XLS.toString());
+	
 
-		return Response.ok(lStreamingOutput).header("Content-Disposition", "attachment; filename=Document.xls").build();
-	}
-
-	private StreamingOutput print(HttpServletRequest pRequest, ServletContext pServletContext, String pFormat) {
-		final String lDataFormat = (String) pRequest.getSession().getAttribute("localePatternTimestamp");
-
-		// Prendo i nomi dei campi da mostrare nella tabella di output
-		Map<String, String[]> lMapParams = new HashMap<String, String[]>(pRequest.getParameterMap());
-		String lDocumentType = lMapParams.get("type")[0];
-		String[] lPropertyNameParameter = lMapParams.get("propertyNames");
-		String[] lPropertyNames = {};
-		if (lPropertyNameParameter != null) {
-			lPropertyNames = lPropertyNameParameter[0].split(",");
-		}
-
-		// Nome base dei file di report NON deve essere presente l'estensione
-		// .jrxml o .jasper
-		final String lStrReportFile = pServletContext.getRealPath("/report/Document");
-
-		// Hashmap che verrÃ  passata al generatore del report. Qui si possono
-		// aggiungere parametrizzazioni a piacere
-		final HashMap<String, Object> lParametersMap = new HashMap<String, Object>();
-
-		// Basepath di esecuzione che torna spesso utile
-		final String lStrBasePath = pServletContext.getRealPath("report/") + System.getProperty("file.separator");
-		lParametersMap.put(PrintUtil.C_BASEPATH, lStrBasePath);
-
-		// locale
-		final Locale lLocale = LocaleUtil.getLocale(pRequest.getSession());
-
-		List<org.apache.chemistry.opencmis.client.api.Document> lDocumentList = null;
-		;
-		try {
-			lDocumentList = searchDocuments();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		final org.apache.chemistry.opencmis.client.api.Document[] lDocumentArray = lDocumentList
-				.toArray(new org.apache.chemistry.opencmis.client.api.Document[lDocumentList.size()]);
-
-		StreamingOutput lStreamingOutput = null;
-
-		if ((pFormat.equalsIgnoreCase(PrintFormat.PDF.toString()))) {
-			// Si vuole esportare un file PDF
-			lStreamingOutput = new StreamingOutput() {
-				@Override
-				public void write(OutputStream pOutputStream) throws IOException {
-					PrintUtil.printBeanArray(lStrReportFile, lDocumentArray, lParametersMap, lLocale, pOutputStream,
-							PrintFormat.PDF);
-				}
-			};
-		} else if ((pFormat.equalsIgnoreCase(PrintFormat.XLS.toString()))) {
-			// Si vuole esportare un file XLS
-
-			// Definisco l'array d'intestazione colonne e l'array per il fill
-			// dei dati
-			final ArrayList<String> lArrayStrHeader = new ArrayList<String>();
-			final ArrayList<Map> lArrayList = new ArrayList<Map>();
-
-			// Faccio il fill dei dati in entrambi gli array
-			ResourceBundle lResourceBundle = null;
-			if (lLocale == null) {
-				Locale lResBundleLocale = pRequest.getLocale();
-				if (lResBundleLocale != null) {
-					lResourceBundle = ResourceBundle.getBundle("ApplicationResources", lResBundleLocale);
-				} else {
-					lResourceBundle = ResourceBundle.getBundle("ApplicationResources");
-				}
-			} else {
-				lResourceBundle = ResourceBundle.getBundle("ApplicationResources", lLocale);
-			}
-
-			// Inserimento degli header presenti in tutti i tipi di documento
-			lArrayStrHeader.add("Id");
-			lArrayStrHeader.add(lResourceBundle.getString("jsp.document.description.label"));
-			lArrayStrHeader.add(lResourceBundle.getString("jsp.document.type.label"));
-			lArrayStrHeader.add(lResourceBundle.getString("jsp.document.version.label"));
-			lArrayStrHeader.add(lResourceBundle.getString("jsp.document.created.label"));
-			lArrayStrHeader.add(lResourceBundle.getString("jsp.document.createdBy.label"));
-
-			// Scorre i documenti per inserrire i valori nella tabella
-			for (int i = 0; i < lDocumentArray.length; i++) {
-				LinkedHashMap<Integer, Object> lMap = new LinkedHashMap<Integer, Object>();
-				// Inserimento dei valori presenti in tutti i tipi di documento
-				lMap.put(1, lDocumentArray[i].getId());
-				lMap.put(2, lDocumentArray[i].getDescription());
-				lMap.put(3, lDocumentArray[i].getType().getId());
-				lMap.put(4, lDocumentArray[i].getVersionLabel());
-				GregorianCalendar lCreationDate = lDocumentArray[i].getCreationDate();
-				lMap.put(5, lCreationDate == null ? null : lCreationDate.getTime());
-				lMap.put(6, lDocumentArray[i].getCreatedBy());
-				// Proprietà dinamiche
-				if (lDocumentType != "") {
-					int lindex = 7;
-					// prende la lista delle proprietà dinamiche
-					List<Property<?>> lDocumentProperties = lDocumentArray[i].getProperties();
-					// Scorre le proprietà da stampare
-					for (String lString : lPropertyNames) {
-						// Cerca il loro valore dalla lista delle proprietà
-						for (Property lProperty : lDocumentProperties) {
-							// Aggiunge i label
-							if (lString.equals(lProperty.getQueryName())) {
-								if (i == 0) {
-									lArrayStrHeader.add(lProperty.getDisplayName());
-								}
-								// Converte il valore da inserire in base al
-								// tipo
-								switch (lProperty.getType()) {
-								case DECIMAL:
-									BigDecimal lBigDecimal = (BigDecimal) lProperty.getValue();
-									lMap.put(lindex, lBigDecimal == null ? null : lBigDecimal.doubleValue());
-									break;
-								case DATETIME:
-									GregorianCalendar lGregorianCalendar = (GregorianCalendar) lProperty.getValue();
-									lMap.put(lindex, lGregorianCalendar == null ? null : lGregorianCalendar.getTime());
-									break;
-								case INTEGER:
-									lMap.put(lindex, lProperty.getValue());
-									break;
-								case BOOLEAN:
-									lMap.put(lindex, lProperty.getValue());
-									break;
-								case STRING:
-									lMap.put(lindex, lProperty.getValue());
-									break;
-								default:
-									throw new IllegalArgumentException(
-											"Tipo di dato non supportato:" + lProperty.getType());
-								}
-							}
-						}
-						lindex++;
-					}
-				}
-				lArrayList.add(lMap);
-			}
-
-			lStreamingOutput = new StreamingOutput() {
-
-				@Override
-				public void write(OutputStream pOutputStream) throws IOException {
-					PrintUtil.printXLSBeanArray(lStrReportFile, lArrayStrHeader, lArrayList, lLocale, pOutputStream,
-							lDataFormat);
-				}
-			};
-
-		}
-		return lStreamingOutput;
-	}
-
-	private static class QueryFilter {
-
-		private String propertyId;
-		private Operator operator;
-		private String value;
-	}
+	
 
 	// XXX (Alessio): classe a sè?
 	private static class StreamStreamingOutput implements StreamingOutput {

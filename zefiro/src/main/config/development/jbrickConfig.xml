@@ -13,7 +13,7 @@
 	</dataTypeConverters>
 
  
- 	<alfresco baseTypeId="D:makeit:abstractFattura" host="http://zefiro.yacme.com" rootFolderId="dbcdd59b-53e5-4392-aa28-80089751d8a0"/> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="7f622503-f81b-4a81-9b70-c8512aadf24e"/> 
  
  
  

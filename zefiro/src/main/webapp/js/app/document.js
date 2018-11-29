@@ -19,12 +19,22 @@ angular.module('document', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentTy
 	});
 }])
 
+.factory('ItemResource', ['$resource', function($resource) {
+	return $resource('a/Item/:id', {id:'@id'}, {
+		update: {method:'PUT'}
+	});
+}])
+
 .factory('RelationResource', ['$resource', function($resource) {
 	return $resource('a/Relation/:id',{}, {});
 }])
 
-.controller('DocumentController', ['$scope', 'DocumentResource', 'DocumentTypeResource', 'RelationResource', 'NgTableParams', 'jbMessages', 'jbPatterns', 'jbValidate', 'jbUtil', 'mioPropertyBlacklist',
-function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTableParams, jbMessages, jbPatterns, jbValidate, jbUtil, mioPropertyBlacklist) {
+.factory('SearchResource',['$resource', function($resource) {
+	return $resource('a/Search/');
+}])
+
+.controller('DocumentController', ['$scope', 'DocumentResource', 'DocumentTypeResource', 'ItemResource', 'RelationResource', 'SearchResource', 'NgTableParams', 'jbMessages', 'jbPatterns', 'jbValidate', 'jbUtil', 'mioPropertyBlacklist',
+function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationResource, SearchResource, NgTableParams, jbMessages, jbPatterns, jbValidate, jbUtil, mioPropertyBlacklist) {
 	
 	
 	$scope.jbMessages = jbMessages;
@@ -57,6 +67,7 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 	$scope.documentTable = new NgTableParams({count: 25}, {});
 	$scope.userDocumentTypes = DocumentTypeResource.query($scope.getUser());
 	
+	$scope.isItem = false;
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +104,7 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 		if($scope.documentTemplate.propertyNames != "")
 			$scope.documentTemplate.propertyNames = $scope.documentTemplate.propertyNames.substr(1);
 		$scope.documentTable.settings({dataset: []});
-		var documentPromise = DocumentResource.query($scope.documentTemplate, function() {
+		var documentPromise = SearchResource.query($scope.documentTemplate, function() {
 			for (i in documentPromise) {
 				var d = documentPromise[i];
 				if (d.properties) {
@@ -116,7 +127,8 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 		$scope.documentTemplate['cmis:description'] = null;
 		$scope.documentTemplate['cmis:createdBy'] = null;
 		$scope.documentTemplate['cmis:creationDate|GE'] = null;
-		$scope.documentTemplate['cmis:creationDate|LE'] = null;
+		$scope.documentTemplate['cmis:creationDate|LE'] = null;		
+
 		$scope.documentTemplate['contains'] = null;
 		
 		for (i in $scope.documentType.propertyList) {
@@ -209,13 +221,18 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 			$scope.setDocumentType("edit", $scope.documentEditing.type);
 	}
 	
-	//Apre la pagina di dettaglio per la modifica di un elemento esistente
+	
 	$scope.startEdit = function(i, duplicate) {
 		$scope.currentRownum = i;
 		$scope.breadCrumbIndex = 0;
 		$scope.documentEditing = {};
 		$scope.documentEditing.id = $scope.documentTable.data[$scope.currentRownum].id;
-		var documentPromise = DocumentResource.get($scope.documentEditing, function() {
+		
+		var baseType = $scope.documentTable.data[$scope.currentRownum].baseType;
+		$scope.isItem = baseType === 'cmis:document'? false : true;
+		
+		var resource = $scope.isItem? ItemResource : DocumentResource;
+		var documentPromise = resource.get($scope.documentEditing, function() {
 			$scope.documentEditing = documentPromise;
 			$scope.documentBreadcrumbs = [];
 			$scope.documentBreadcrumbs.push({
@@ -236,15 +253,43 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 				$scope.documentEditing.id = null;
 				$scope.currentFileName = null;
 				$scope.uploadedFileName = null;
-			} else {
+			} else if (baseType == 'cmis:document'){
 				$scope.currentFileName = "a/Document/" + $scope.documentEditing.id + "/preview";
-			}
+			};
 						
-			//Carica le versioni
-			$scope.loadVersions($scope.documentEditing.id);
+			if(baseType == 'cmis:document'){
+				$scope.loadVersions($scope.documentEditing.id);
+			};
+		});
+
+	}
+	
+	$scope.editItem = function (){
+		var itemPromise = ItemResource.get($scope.documentEditing, function() {
+			$scope.documentEditing = itemPromise;
+			$scope.documentBreadcrumbs = [];
+			$scope.documentBreadcrumbs.push({
+				id: $scope.documentEditing.id,
+				name: $scope.documentEditing.name,
+				description: $scope.documentEditing.description,
+				rownum: i
+			});
+			$scope.editing = true;
+			$scope.readOnly = false;
+			
+			$scope.setDocumentType("edit", $scope.documentEditing.type);
+			$scope.getHandledPropertyList($scope.documentEditing.properties);
+			
+			if (duplicate === true) {
+				$scope.currentRownum = null;
+				$scope.documentEditing.name = null;
+				$scope.documentEditing.id = null;
+				$scope.currentFileName = null;
+				$scope.uploadedFileName = null;
+			};
 		});
 	}
-
+	
 	//Carica in documentVersions le versioni del documento con id passato in ingresso alla funzione
 	$scope.loadVersions = function(pId){
 		DocumentResource.getVersions({id: pId})
@@ -276,8 +321,10 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 	
 	//Inserisce / modifica elemento
 	$scope.saveDetail = function(form) {
+		var resource = $scope.isItem? ItemResource : DocumentResource;
+
 		if ($scope.currentRownum != null) {
-			DocumentResource
+			resource
 				.update($scope.documentEditing)
 				.$promise
 				.then(function(data) {
@@ -310,7 +357,7 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 					propertyType: p.propertyType
 				});
 			}
-			DocumentResource.save($scope.documentEditing)
+			resource.save($scope.documentEditing)
 				.$promise
 				.then(function(data) {
 					if($scope.documentTable.settings().dataset){
@@ -372,6 +419,7 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 	
 	//Aggiorna la lista delle proprietà del tipo documento
 	$scope.setDocumentType = function(context, id, callback){
+
 		var documentTypePromise = DocumentTypeResource.get({id: id}, function() {
 			
 			angular.extend(documentTypePromise, {propertyList: $scope.getHandledPropertyList(documentTypePromise.properties)});

@@ -17,7 +17,7 @@
 				<span ng-hide="currentRownum == null"><i class="fa fa-floppy-o"></i> <fmt:message key="jsp.detail.update.submit"/></span>
 				<span ng-show="currentRownum == null"><i class="fa fa-floppy-o"></i> <fmt:message key="jsp.detail.insert.submit"/></span>
 			</button>
-			<button ng-hide="currentRownum == null" class="btn btn-default" type="button" ng-click="jbDetailFormDocument.print()"><i class="fa fa-download"></i> <fmt:message key="jsp.detail.download"/></button>
+			<button ng-hide="currentRownum == null || isItem" class="btn btn-default" type="button" ng-click="jbDetailFormDocument.print()"><i class="fa fa-download"></i> <fmt:message key="jsp.detail.download"/></button>
 			<button class="btn btn-default" type="button" ng-click="gotoDocumentBreadcrumb(breadCrumbIndex-1, jbDetailFormDocument)"><i class="fa fa-times"></i> <fmt:message key="js.dialog.back"/></button>
 		</div>
 			<span ng-hide="currentRownum == null"><h1><b>{{documentEditing.description}}</b></h1></span>
@@ -26,7 +26,7 @@
 	
 	<div class="row form-group">
 		<!-- Preview -->
-		<div class="col-sm-8">
+		<div class="col-sm-8" ng-if="!isItem">
 			
 			<div  ng-if="currentFileName != null" ng-bind-html="getDocumentObjectHTML() | trusted">
 			
@@ -207,7 +207,7 @@
 			<!-- Versioni documento -->
 			<br>
 			<div ng-if="currentRownum != null" >
-				<div class="row jb-toolbar" >
+				<div class="row jb-toolbar" ng-if="!isItem" >
 					<div class="col-sm-6">
 						<h4><fmt:message key="jsp.document.version.sidemenu"/></h4>
 					</div>
