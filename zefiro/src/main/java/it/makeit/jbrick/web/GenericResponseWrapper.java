@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
@@ -99,6 +100,16 @@ final class FilterServletOutputStream extends ServletOutputStream {
 
 	public void write(byte[] b, int off, int len) throws IOException {
 		stream.write(b, off, len);
+	}
+
+	@Override
+	public boolean isReady() {
+		return false;
+	}
+
+	@Override
+	public void setWriteListener(WriteListener wl) {
+		//
 	}
 
 }

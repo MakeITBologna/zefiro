@@ -1025,7 +1025,10 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		List<ObjectType> lLeaves = new LinkedList<ObjectType>();
 
 		List<Tree<ObjectType>> lTypesTree = getTypesTree(pSession, pStrBaseType, -1, pBlnIncludeProperties);
-		doGetTypesTreeLeaves(lTypesTree, lLeaves);
+		if(lTypesTree != null) {
+			doGetTypesTreeLeaves(lTypesTree, lLeaves);	
+		}
+		
 
 		mLog.debug("END getTypesTreeLeaves(String, int, boolean)");
 		return lLeaves;

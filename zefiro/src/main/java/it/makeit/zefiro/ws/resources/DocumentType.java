@@ -54,6 +54,7 @@ public class DocumentType {
 		for (ObjectType lObjectType : lObjectTypeTreeLeaves)
 			addAspects(lSession, lObjectType);
 		
+		
 		List<ObjectType> itemTreeLeaves = AlfrescoHelper.getTypesTreeLeaves(lSession, mAlfrescoBaseTypeItemId, true);
 		lObjectTypeTreeLeaves.addAll(itemTreeLeaves);
 

@@ -7,20 +7,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -42,25 +31,18 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.chemistry.opencmis.client.api.Folder;
-import org.apache.chemistry.opencmis.client.api.Property;
 import org.apache.chemistry.opencmis.client.api.Relationship;
 import org.apache.chemistry.opencmis.client.api.Rendition;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
-import org.apache.chemistry.opencmis.commons.definitions.PropertyDefinition;
-import org.apache.chemistry.opencmis.commons.definitions.TypeDefinition;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.tika.Tika;
 
 import com.google.api.client.http.HttpStatusCodes;
 
 import it.makeit.alfresco.AlfrescoException;
 import it.makeit.alfresco.AlfrescoHelper;
-import it.makeit.alfresco.CmisQueryBuilder;
-import it.makeit.alfresco.CmisQueryPredicate;
-import it.makeit.alfresco.CmisQueryPredicate.Operator;
 import it.makeit.alfresco.RenditionKinds;
 import it.makeit.alfresco.addon.DocumentListenener;
 import it.makeit.alfresco.webscriptsapi.services.ThumbnailDefinitions;
@@ -68,9 +50,6 @@ import it.makeit.alfresco.workflow.AlfrescoRendition;
 import it.makeit.jbrick.JBrickConfigManager;
 import it.makeit.jbrick.JBrickException;
 import it.makeit.jbrick.Log;
-import it.makeit.jbrick.print.PrintFormat;
-import it.makeit.jbrick.print.PrintUtil;
-import it.makeit.jbrick.web.LocaleUtil;
 import it.makeit.zefiro.MimeType;
 import it.makeit.zefiro.Util;
 import it.makeit.zefiro.dao.DocumentBean;
@@ -112,10 +91,11 @@ public class Document {
 	@Path("/{id}")
 	public Response getDocumentById(@PathParam("id") String pStrId) {
 		Session lSession = Util.getUserAlfrescoSession(httpRequest);
-		org.apache.chemistry.opencmis.client.api.Document lDocument = AlfrescoHelper.getDocumentById(lSession, pStrId,
-				true);
+		org.apache.chemistry.opencmis.client.api.Document lDocument = AlfrescoHelper.getDocumentById(lSession, pStrId, true);
 
-		documentListenener.onDocumentDownload(lDocument);
+		
+		Map<String, Object> properties = Util.createPropertiesMapFromRequest(httpRequest);
+		documentListenener.onDocumentDownload(lDocument, properties );
 		return Response.ok(lDocument).build();
 	}
 
@@ -135,7 +115,8 @@ public class Document {
 		}
 		lMimeType = lContentStream.getMimeType();
 		
-		documentListenener.onDocumentDownload(lDocument);
+		Map<String, Object> properties = Util.createPropertiesMapFromRequest(httpRequest);
+		documentListenener.onDocumentDownload(lDocument, properties);
 		return Response.ok(lContentStream.getStream()).type(lMimeType).build();
 	}
 
@@ -310,7 +291,8 @@ public class Document {
 						lMapProperties, null, pDocumentBean.getType());
 			}
 			
-			documentListenener.onDocumentUpload(lDocument);
+			Map<String, Object> properties = Util.createPropertiesMapFromRequest(httpRequest);
+			documentListenener.onDocumentUpload(lDocument, properties);
 
 		} catch (Exception e) {
 			// TODO: log ...
@@ -437,7 +419,8 @@ public class Document {
 		Session lSession = Util.getUserAlfrescoSession(httpRequest);
 		org.apache.chemistry.opencmis.client.api.Document lDocument = AlfrescoHelper.deleteDocument(lSession, pStrId, true);
 		
-		documentListenener.onDocumentDelete(lDocument);
+		Map<String, Object> properties = Util.createPropertiesMapFromRequest(httpRequest);
+		documentListenener.onDocumentDelete(lDocument, properties);
 		
 		return Response.ok().build();
 	}
