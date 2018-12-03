@@ -4,12 +4,6 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>it.makeit</groupId>
-		<artifactId>makeit-project</artifactId>
-		<version>1.4.2</version>
-	</parent>
-
 	<groupId>it.makeit.alfresco.addon</groupId>
 	<artifactId>zefiro</artifactId>
 	<version>1.0.1</version>
@@ -317,4 +311,17 @@
 			</properties>
 		</profile>
 	</profiles>
+	
+	<distributionManagement>
+		<repository>
+			<id>central</id>
+			<name>artifactory-releases</name>
+			<url>http://artifactory.rete.make-it:8081/artifactory/libs-release-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>artifactory-snapshots</name>
+			<url>http://artifactory.rete.make-it:8081/artifactory/libs-snapshot-local</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>

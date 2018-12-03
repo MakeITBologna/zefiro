@@ -75,7 +75,7 @@ public class SearchEndpoint {
 	private static final String LIKE = "lk";
 
 	private static final String mAlfrescoBaseTypeId = JBrickConfigManager.getInstance().getMandatoryProperty("alfresco/@baseTypeId");
-	private static final String mAlfrescoBaseTypeItemId = JBrickConfigManager.getInstance().getMandatoryProperty("alfresco/@baseTypeItemId");
+	private static final String mAlfrescoBaseTypeItemId = JBrickConfigManager.getInstance().getProperty("alfresco/@baseTypeItemId");
 	private static final String mAlfrescoRootFolderID = JBrickConfigManager.getInstance().getMandatoryProperty("alfresco/@rootFolderId");
 	private static Log mLog = Log.getInstance(SearchEndpoint.class);
 	
@@ -87,12 +87,19 @@ public class SearchEndpoint {
 		Session session = Util.getUserAlfrescoSession(httpRequest);
 		
 		Map<String, String[]> mapParams = new HashMap<String, String[]>(httpRequest.getParameterMap());
-		String typeId = mapParams.get("type")==null? mAlfrescoBaseTypeId:mapParams.get("type")[0];
-		String parentType = session.getTypeDefinition(typeId).getParentTypeId();
 		
-		if (parentType.equals(mAlfrescoBaseTypeItemId)) {
-			return Response.ok(searchItems(typeId, session)).build();
-		};
+		
+		
+		
+		if(mAlfrescoBaseTypeItemId != null) {
+			String typeId = mapParams.get("type")==null? mAlfrescoBaseTypeId:mapParams.get("type")[0];
+			String parentType = session.getTypeDefinition(typeId).getParentTypeId();
+			
+			if (parentType.equals(mAlfrescoBaseTypeItemId)) {
+				return Response.ok(searchItems(typeId, session)).build();
+			}
+			
+		}
 		
 		return Response.ok(searchDocuments(mapParams, session)).build();
 	}

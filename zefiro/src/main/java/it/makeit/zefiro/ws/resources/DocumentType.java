@@ -30,7 +30,7 @@ public class DocumentType {
 	// Ottengo la lista delle proprietà che non voglio visualizzare sul client
 	private String[] mPropertyBlacklist = JBrickConfigManager.getInstance().getPropertyList("propertyBlacklist/entry",	"@name");
 	private static final String mAlfrescoBaseTypeId = JBrickConfigManager.getInstance().getMandatoryProperty("alfresco/@baseTypeId");
-	private static final String mAlfrescoBaseTypeItemId = JBrickConfigManager.getInstance().getMandatoryProperty("alfresco/@baseTypeItemId");
+	private static final String mAlfrescoBaseTypeItemId = JBrickConfigManager.getInstance().getProperty("alfresco/@baseTypeItemId");
 
 	@Context
 	private HttpServletRequest httpRequest;
@@ -54,10 +54,12 @@ public class DocumentType {
 		for (ObjectType lObjectType : lObjectTypeTreeLeaves)
 			addAspects(lSession, lObjectType);
 		
+		if(mAlfrescoBaseTypeItemId != null) {
+			List<ObjectType> itemTreeLeaves = AlfrescoHelper.getTypesTreeLeaves(lSession, mAlfrescoBaseTypeItemId, true);
+			lObjectTypeTreeLeaves.addAll(itemTreeLeaves);
+	
+		}
 		
-		List<ObjectType> itemTreeLeaves = AlfrescoHelper.getTypesTreeLeaves(lSession, mAlfrescoBaseTypeItemId, true);
-		lObjectTypeTreeLeaves.addAll(itemTreeLeaves);
-
 		return Response.ok(lObjectTypeTreeLeaves).build();
 	}
 
