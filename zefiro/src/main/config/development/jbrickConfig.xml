@@ -12,8 +12,8 @@
 		<dataTypeConverter dataType="java.lang.Integer" pattern="pattern.integer" converter="org.apache.commons.beanutils.locale.converters.IntegerLocaleConverter"/>
 	</dataTypeConverters>
 
- 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="d5696090-9897-46bb-9e00-3ec8ababddc7"/> 
+        <!--alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="d5696090-9897-46bb-9e00-3ec8ababddc7"/--> 
+        <alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://zefiro.yacme.com" rootFolderId="31aff755-357b-49fb-a447-1bb83a663bfa"/>
  
  <types>
  	<type name = "D:makeit:fatturaAttiva">
@@ -30,7 +30,6 @@
  
 					
  </types>
- 
  
   <properties process="false" readOnly="false" />
 

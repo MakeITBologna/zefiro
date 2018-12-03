@@ -1112,8 +1112,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		return lFoundAspectIds;
 	}
 
-	public static List<RelationshipType> getAllowedRelationshipTypes(Session pSession, String pRelationsRootId,
-			String pStrTypeId) {
+	public static List<RelationshipType> getAllowedRelationshipTypes(Session pSession, String pRelationsRootId, String pStrTypeId) {
 		mLog.debug("START getAllowedRelationshipTypes(Session, String, String)");
 		System.out.println("ALLOWEEED");
 		List<RelationshipType> lAllowedRelationTypes = new ArrayList<RelationshipType>();
@@ -1129,7 +1128,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 			lRelationAllowedTypes.addAll(lRelationType.getAllowedTargetTypes());
 
 			for (ObjectType lObjectType : lRelationAllowedTypes) {
-				if (lObjectType.getId().equals(pStrTypeId) || lTypeAspectIds.contains(lObjectType.getId())) {
+				if (lObjectType.getId().equals(pStrTypeId) || lTypeAspectIds.contains(lObjectType.getId()) ) {
 					lIsAllowed = true;
 					break;
 				}
@@ -1142,6 +1141,17 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 
 		mLog.debug("END getAllowedRelationshipTypes(Session, String, String)");
 		return lAllowedRelationTypes;
+	}
+
+	public static List<String> getParentTypeIds(Session pSession, String pStrTypeId) {
+		ObjectType t = getTypeDefinition(pSession, pStrTypeId);
+		List<String> parentTypes = new ArrayList<>();
+		while(t.getParentType() != null && t.getParentType().getId() != DEFAULT_BASE_DOC_TYPE) {
+			parentTypes.add(t.getParentTypeId());
+			t = t.getParentType();
+		}
+			
+		return parentTypes;
 	}
 
 	/**
