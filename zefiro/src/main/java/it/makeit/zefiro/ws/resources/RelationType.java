@@ -41,7 +41,7 @@ public class RelationType {
 			(mDocumentTypeId == null)
 			? AlfrescoHelper.getRelationshipTypes(lSession, BaseTypeId.CMIS_RELATIONSHIP.value())
 		    : AlfrescoHelper.getAllowedRelationshipTypes(lSession, BaseTypeId.CMIS_RELATIONSHIP.value(), mDocumentTypeId);
-
+		System.out.println(lRelationshipTypes);
 		return Response.ok(lRelationshipTypes).build();
 	}
 }

@@ -13,8 +13,23 @@
 	</dataTypeConverters>
 
  
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="79cf3e2d-005d-40ab-b0fa-c3d1008426de"/> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="d5696090-9897-46bb-9e00-3ec8ababddc7"/> 
  
+ <types>
+ 	<type name = "D:makeit:fatturaAttiva">
+ 		<search>
+ 			<searchField name = "makeit:ragioneSociale" />
+ 			<searchField name = "makeit:IVA" />
+ 			
+ 			<searchTableColumn name = "makeit:IVA" />
+ 			<searchTableColumn name = "makeit:ragioneSociale" />
+ 			<searchTableColumn name = "cmis:name" />
+ 			
+ 		</search>
+ 	</type>
+ 
+					
+ </types>
  
  
   <properties process="false" readOnly="false" />

@@ -159,6 +159,10 @@ public final class JBrickConfigManager {
 		return lStrProperty;
 	}
 	
+	public Object getPropertyObject(String pStrProperty){
+		return mXMLConfiguration.getProperty(pStrProperty);
+	}
+	
 	/** Metodo che restituisce il valore in forma di lista della proprietà passata come parametro, 
 	 *  recuperandolo dal file di configurazione. Il separatore di default è la virgola. 
 	 *  Il nome della proprietà deve rispettare l'XPath convention. In particolare:
