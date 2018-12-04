@@ -16,7 +16,8 @@ angular.module('main', [
 	'workflow',
 	'process',
 	'task',
-	'authority'
+	'authority',
+	'applicationState'
 ])
 
 
@@ -319,13 +320,19 @@ angular.module('main', [
 			
 		}
 	}])
+	.constant("customConfiguration", {})
+	
+	.factory('CustomConfigurationResource',['$resource', function($resource) {
+		return $resource('a/customConfiguration/');
+	}])
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//CONTROLLER
 
 	//Logincontroller
-	.controller('LoginController', [ '$scope', '$http', '$location', 'jbValidate', 'jbAuthFactory', 'jbUtil', function ( $scope, $http, $location, jbValidate, jbAuthFactory, jbUtil) {
+	.controller('LoginController', [ '$scope', '$http', '$location', 'jbValidate', 'jbAuthFactory', 'jbUtil', 'customConfiguration', 
+		function ( $scope, $http, $location, jbValidate, jbAuthFactory, jbUtil, customConfiguration) {
 
 		$scope.jbValidate = jbValidate;
 
@@ -341,8 +348,14 @@ angular.module('main', [
 					.then(function (response) {
 						var jbuser = response.data;
 						jbAuthFactory.storeUser(jbuser);
-						$location.url('/home', true);
+						
+						$http.get('a/customConfiguration').then(function (response) {
+							customConfiguration.value = response.data				
+							$location.url('/home', true);							
+						});
+						
 					});
+	
 		};
 
 	}])

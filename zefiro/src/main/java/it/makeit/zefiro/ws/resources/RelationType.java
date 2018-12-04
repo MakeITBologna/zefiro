@@ -43,7 +43,6 @@ public class RelationType {
 	@Path("/")
 	public Response getRelationshipTypes() {
 		Session lSession = Util.getUserAlfrescoSession(httpRequest);
-
 		
 		if(mDocumentTypeId == null) {
 			List<RelationshipType> lRelationshipTypes   = AlfrescoHelper.getRelationshipTypes(lSession, BaseTypeId.CMIS_RELATIONSHIP.value());
@@ -68,9 +67,6 @@ public class RelationType {
 			
 			return Response.ok(lRelationshipTypes).build();
 		}
-		
-		
-
 		
 	}
 }

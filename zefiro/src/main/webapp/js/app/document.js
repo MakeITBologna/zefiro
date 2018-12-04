@@ -2,7 +2,7 @@
  * document resource module
  * 
  */
-angular.module('document', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentType', 'angular.filter'])
+angular.module('document', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentType', 'angular.filter', 'applicationState'])
 
 .factory('DocumentResource', ['$resource', function($resource) {
 	return $resource('a/Document/:id', {id:'@id'}, {
@@ -33,9 +33,14 @@ angular.module('document', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentTy
 	return $resource('a/Search/');
 }])
 
-.controller('DocumentController', ['$scope', 'DocumentResource', 'DocumentTypeResource', 'ItemResource', 'RelationResource', 'SearchResource', 'NgTableParams', 'jbMessages', 'jbPatterns', 'jbValidate', 'jbUtil', 'mioPropertyBlacklist',
-function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationResource, SearchResource, NgTableParams, jbMessages, jbPatterns, jbValidate, jbUtil, mioPropertyBlacklist) {
-	
+.factory('CustomConfigurationResource',['$resource', function($resource) {
+	return $resource('a/customConfiguration/');
+}])
+
+.controller('DocumentController', ['$scope', 'DocumentResource', 'DocumentTypeResource', 'ItemResource', 'RelationResource', 'SearchResource', 
+	'NgTableParams', 'jbMessages', 'jbPatterns', 'jbValidate', 'jbUtil', 'mioPropertyBlacklist', 'customConfiguration',
+function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationResource, SearchResource, NgTableParams, jbMessages, jbPatterns, 
+		jbValidate, jbUtil, mioPropertyBlacklist, customConfiguration) {
 	
 	$scope.jbMessages = jbMessages;
 	$scope.jbPatterns = jbPatterns;
@@ -68,6 +73,7 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 	$scope.userDocumentTypes = DocumentTypeResource.query($scope.getUser());
 	
 	$scope.isItem = false;
+	$scope.customConfiguration = customConfiguration;
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,6 +96,17 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 			return;
 		}
 		
+		availableSearchProp = [];
+		availableSearchCol = [];
+		
+		$scope.customConfiguration.value.map(function(d){
+			if (d.type == idType){
+				availableSearchProp = availableSearchProp.concat(d.searchField);
+				availableSearchCol = availableSearchCol.concat(d.searchTableColumn);
+			}
+		});
+		
+
 		$scope.clearSearch(form);
 		$scope.setDocumentType("search", idType);
 		$scope.documentTemplate.type = idType;
@@ -144,6 +161,7 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 		$scope.summaries = {};
 		for (var i in $scope.documentType.propertyList) {
 			var p = $scope.documentType.propertyList[i];
+
 			if ($scope.isNumeric(p.propertyType) && p.queryable) {
 				$scope.summaries[p.queryName] = 0;
 			}
@@ -160,9 +178,10 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 	}
 	
 	//Gestisce la matrice utilizzata per creare il form di ricerca
-	$scope.getSearchMatrix = function(aProperties, nColumns) {
+	$scope.getSearchMatrix = function(aProperties, nColumns, availableSearchProp) {
 		
 		if (jbUtil.isEmptyObject(aProperties)) return;
+		aProperties = availableSearchProp.length > 0? aProperties.filter(prop => availableSearchProp.includes(prop.name)) : aProperties;
 		
 		var r = [];
 		var c = new Array();
@@ -178,7 +197,7 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 				i++;
 			//}
 		}
-		
+
 		if (c[0]) r.push(c);
 		return r;
 	}
@@ -429,7 +448,8 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 								
 				if (context == "search") {
 					$scope.documentType = documentTypePromise;
-					$scope.searchMatrix = $scope.getSearchMatrix($scope.documentType.propertyList, 2);
+					$scope.searchMatrix = $scope.getSearchMatrix($scope.documentType.propertyList, 2, availableSearchProp);
+					$scope.documentType.propertyList = availableSearchCol.length > 0? $scope.documentType.propertyList.filter(prop => availableSearchCol.includes(prop.name)) : $scope.documentType.propertyList;
 				}
 				else {
 					$scope.documentTypeEdit = documentTypePromise;
@@ -439,7 +459,7 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 			});
 		});
 	}
-	
+ 
 	//Gestione Breadcrumb
 	$scope.gotoDocumentBreadcrumb = function(i, form) {
 		if (i < 0) {
