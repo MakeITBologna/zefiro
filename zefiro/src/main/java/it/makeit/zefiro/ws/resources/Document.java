@@ -227,9 +227,7 @@ public class Document {
 			lStreamingOutput = new StreamStreamingOutput(new BufferedInputStream(new FileInputStream(file)));
 		} catch (FileNotFoundException e) {
 			throw new JBrickException(e, JBrickException.FATAL);
-		} finally {
-			deleteFile(file);
-		}
+		} 
 		return lStreamingOutput;
 	}
 

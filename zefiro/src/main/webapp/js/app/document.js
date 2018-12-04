@@ -33,10 +33,6 @@ angular.module('document', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentTy
 	return $resource('a/Search/');
 }])
 
-.factory('CustomConfigurationResource',['$resource', function($resource) {
-	return $resource('a/customConfiguration/');
-}])
-
 .controller('DocumentController', ['$scope', 'DocumentResource', 'DocumentTypeResource', 'ItemResource', 'RelationResource', 'SearchResource', 
 	'NgTableParams', 'jbMessages', 'jbPatterns', 'jbValidate', 'jbUtil', 'mioPropertyBlacklist', 'customConfiguration',
 function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationResource, SearchResource, NgTableParams, jbMessages, jbPatterns, 
@@ -74,6 +70,7 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 	
 	$scope.isItem = false;
 	$scope.customConfiguration = customConfiguration;
+	$scope.customizedSearch = false;
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +103,6 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 			}
 		});
 		
-
 		$scope.clearSearch(form);
 		$scope.setDocumentType("search", idType);
 		$scope.documentTemplate.type = idType;
@@ -321,20 +317,31 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 	
 	//Modalità visualizzazione documento in sola lettura
 	$scope.showDocument = function(shortDocument) {
-		
 		$scope.currentRownum = -1;
 		$scope.documentEditing = {};
 		$scope.documentEditing.id = shortDocument.id;
-		var documentPromise = DocumentResource.get($scope.documentEditing, function() {
+		
+		var resource = shortDocument.baseType == "cmis:item"? ItemResource : DocumentResource;
+		
+		var documentPromise = resource.get($scope.documentEditing, function() {
+			
+			$scope.isItem = shortDocument.baseType === 'cmis:document'? false : true;
+			
 			$scope.documentEditing = documentPromise;
 			$scope.documentBreadcrumbs.push(shortDocument);
-			$scope.loadVersions($scope.documentEditing.id);
+			
 			$scope.editing = true;
 			$scope.readOnly = true;
 			
 			$scope.breadCrumbIndex++;
 			$scope.setDocumentType("edit", $scope.documentEditing.type);
-			$scope.currentFileName = "a/Document/" + $scope.documentEditing.id + "/preview";
+			
+			if(!$scope.isItem) {
+				$scope.loadVersions($scope.documentEditing.id);
+				$scope.currentFileName = "a/Document/" + $scope.documentEditing.id + "/preview";
+			}
+			
+			
 		});
 	}
 	
@@ -445,7 +452,7 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 			
 			var relationTypesPromise = DocumentTypeResource.getRelations({id: id}, function() {
 				angular.extend(documentTypePromise, {relationTypes: relationTypesPromise});
-								
+				
 				if (context == "search") {
 					$scope.documentType = documentTypePromise;
 					$scope.searchMatrix = $scope.getSearchMatrix($scope.documentType.propertyList, 2, availableSearchProp);
@@ -454,7 +461,7 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 				else {
 					$scope.documentTypeEdit = documentTypePromise;
 				}
-				
+
 				if (callback) callback();
 			});
 		});
@@ -558,7 +565,6 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 		$scope.editing = false;
 		$scope.relation = true;
 		$scope.addingRelationType = relType;
-		
 		// salvo lo stato della pagina di ricerca
 		$scope.searchStatus =  angular.extend({}, {
 			documentTemplate: $scope.documentTemplate, 
@@ -661,6 +667,11 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 	
 	$scope.isRelationOfType = function(relationType, side, documentId){
 		return function(relation) {
+			
+			console.log(relation);
+			console.log(relationType);
+			console.log(documentId);
+			
 			return relation.type.id == relationType.id && relation[side].id == documentId;
 		};
 	}

@@ -9,7 +9,7 @@
   	  	<button ng-show="relation" type="button" class="btn btn-danger" title="<fmt:message key="js.dialog.annulla"/>" ng-click="closeAddRelation()"><i class="fa fa-times"></i> <fmt:message key="js.dialog.annulla"/></button>
   	</div>
   	<h1><fmt:message key="jsp.document.label"/></h1>
-  </div>
+  </div>  
   <div id="query">
 	<div class="panel">
 	  <div class="panel-body">
@@ -17,10 +17,10 @@
 		<input type="hidden" id="jbSearchFormDocument-propertyNames" name="propertyNames" value="{{documentTemplate.propertyNames}}" />				
 		    <div class="row jb-form-group">
 		    
-		      <div class="col-sm-1"></div>
+		      <div class="col-sm-2"></div>
 			  
 			  <label class="col-sm-1 control-label" for="jbSearchFormDocument-type" title="<fmt:message key="jsp.document.type.title"/>"><fmt:message key="jsp.document.type.label" /></label>
-			  <div class="col-sm-4">
+			  <div class="col-sm-3">
 				  <select  ng-disabled="relation" class="form-control" id="jbSearchFormDocument-type" name="type" title="<fmt:message key="jsp.document.type.title"/>" ng-model="documentTemplate.type" ng-change="typeChanged(jbSearchFormDocument)">
 				    <option></option>
 				    <option ng-repeat="t in userDocumentTypes" value="{{t.id}}">{{t.name}}</option>
@@ -28,114 +28,91 @@
 			  </div>
 			  
 			  <label class="col-sm-1 control-label" for="jbSearchFormDocument-description" title="<fmt:message key="jsp.document.description.title"/>"><fmt:message key="jsp.document.description.label" /></label>
-			  <div class="col-sm-4">
+			  <div class="col-sm-3">
 			  	<input class="form-control" id="jbSearchFormDocument-description" title="<fmt:message key="jsp.document.description.title"/>" type="text" name="description" ng-model="documentTemplate['cmis:description']"/>
 			  </div>
 			  
-			  <div class="col-sm-1"></div>
+			  <div class="col-sm-2"></div>
 			  
 			</div>
-			  
-			<div class="row jb-form-group">
-			
-			  <div class="col-sm-1"></div>
-			  
-			  <label class="col-sm-1 control-label" for="jbSearchFormDocument-createdBy" title="<fmt:message key="jsp.document.createdBy.title"/>"><fmt:message key="jsp.document.createdBy.label" /></label>
-			  <div class="col-sm-4">
-			  	<input class="form-control" id="jbSearchFormDocument-createdBy" title="<fmt:message key="jsp.document.createdBy.title"/>" type="text" name="cmis:createdBy" ng-model="documentTemplate['cmis:createdBy']"/>
-			  </div>
-			  
-			  <label class="col-sm-1 control-label" for="jbSearchFormDocument-created-FROM" title="<fmt:message key="jsp.document.created.title"/>"><fmt:message key="jsp.document.created.label" /></label>
-			  <div class="col-sm-2">
-			  	<div class="input-group">
-			  	 <span class="input-group-addon"><fmt:message key="jsp.from.label"/></span>
-			     <input id="jbSearchFormDocument-created" class="form-control" title="<fmt:message key="jsp.document.created.title"/> <fmt:message key="jsp.from.label"/>" type="text" name="cmis:creationDate|GE" ng-model="documentTemplate['cmis:creationDate|GE']" uib-datepicker-popup="${localePatternDate}" is-open="calendarPopups['jbSearchFormDocument-created-FROM']"/>
-	             <span class="input-group-btn">
-	               <button type="button" class="btn btn-default" ng-click="openCalendar('jbSearchFormDocument-created-FROM')"><i class="fa fa-calendar"></i></button>
-	             </span>
-	            </div>
-	          </div>
-
-			  <div class="col-sm-2">
-			  	<div class="input-group">
-			  	 <span class="input-group-addon"><fmt:message key="jsp.to.label"/></span>
-			     <input id="jbSearchFormDocument-created-TO" class="form-control" title="<fmt:message key="jsp.document.created.title"/> <fmt:message key="jsp.to.label"/>" type="text" name="cmis:creationDate|LE" ng-model="documentTemplate['cmis:creationDate|LE']" uib-datepicker-popup="${localePatternDate}" is-open="calendarPopups['jbSearchFormDocument-created-TO']"/>
-	             <span class="input-group-btn">
-	               <button type="button" class="btn btn-default" ng-click="openCalendar('jbSearchFormDocument-created-TO')"><i class="fa fa-calendar"></i></button>
-	             </span>
-	            </div>
-	          </div>
-	          
-	          <div class="col-sm-1"></div>
-			
-			</div>
+			 
+			<div class="jb-hr"></div>
 			
 			<div class="row jb-form-group" ng-repeat="r in searchMatrix">
 			
-			<div class="col-sm-1"></div>
+			<div class="col-sm-2"></div>
 			
 			<any ng-repeat="p in r" ng-switch="p.propertyType">
 			
 			  <div ng-switch-when="INTEGER">
 				<label class="col-sm-1 control-label" for="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}-FROM" title="{{p.description}}">{{p.displayName}}</label>
-				<div class="col-sm-2">
-				  <div class="input-group">
-			  	    <span class="input-group-addon"><fmt:message key="jsp.from.label"/></span>
-				    <input class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}-FROM" title="{{p.description}} <fmt:message key="jsp.from.label"/>" type="text" name="{{p.queryName}}|GE" ng-model="documentTemplate[p.queryName+'|GE']" ng-pattern="jbPatterns.number(0)"/>
-				  </div>
-				</div>
-				
-				<div class="col-sm-2">
-				  <div class="input-group">
-			  	    <span class="input-group-addon"><fmt:message key="jsp.to.label"/></span>
-				    <input class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}-TO" title="{{p.description}} <fmt:message key="jsp.to.label"/>" type="text" name="{{p.queryName}}|LE" ng-model="documentTemplate[p.queryName+'|LE']" ng-pattern="jbPatterns.number(0)"/>
-				  </div>
+				<div class="col-sm-3">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="input-group">
+						  	    <span class="input-group-addon"><fmt:message key="jsp.from.label"/></span>
+							    <input class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}-FROM" title="{{p.description}} <fmt:message key="jsp.from.label"/>" type="text" name="{{p.queryName}}|GE" ng-model="documentTemplate[p.queryName+'|GE']" ng-pattern="jbPatterns.number(0)"/>
+							</div>
+						</div>
+						<div class="col-sm-6">
+					  	  <div class="input-group">
+					  	    <span class="input-group-addon"><fmt:message key="jsp.to.label"/></span>
+						    <input class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}-TO" title="{{p.description}} <fmt:message key="jsp.to.label"/>" type="text" name="{{p.queryName}}|LE" ng-model="documentTemplate[p.queryName+'|LE']" ng-pattern="jbPatterns.number(0)"/>
+						  </div>
+						</div>
+					</div>
 				</div>
 			  </div>
 			
 			  <div ng-switch-when="DECIMAL">
 				<label class="col-sm-1 control-label" for="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}-FROM" title="{{p.description}}">{{p.displayName}}</label>
-				<div class="col-sm-2">
-				  <div class="input-group">
-			  	    <span class="input-group-addon"><fmt:message key="jsp.from.label"/></span>
-				    <input class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}-FROM" title="{{p.description}} <fmt:message key="jsp.from.label"/>" type="text" name="{{p.queryName}}|GE" ng-model="documentTemplate[p.queryName+'|GE']" ng-pattern="jbPatterns.number(2)"/>
-				  </div>
-				</div>
-				
-				<div class="col-sm-2">
-				  <div class="input-group">
-			  	    <span class="input-group-addon"><fmt:message key="jsp.to.label"/></span>
-				    <input class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}-TO" title="{{p.description}} <fmt:message key="jsp.to.label"/>" type="text" name="{{p.queryName}}|LE" ng-model="documentTemplate[p.queryName+'|LE']" ng-pattern="jbPatterns.number(2)"/>
-				  </div>
+				<div class="col-sm-3">
+					<div class="row">
+						<div class="col-sm-6">
+						  <div class="input-group">
+					  	    <span class="input-group-addon"><fmt:message key="jsp.from.label"/></span>
+						    <input class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}-FROM" title="{{p.description}} <fmt:message key="jsp.from.label"/>" type="text" name="{{p.queryName}}|GE" ng-model="documentTemplate[p.queryName+'|GE']" ng-pattern="jbPatterns.number(2)"/>
+						  </div>
+						</div>
+						<div class="col-sm-6">
+						  <div class="input-group">
+					  	    <span class="input-group-addon"><fmt:message key="jsp.to.label"/></span>
+						    <input class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}-TO" title="{{p.description}} <fmt:message key="jsp.to.label"/>" type="text" name="{{p.queryName}}|LE" ng-model="documentTemplate[p.queryName+'|LE']" ng-pattern="jbPatterns.number(2)"/>
+						  </div>
+						</div>
+					</div>
 				</div>
 			  </div>
 			
 			  <div ng-switch-when="DATETIME">
 			    <label class="col-sm-1 control-label" for="jbSearchFormDocument-{jbUtil.sanitize(p.queryName)}}-FROM" title="{{p.description}}">{{p.displayName}}</label>
-				<div class="col-sm-2">
-			  	  <div class="input-group">
-			  	    <span class="input-group-addon"><fmt:message key="jsp.from.label"/></span>
-			        <input id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}-FROM" class="form-control" title="{{p.displayName}} <fmt:message key="jsp.from.label"/>" type="text" name="{{p.queryName}}|GE" ng-model="documentTemplate[p.queryName+'|GE']" uib-datepicker-popup="${localePatternDate}" is-open="calendarPopups['jbSearchFormDocument-'+jbUtil.sanitize(p.queryName)+'-FROM']"/>
-	                <span class="input-group-btn">
-	                  <button type="button" class="btn btn-default" ng-click="openCalendar('jbSearchFormDocument-'+jbUtil.sanitize(p.queryName)+'-FROM')"><i class="fa fa-calendar"></i></button>
-	                </span>
-	              </div>
-	            </div>
-				
-				<div class="col-sm-2">
-			  	  <div class="input-group">
-			  	    <span class="input-group-addon"><fmt:message key="jsp.to.label"/></span>
-			        <input id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}-TO" class="form-control" title="<fmt:message key="jsp.document.{{p.queryName}}to.title"/> <fmt:message key="jsp.to.label"/>" type="text" name="{{p.queryName}}|LE" ng-model="documentTemplate[p.queryName+'|LE']" uib-datepicker-popup="${localePatternDate}" is-open="calendarPopups['jbSearchFormDocument-'+jbUtil.sanitize(p.queryName)+'-TO']"/>
-	                <span class="input-group-btn">
-	                  <button type="button" class="btn btn-default" ng-click="openCalendar('jbSearchFormDocument-'+jbUtil.sanitize(p.queryName)+'-TO')"><i class="fa fa-calendar"></i></button>
-	                </span>
+				<div class="col-sm-3">
+					<div class="row">
+						<div class="col-sm-6">
+					  	  <div class="input-group">
+					  	    <span class="input-group-addon"><fmt:message key="jsp.from.label"/></span>
+					        <input id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}-FROM" class="form-control" title="{{p.displayName}} <fmt:message key="jsp.from.label"/>" type="text" name="{{p.queryName}}|GE" ng-model="documentTemplate[p.queryName+'|GE']" uib-datepicker-popup="${localePatternDate}" is-open="calendarPopups['jbSearchFormDocument-'+jbUtil.sanitize(p.queryName)+'-FROM']"/>
+			                <span class="input-group-btn">
+			                  <button type="button" class="btn btn-default" ng-click="openCalendar('jbSearchFormDocument-'+jbUtil.sanitize(p.queryName)+'-FROM')"><i class="fa fa-calendar"></i></button>
+			                </span>
+			              </div>
+						</div>
+						<div class="col-sm-6">
+						  <div class="input-group">
+			        			<span class="input-group-addon"><fmt:message key="jsp.to.label"/></span>
+						        <input id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}-TO" class="form-control" title="<fmt:message key="jsp.document.{{p.queryName}}to.title"/> <fmt:message key="jsp.to.label"/>" type="text" name="{{p.queryName}}|LE" ng-model="documentTemplate[p.queryName+'|LE']" uib-datepicker-popup="${localePatternDate}" is-open="calendarPopups['jbSearchFormDocument-'+jbUtil.sanitize(p.queryName)+'-TO']"/>
+				                <span class="input-group-btn">
+				                  <button type="button" class="btn btn-default" ng-click="openCalendar('jbSearchFormDocument-'+jbUtil.sanitize(p.queryName)+'-TO')"><i class="fa fa-calendar"></i></button>
+				                </span>
+			               </div>
+						</div>
 	              </div>
 	            </div>
 			  </div>
 			  
 			  <div ng-switch-when="BOOLEAN">
 				<label class="col-sm-1 control-label" for="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}">{{p.displayName}}</label>
-				<div class="col-sm-4">
+				<div class="col-sm-3">
 				  <select class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" name="{{p.queryName}}" ng-model="documentTemplate[p.queryName]" jb-boolean>
 				    <option></option>
 				    <option value="true"><fmt:message key="jsp.boolean.1"/></option>
@@ -146,7 +123,7 @@
 			
 			  <div ng-switch-when="STRING">
 				<label class="col-sm-1 control-label" for="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}">{{p.displayName}}</label>
-				<div class="col-sm-4">
+				<div class="col-sm-3">
 				  <input ng-if="jbUtil.isEmptyObject(p.choices)" class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentTemplate[p.queryName]"/>
 				  <select ng-if="!jbUtil.isEmptyObject(p.choices)" class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" name="{{p.queryName}}" ng-model="documentTemplate[p.queryName]">
 				    <option></option>
@@ -156,19 +133,19 @@
 			  </div>
 			
 			</any>
-			<div class="col-sm-1"></div>
+			<div class="col-sm-2"></div>
 			</div>
 			
 			<div class="row form-group">
 			
-			  <div class="col-sm-1"></div>
+			  <div class="col-sm-2"></div>
 			  
 			  <label class="col-sm-1 control-label" for="jbSearchFormDocument-contains" title="<fmt:message key="jsp.document.content.title"/>"><fmt:message key="jsp.document.content.label"/></label>
-			  <div class="col-sm-9">
+			  <div class="col-sm-7">
 			  	<input class="form-control" id="jbSearchFormDocument-contains" title="<fmt:message key="jsp.document.content.title"/>" type="text" name="contains" ng-model="documentTemplate.contains"/>
 			  </div>
 			  
-			  <div class="col-sm-1"></div>
+			  <div class="col-sm-2"></div>
 			
 			</div>
 						
@@ -201,7 +178,7 @@
 
 	    <table ng-table="documentTable" template-header="views/document/documentHeaders.jsp" class="table table-condensed table-bordered table-striped ng-table-responsive" show-filter="false">
 		<tbody>
-		<!-- ng-dblclick definisce il comportamento all'utilizzo di doppio click sugli elementi. !relation permette di disattivare questa funzionalià nella modalità di selezione delle relazioni per i documenti -->
+		<!-- ng-dblclick definisce il comportamento all'utilizzo di doppio click sugli elementi. !relation permette di disattivare questa funzionaliï¿½ nella modalitï¿½ di selezione delle relazioni per i documenti -->
 		<tr ng-repeat="row in $data track by $index" ng-dblclick="!relation && startEdit($index)">
 
 	      <td ng-if="jbUtil.isEmptyObject(documentType)" sortable="'typeName'">{{row.typeName}}</td>
@@ -233,7 +210,7 @@
 			  </ul>
 			  </div>
 		    </div>
-		    <!-- Modalità aggiunta relazioni -->
+		    <!-- Modalitï¿½ aggiunta relazioni -->
 		    <div ng-show="relation">
 		    	<button type="button" class="btn btn-primary btn-xs" ng-click="addRelation(row.id)"><i class="fa fa-plus fa-lg"></i></button>
 		    </div>

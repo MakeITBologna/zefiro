@@ -23,7 +23,9 @@
 			<span ng-hide="currentRownum == null"><h1><b>{{documentEditing.description}}</b></h1></span>
 			<span ng-show="currentRownum == null"><h1><b><fmt:message key="jsp.detail.insert.submit"/></b></h1></span>
 	</div>
-	
+	<div>
+
+	</div>
 	<div class="row form-group">
 		<!-- Preview -->
 		<div class="col-sm-8" ng-if="!isItem">
@@ -245,16 +247,16 @@
 					<table class="table table-hover">
 					<tbody><!-- relazioni esistenti per il tipo -->
 						<tr ng-repeat="r in documentEditing.relationships | filter:isRelationOfType(rt, 'source', documentEditing.id)">
-							<td><a ng-click="showDocument({id: r.target.id, name: r.target.name, description: r.target.description})" href>{{r.target.description}}</a></td>
+							<td><a ng-click="showDocument({id: r.target.id, name: r.target.name, description: r.target.description, baseType: r.target.baseType})" href>{{r.target.description}}</a></td>
 							<td>{{r.target.createdBy}}</td>
-							<td ng-if="readOnly" ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
+							<td ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
 						</tr>
 						<tr ng-repeat="r in documentEditing.relationships | filter:isRelationOfType(rt, 'target', documentEditing.id)">
-							<td><a ng-click="showDocument({id: r.source.id, name: r.source.name, description: r.source.description})" href>{{r.source.description}}</a></td>
+							<td><a ng-click="showDocument({id: r.source.id, name: r.source.name, description: r.source.description, baseType: r.source.baseType})" href>{{r.source.description}}</a></td>
 							<td>{{r.source.createdBy}}</td>
-							<td ng-if="readOnly" ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
+							<td ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
 						</tr>
-						<tr ng-if="readOnly && isTypeSpecific(rt, documentTypeEdit.id)">
+						<tr ng-if="!readOnly && isTypeSpecific(rt, documentTypeEdit.id)">
 							<td colspan="3">
 								<button class="btn btn-success btn-sm" type="button" ng-click="startAddRelation(rt)"><i class="fa fa-plus"></i> <fmt:message key="jsp.document.addRelationship"/></button>
 							</td>
