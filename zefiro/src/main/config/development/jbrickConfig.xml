@@ -12,22 +12,56 @@
 		<dataTypeConverter dataType="java.lang.Integer" pattern="pattern.integer" converter="org.apache.commons.beanutils.locale.converters.IntegerLocaleConverter"/>
 	</dataTypeConverters>
 
-        <!--alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="d5696090-9897-46bb-9e00-3ec8ababddc7"/--> 
-        <alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://zefiro.yacme.com" rootFolderId="31aff755-357b-49fb-a447-1bb83a663bfa"/>
+        <alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="d5696090-9897-46bb-9e00-3ec8ababddc7"/> 
+        <!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://zefiro.yacme.com" rootFolderId="31aff755-357b-49fb-a447-1bb83a663bfa"/ -->
  
  <types>
  	<type name = "D:makeit:fatturaAttiva">
  		<search>
- 			<searchField name = "makeit:ragioneSociale" />
- 			<searchField name = "makeit:IVA" />
+ 			<searchField name = "makeit:numeroFattura" />
+ 			<searchField name = "makeit:sezionale" />
+ 			<searchField name = "makeit:progressivoInvio" />
+ 			<searchField name = "makeit:tipo" />
+ 			<searchField name = "makeit:dataEmissione" />
+ 			<searchField name = "makeit:importo" />
+ 			<searchField name = "makeit:dataScadenza" />		
+ 			<searchField name = "makeit:dataIncasso" />
+ 			<searchField name = "makeit:stato" />
+ 			
  			
  			<searchTableColumn name = "makeit:IVA" />
- 			<searchTableColumn name = "makeit:ragioneSociale" />
- 			<searchTableColumn name = "cmis:name" />
+ 			<searchTableColumn name = "makeit:numeroFattura" />
+ 			<searchTableColumn name = "makeit:sezionale" />
+ 			<searchTableColumn name = "makeit:progressivoInvio" />
+ 			<searchTableColumn name = "makeit:tipo" />
+ 			<searchTableColumn name = "makeit:dataEmissione" />
+ 			<searchTableColumn name = "makeit:importo" />
+ 			<searchTableColumn name = "makeit:dataIncasso" />
+ 			<searchTableColumn name = "makeit:stato" />
  			
  		</search>
  	</type>
- 
+ 	
+ 	<type name = "D:makeit:fatturaPassiva">
+ 		<search>
+ 			<searchField name = "makeit:dataEmissione" />
+ 			<searchField name = "makeit:numeroFattura" />
+ 			<searchField name = "makeit:progressivoInvio" />
+ 			<searchField name = "makeit:tipo" />
+ 			<searchField name = "makeit:importo" />
+ 			<searchField name = "makeit:dataScadenza" />		
+ 			<searchField name = "makeit:dataIncasso" />	
+ 			
+ 			<searchTableColumn name = "makeit:dataEmissione" />
+ 			<searchTableColumn name = "makeit:numeroFattura" />
+ 			<searchTableColumn name = "makeit:progressivoInvio" />
+ 			<searchTableColumn name = "makeit:tipo" />
+ 			<searchTableColumn name = "makeit:importo" />
+ 			<searchTableColumn name = "makeit:dataScadenza" />		
+ 			<searchTableColumn name = "makeit:dataIncasso" />
+ 			
+ 		</search>
+ 	</type>
 					
  </types>
  

@@ -76,7 +76,7 @@ public class DocumentSerializer extends StdSerializer<Document> {
 		}
 		gen.writeObjectField("properties", lMapProps);
 		
-		gen.writeFieldName("relationships");
+		/*gen.writeFieldName("relationships");
 		gen.writeStartArray();
 		
 		List<Relationship> lRelationships = value.getRelationships();
@@ -110,6 +110,19 @@ public class DocumentSerializer extends StdSerializer<Document> {
 				gen.writeEndObject();
 				;}
 			
+		}
+			
+		gen.writeEndArray();
+		*/
+		gen.writeFieldName("relationships");
+		gen.writeStartArray();
+		
+		List<Relationship> lRelationships = value.getRelationships();
+		
+		if (lRelationships != null) {
+			for (Relationship lRelationship : lRelationships) {
+				gen.writeObject(lRelationship);
+			}
 		}
 				
 		gen.writeEndArray();
