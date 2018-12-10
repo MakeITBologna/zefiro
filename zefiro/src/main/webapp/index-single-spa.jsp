@@ -27,11 +27,36 @@
 <link rel="stylesheet" href="css/jbrick.css?version=${version}" />
 
  
-<script src="js/single-spa/angular.min.js"></script>
- <script src="js/single-spa/single-spa"></script>
-  <script src="js/single-spa/single-spa-angularjs"></script>
+<script type="text/javascript" src="js/angular/angular.js?version=${version}"></script>
+<script type="text/javascript" src="js/angular/angular-route.js?version=${version}"></script>
+<script type="text/javascript" src="js/angular/angular-resource.js?version=${version}"></script>
+<script type="text/javascript" src="js/angular/angular-cookies.js?version=${version}"></script>
+<script type="text/javascript" src="js/angular/angular-animate.js?version=${version}"></script>
+<script type="text/javascript" src="js/angular/ui-bootstrap-tpls.js?version=${version}"></script>
+<script type="text/javascript" src="js/angular/angular-confirm.js?version=${version}"></script>
+<script type="text/javascript" src="js/angular/datetime-picker.js?version=${version}"></script>
+<script type="text/javascript" src="js/angular/ng-table.js?version=${version}"></script>
+<script type="text/javascript" src="js/angular/ngRemoteValidate.js"></script>
+<script type="text/javascript" src="js/angular/angular-promise-buttons.js?version=${version}"></script>
+<script type="text/javascript" src="js/angular/elif.js?version=${version}"></script>
+<script type="text/javascript" src="js/angular/i18n/angular-locale-${language}.js?version=${version}"></script>
+<script type="text/javascript" src="js/angular/i18n/jb-locale-${language}.js?version=${version}"></script>
+<script type="text/javascript" src="js/angular/angular-filter.js?version=${version}"></script>
+
+ <script src="js/single-spa/single-spa.js"></script>
+  <script src="js/single-spa/single-spa-angularjs.js"></script>
   
   
+
+
+
+
+
+
+</head>
+
+<body>
+	<div id="zefiro-app" />
 <script type="text/javascript" src="js/app/main.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/documentType.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/document.js?version=${version}"></script>
@@ -42,16 +67,6 @@
 <script type="text/javascript" src="js/app/applicationState.js?version=${version}"></script>
 
 <script type="text/javascript" src="js/app/single-spa.config.js"></script>
-
-
-
-
-
-</head>
-
-<body>
-	<div id="zefiro-app" />
-
 </body>
 
 </html>
