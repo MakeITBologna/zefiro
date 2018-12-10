@@ -533,4 +533,10 @@ angular.module('main', [
 			return input ? 'yes' : 'no';
 		};
 
-	});
+	}).directive('zefiroApp', [function() {
+		  return {
+			    restrict: 'E',
+			    templateUrl: 'views/single-spa/zefiro.single-spa.jsp',
+			   
+			  }
+			}]);
