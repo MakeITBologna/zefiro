@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <%@ include file="/include/directive.jsp" %>
-<html >
+<html>
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -46,17 +46,28 @@
  <script src="js/single-spa/single-spa.js"></script>
   <script src="js/single-spa/single-spa-angularjs.js"></script>
   
-  
-
-
-
-
-
-
 </head>
 
 <body>
-	<div id="zefiro-app" />
+	
+	
+<div id="zefiro-app"  ng-app="main" ng-controller="MainController" >
+
+<!--header start-->
+
+
+<!--header end-->
+
+<!--content start-->
+<div ng-show="serverMessageVisible">
+	<p><h3 class="alert alert-danger" role="alert"> {{serverMessageString}} </h3></p>
+</div>
+<div ng-view></div>
+<!--content end-->
+
+</div>
+	
+	
 <script type="text/javascript" src="js/app/main.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/documentType.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/document.js?version=${version}"></script>

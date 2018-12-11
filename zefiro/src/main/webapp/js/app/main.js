@@ -199,7 +199,7 @@ angular.module('main', [
 					result.push(angular.extend({}, obj[p]));
 				}
 
-				return result;
+				return result;'E'
 			},
 			contains: function (container, element) {
 				for (var i in container) {
@@ -333,7 +333,7 @@ angular.module('main', [
 	//Logincontroller
 	.controller('LoginController', [ '$scope', '$http', '$location', 'jbValidate', 'jbAuthFactory', 'jbUtil', 'customConfiguration', 
 		function ( $scope, $http, $location, jbValidate, jbAuthFactory, jbUtil, customConfiguration) {
-
+		
 		$scope.jbValidate = jbValidate;
 
 		$scope.credentials = {};
@@ -362,7 +362,8 @@ angular.module('main', [
 
 	//MainController
 	.controller('MainController', [ '$scope', '$http', 'jbAuthFactory', function ( $scope, $http, jbAuthFactory) {
-
+		console.log("MAIN CONTROLLER");
+		
 		$scope.serverMessageVisible = false;
 		$scope.serverMessageString = null;
 
@@ -533,10 +534,4 @@ angular.module('main', [
 			return input ? 'yes' : 'no';
 		};
 
-	}).directive('zefiroApp', [function() {
-		  return {
-			    restrict: 'E',
-			    templateUrl: 'views/single-spa/zefiro.single-spa.jsp',
-			   
-			  }
-			}]);
+	});

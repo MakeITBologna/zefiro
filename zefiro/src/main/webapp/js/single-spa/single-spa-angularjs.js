@@ -1,13 +1,10 @@
 (function (global, factory) {
 	
   if (typeof define === "function" && define.amd) {
-	  console.log("define");
 	  define(['exports'], factory);
   } else if (typeof exports !== "undefined") {
-	  console.log("factory");
     factory(exports);
   } else {
-	  console.log("global");
     var mod = {
       exports: {}
     };
@@ -98,7 +95,7 @@
       bootstrapEl.id = opts.elementId;
 
       containerEl.appendChild(bootstrapEl);
-
+      console.log(opts)
       if (opts.uiRouter) {
         var uiViewEl = document.createElement('div');
         uiViewEl.setAttribute('ui-view', opts.uiRouter === true ? "" : opts.uiRouter);
@@ -106,7 +103,7 @@
       }
 
       if (opts.template) {
-        bootstrapEl.innerHTML = opts.template;
+         bootstrapEl.innerHTML = opts.template;
       }
 
       if (opts.strictDi) {
