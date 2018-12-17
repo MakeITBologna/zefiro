@@ -25,18 +25,22 @@ public class CustomConfigurationEndpoint {
 		
 		String[] typeNames = configManager.getPropertyList("./types/type", "@name");
 		
-		for (String type: typeNames) {	
-			String[] searchField = configManager.getPropertyList("./types/type[@name='"+ type +"']/search/searchField", "@name");
-			String[] searchTableColumn = configManager.getPropertyList("./types/type[@name='"+ type +"']/search/searchTableColumn", "@name");
-			
-			CustomConfiguration conf = new CustomConfiguration();
-			conf.setType(type);
-			conf.setSearchField(searchField);
-			conf.setSearchTableColumn(searchTableColumn);
-			
-			customConfiguration.add(conf);
+		if(typeNames != null) {
+			for (String type: typeNames) {	
+				String[] searchField = configManager.getPropertyList("./types/type[@name='"+ type +"']/search/searchField", "@name");
+				String[] searchTableColumn = configManager.getPropertyList("./types/type[@name='"+ type +"']/search/searchTableColumn", "@name");
+				
+				CustomConfiguration conf = new CustomConfiguration();
+				conf.setType(type);
+				conf.setSearchField(searchField);
+				conf.setSearchTableColumn(searchTableColumn);
+				
+				customConfiguration.add(conf);
+			}
+	
 		}
-
+		
+		
 		return Response.ok(customConfiguration).build();
 	}
 
