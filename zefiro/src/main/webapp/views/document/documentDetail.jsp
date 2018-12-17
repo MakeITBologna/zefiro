@@ -56,8 +56,8 @@
 				<div class="row jb-form-group">
 				  <label for="jbDetailFormDocument-name" class="control-label col-sm-4" title="<fmt:message key="jsp.document.name.title"/>"><fmt:message key="jsp.document.name.label" /></label>
 				  <div class="col-sm-8">
-				  <p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.name}}</p>
-				  	<input  ng-if="!isReadOnly()" ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-name" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="text" name="name" ng-model="documentEditing.name" pattern="^\w+[\w\s\.-]*$"/>
+				  	<p ng-if="readOnly" class="form-control-static">{{documentEditing.name}}</p>
+				  	<input  ng-if="!readOnly" ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-name" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="text" name="name" ng-model="documentEditing.name" pattern="^\w+[\w\s\.-]*$"/>
 				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.name)"><fmt:message key="js.validate.filename"/></label>
 				  </div>
 				</div>
@@ -65,8 +65,8 @@
 				<div class="row jb-form-group">
 				  <label for="jbDetailFormDocument-description" class="control-label col-sm-4" title="<fmt:message key="jsp.document.description.title"/>"><fmt:message key="jsp.document.description.label" /></label>
 				  <div class="col-sm-8">
-				   <p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.description}}</p>
-				  	<input ng-if="!isReadOnly()" ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-description" class="form-control" title="<fmt:message key="jsp.document.description.title"/>" type="text" name="description" ng-model="documentEditing.description"/>
+				    <p ng-if="readOnly" class="form-control-static">{{documentEditing.description}}</p>
+				  	<input ng-if="!readOnly" ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-description" class="form-control" title="<fmt:message key="jsp.document.description.title"/>" type="text" name="description" ng-model="documentEditing.description"/>
 				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.description)"><fmt:message key="js.validate.required"/></label>
 				  </div>
 				</div>
@@ -220,7 +220,7 @@
 					</div>
 		  		</div>
 				
-				<table class="table table-hover">
+				<table class="table table-hover" ng-if="!isItem">
 				<tbody>
 					<tr ng-repeat="dv in documentVersions" ng-if="$index < 10">
 						<td>
