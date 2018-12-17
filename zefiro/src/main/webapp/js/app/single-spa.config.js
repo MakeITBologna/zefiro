@@ -13,8 +13,7 @@ var zefiroApp = window.singleSpaAngularjs.default({
 
 window.singleSpa.registerApplication('zefiro-app', zefiroApp, function activityFunction(location) {
 	
-	console.log(location);
   return true;
   })
 
-window.singleSpa.start();
+//window.singleSpa.start();
