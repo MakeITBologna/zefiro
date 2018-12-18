@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
@@ -156,8 +157,8 @@
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
 		</dependency>
-		
-		
+
+
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
@@ -172,27 +173,27 @@
 			<groupId>net.sourceforge.jexcelapi</groupId>
 			<artifactId>jxl</artifactId>
 			<version>2.6.10</version>
-			 <exclusions>
-            <exclusion>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-            </exclusion>
-        </exclusions>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
 			<version>3.8</version>
 		</dependency>
-		
-		
-		
+
+
+
 		<dependency>
 			<groupId>org.apache.chemistry.opencmis</groupId>
 			<artifactId>chemistry-opencmis-client-impl</artifactId>
 			<version>0.13.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
@@ -202,12 +203,12 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>1.7.5</version>
-		</dependency>	
-		
-		
-		
-		
-		
+		</dependency>
+
+
+
+
+
 		<dependency>
 			<groupId>com.google.http-client</groupId>
 			<artifactId>google-http-client</artifactId>
@@ -262,7 +263,7 @@
 		<finalName>zefiro</finalName>
 
 		<plugins>
-	
+
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.3</version>
@@ -295,10 +296,11 @@
 				</configuration>
 			</plugin>
 
-			
-			
+
+
 		</plugins>
 	</build>
+	
 	<profiles>
 		<profile>
 			<id>development</id>
@@ -309,9 +311,15 @@
 				<webXmlPath>${deploy-config.basedir}/development/web.xml</webXmlPath>
 				<directoryConfigurationXml>${deploy-config.basedir}/development</directoryConfigurationXml>
 			</properties>
-		</profile>
+		</profile>		
+		<profile>
+			<id>docker</id>
+			<properties>				
+				<config.path>file:/opt/zefiro/</config.path>		
+			</properties>
+		</profile>		
 	</profiles>
-	
+
 	<distributionManagement>
 		<repository>
 			<id>central</id>
