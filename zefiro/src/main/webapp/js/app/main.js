@@ -362,7 +362,6 @@ angular.module('main', [
 
 	//MainController
 	.controller('MainController', [ '$scope', '$http', 'jbAuthFactory', function ( $scope, $http, jbAuthFactory) {
-		console.log("MAIN CONTROLLER");
 		
 		$scope.serverMessageVisible = false;
 		$scope.serverMessageString = null;

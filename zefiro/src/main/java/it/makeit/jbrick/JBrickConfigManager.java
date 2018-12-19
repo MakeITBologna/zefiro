@@ -24,6 +24,7 @@ public final class JBrickConfigManager {
 
 	private static Map<String, JBrickConfigManager> mMapConfigManager = new HashMap();
 	public static final String CONFIG_FILENAME = "jbrickConfig.xml";
+	public static final String CONFIG_PATH = System.getProperty("config.path") != null? System.getProperty("config.path") : "/";
 	private static final String ENCODING = "UTF-8";
 	private XMLConfiguration mXMLConfiguration;
 	private static Log mLog = Log.getInstance(JBrickConfigManager.class);
@@ -41,7 +42,7 @@ public final class JBrickConfigManager {
 	
 	//Non è  più un singleton! i metodi getInstance restano per garantire la trasparenza rispetto agli utilizzi precedenti
 	public static JBrickConfigManager getInstance() throws JBrickException {
-		JBrickConfigManager lConfigManager = getInstance("/"+CONFIG_FILENAME);
+		JBrickConfigManager lConfigManager = getInstance(CONFIG_PATH + CONFIG_FILENAME);
 		if (lConfigManager == null) {
 			mLog.error(CONFIG_FILENAME , " non trovato");
 			throw new JBrickException(JBrickException.FATAL);
