@@ -26,19 +26,19 @@
     </layout>
   </appender>
   <category name="it.makeit.jbrick" additivity="false">
-  	<level value="debug"/>
+  	<level value="info"/>
   	<appender-ref ref="zefiro"/>
   	<appender-ref ref="errors"/>
   	<appender-ref ref="console"/>
   </category>
   <category name="it.makeit.alfresco" additivity="false">
-  	<level value="debug"/>
+  	<level value="info"/>
   	<appender-ref ref="zefiro"/>
   	<appender-ref ref="errors"/>
   	<appender-ref ref="console"/>
   </category>
   <category name="it.makeit.zefiro" additivity="false">
-  	<level value="debug"/>
+  	<level value="info"/>
   	<appender-ref ref="zefiro"/>
   	<appender-ref ref="errors"/>
   	<appender-ref ref="console"/>

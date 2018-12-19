@@ -33,8 +33,10 @@ import it.makeit.alfresco.AlfrescoException;
 import it.makeit.alfresco.AlfrescoHelper;
 import it.makeit.alfresco.publicapi.model.Person;
 import it.makeit.jbrick.JBrickException;
+import it.makeit.jbrick.Log;
 import it.makeit.jbrick.http.SessionUtil;
 import it.makeit.jbrick.web.LocaleUtil;
+import it.makeit.jbrick.ws.filters.LogFilter;
 import it.makeit.jbrick.ws.resources.AbstractResource;
 import it.makeit.profiler.dao.UsersBean;
 import it.makeit.zefiro.Util;
@@ -46,6 +48,7 @@ import it.makeit.zefiro.Util;
 public class LoginResource extends AbstractResource {
 
 	
+	private static Log log = Log.getInstance(LoginResource.class);
 	//@Inject UserSessionListener userListenener;
 	
 	
@@ -88,6 +91,9 @@ public class LoginResource extends AbstractResource {
 		String lUsername = creadentials[0];
 		String lPassword = creadentials[1];
 
+		
+		log.info("Login dell'untente " + lUsername);
+		
 		// lUsersBean = lUsersManager.checkLogin(lUsername, lPassword);
 		try {
 		lUsersBean = checkLogin(lUsername, lPassword);
