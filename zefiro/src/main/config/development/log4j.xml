@@ -31,6 +31,12 @@
   	<appender-ref ref="errors"/>
   	<appender-ref ref="console"/>
   </category>
+  <category name="it.makeit.profiler" additivity="false">
+  	<level value="info"/>
+  	<appender-ref ref="zefiro"/>
+  	<appender-ref ref="errors"/>
+  	<appender-ref ref="console"/>
+  </category>
   <category name="it.makeit.alfresco" additivity="false">
   	<level value="info"/>
   	<appender-ref ref="zefiro"/>
