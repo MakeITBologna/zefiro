@@ -4,7 +4,7 @@ COPY ./zefiro /opt/workspace/zefiro
 WORKDIR /opt/workspace/zefiro-sdk
 RUN mvn install
 WORKDIR /opt/workspace/zefiro
-RUN mvn package -Pdocker
+RUN mvn clean package -Pdocker
 
 
 FROM tomcat:8.0.43-jre8
