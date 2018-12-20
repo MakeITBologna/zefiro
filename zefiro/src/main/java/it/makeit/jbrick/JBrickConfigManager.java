@@ -75,7 +75,7 @@ public final class JBrickConfigManager {
 				String external = lConfigManager.getProperty("jbrickConfig/@external");
 				if(external != null ) {
 					try {
-						lInputStream = new FileInputStream(external);
+						lInputStream = new FileInputStream(external + CONFIG_FILENAME);
 					} catch (FileNotFoundException e) {
 						throw new JBrickException(JBrickException.FATAL);
 					}
