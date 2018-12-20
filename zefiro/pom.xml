@@ -325,7 +325,7 @@
 			<properties>
 				<webXmlPath>${deploy-config.basedir}/development/web.xml</webXmlPath>
 				<directoryConfigurationXml>${deploy-config.basedir}/development</directoryConfigurationXml>
-				<config.path>file:/opt/zefiro/</config.path>
+				<external>true</external>
 			</properties>
 		</profile>
 	</profiles>
