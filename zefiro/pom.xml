@@ -321,7 +321,7 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>docker</id>
+			<id>external</id>
 			<properties>
 				<webXmlPath>${deploy-config.basedir}/development/web.xml</webXmlPath>
 				<directoryConfigurationXml>${deploy-config.basedir}/development</directoryConfigurationXml>
