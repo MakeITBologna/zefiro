@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+  <appender name="zefiro" class="org.apache.log4j.RollingFileAppender">
+    <param name="File" value="${catalina.home}/logs/zefiro.log"/>
+    <param name="Append" value="true"/>
+    <param name="maxFileSize" value="1000KB" />
+    <param name="maxBackupIndex" value="5" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} [%X{remoteIP}] [%X{sessionid}] [%X{connectionId}] %-5p %c - %m%n"/>
+    </layout>
+  </appender>
+  <appender name="errors" class="org.apache.log4j.RollingFileAppender">
+  	<param name="Threshold" value="ERROR" />
+    <param name="File" value="${catalina.home}/logs/zefiro.errors.log"/>
+    <param name="Append" value="true"/>
+    <param name="maxFileSize" value="1000KB" />
+    <param name="maxBackupIndex" value="5" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{dd/MMM/yyyy HH:mm:ss,SSS} [%X{remoteIP}] [%X{sessionid}] [%X{connectionId}] %-5p %c - %m%n"/>
+    </layout>
+  </appender>
+  <appender name="console" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} [%X{remoteIP}] [%X{sessionid}] [%X{connectionId}] %-5p %c - %m%n"/>
+    </layout>
+  </appender>
+  <category name="it.makeit.jbrick" additivity="false">
+  	<level value="info"/>
+  	<appender-ref ref="zefiro"/>
+  	<appender-ref ref="errors"/>
+  	<appender-ref ref="console"/>
+  </category>
+  <category name="it.makeit.profiler" additivity="false">
+  	<level value="info"/>
+  	<appender-ref ref="zefiro"/>
+  	<appender-ref ref="errors"/>
+  	<appender-ref ref="console"/>
+  </category>
+  <category name="it.makeit.alfresco" additivity="false">
+  	<level value="info"/>
+  	<appender-ref ref="zefiro"/>
+  	<appender-ref ref="errors"/>
+  	<appender-ref ref="console"/>
+  </category>
+  <category name="it.makeit.zefiro" additivity="false">
+  	<level value="info"/>
+  	<appender-ref ref="zefiro"/>
+  	<appender-ref ref="errors"/>
+  	<appender-ref ref="console"/>
+  </category>
+  <category name="jsp" additivity="false">
+  	<level value="info"/>
+  	<appender-ref ref="zefiro"/>
+  	<appender-ref ref="errors"/>
+  	<appender-ref ref="console"/>
+  </category>
+  <category name="org.apache" additivity="false">
+  	<level value="error"/>
+  	<appender-ref ref="zefiro"/>
+  	<appender-ref ref="errors"/>
+  	<appender-ref ref="console"/>
+  </category>
+  <category name="net.sf" additivity="false">
+  	<level value="error"/>
+  	<appender-ref ref="zefiro"/>
+  	<appender-ref ref="errors"/>
+  	<appender-ref ref="console"/>
+  </category>
+    <category name="com.google" additivity="false">
+  	<level value="debug"/>
+  	<appender-ref ref="zefiro"/>
+  	<appender-ref ref="errors"/>
+  	<appender-ref ref="console"/>
+  </category>
+
+  <root>
+    <priority value ="off"/>
+  </root>
+</log4j:configuration>
