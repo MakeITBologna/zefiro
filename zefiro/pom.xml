@@ -323,7 +323,7 @@
 		<profile>
 			<id>external</id>
 			<properties>
-				<webXmlPath>${deploy-config.basedir}/development/web.xml</webXmlPath>
+				<webXmlPath>${deploy-config.basedir}/external/web.xml</webXmlPath>
 				<directoryConfigurationXml>${deploy-config.basedir}/external</directoryConfigurationXml>
 			</properties>
 		</profile>

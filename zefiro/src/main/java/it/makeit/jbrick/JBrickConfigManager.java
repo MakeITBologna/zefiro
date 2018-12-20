@@ -72,8 +72,7 @@ public final class JBrickConfigManager {
 			if (lInputStream != null) {
 				mLog.debug(pStrCfgFileName , " trovato");
 				lConfigManager = new JBrickConfigManager(lInputStream, pStrCfgFileName);
-				String external = lConfigManager.getProperty("external");
-				
+				String external = lConfigManager.getProperty("jbrickConfig/@external");
 				if(external != null ) {
 					try {
 						lInputStream = new FileInputStream(external);
