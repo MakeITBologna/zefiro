@@ -8,7 +8,7 @@ COPY ./zefiro/pom.xml /opt/workspace/zefiro/pom.xml
 WORKDIR /opt/workspace/zefiro-sdk
 RUN mvn install
 WORKDIR /opt/workspace/zefiro
-RUN mvn clean package -Pdocker
+RUN mvn clean package -Pexternal
 
 
 FROM tomcat:8.0.43-jre8

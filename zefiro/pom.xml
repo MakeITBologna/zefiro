@@ -321,11 +321,10 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>docker</id>
+			<id>external</id>
 			<properties>
-				<webXmlPath>${deploy-config.basedir}/development/web.xml</webXmlPath>
-				<directoryConfigurationXml>${deploy-config.basedir}/development</directoryConfigurationXml>
-				<config.path>file:/opt/zefiro/</config.path>
+				<webXmlPath>${deploy-config.basedir}/external/web.xml</webXmlPath>
+				<directoryConfigurationXml>${deploy-config.basedir}/external</directoryConfigurationXml>
 			</properties>
 		</profile>
 	</profiles>
