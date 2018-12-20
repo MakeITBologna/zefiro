@@ -44,7 +44,7 @@ public final class JBrickConfigManager {
 	 */
 	
 	//Non è  più un singleton! i metodi getInstance restano per garantire la trasparenza rispetto agli utilizzi precedenti
-	public static JBrickConfigManager getInstance() throws JBrickException, FileNotFoundException {
+	public static JBrickConfigManager getInstance() throws JBrickException {
 
 		JBrickConfigManager lConfigManager = getInstance("/" + CONFIG_FILENAME);
 		if (lConfigManager == null) {
@@ -64,19 +64,22 @@ public final class JBrickConfigManager {
 		return lConfigManager;
 	}
 	
-	private static JBrickConfigManager getInstance(String pStrCfgFileName) throws JBrickException, FileNotFoundException {
+	private static JBrickConfigManager getInstance(String pStrCfgFileName) throws JBrickException {
 		JBrickConfigManager lConfigManager = mMapConfigManager.get(pStrCfgFileName);
 		if (lConfigManager == null) {
 			mLog.debug(pStrCfgFileName , " nullo");
 			InputStream lInputStream = JBrickConfigManager.class.getResourceAsStream(pStrCfgFileName);
 			if (lInputStream != null) {
 				mLog.debug(pStrCfgFileName , " trovato");
-				System.out.println("ééééééééééééééééé");
 				lConfigManager = new JBrickConfigManager(lInputStream, pStrCfgFileName);
 				String external = lConfigManager.getProperty("external");
 				
 				if(external != null ) {
-					lInputStream = new FileInputStream(external);
+					try {
+						lInputStream = new FileInputStream(external);
+					} catch (FileNotFoundException e) {
+						throw new JBrickException(JBrickException.FATAL);
+					}
 					lConfigManager = new JBrickConfigManager(lInputStream, pStrCfgFileName);
 					mLog.debug(external, " caricamento da sorgente esterna");
 				}	
