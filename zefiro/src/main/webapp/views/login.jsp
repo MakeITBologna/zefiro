@@ -1,6 +1,6 @@
 <%@ include file="/include/directive.jsp" %>
 <div class="container">
-   <form name="jbLoginForm" class="form-login jb-border" novalidate>
+   <form name="jbLoginForm" class="form-login jb-border" ng-keyup="$event.keyCode == 13 ? (jbValidate.checkForm(jbLoginForm) && login()) : null" novalidate>
    	<input type="hidden" name="action" value="login" />
      <h2 class="form-login-heading bg-primary"><fmt:message key="jsp.login.title" /></h2>
      <div class="login-wrap">
