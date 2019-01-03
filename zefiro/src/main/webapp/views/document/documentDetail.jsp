@@ -13,7 +13,7 @@
 	</ol>
 	<div class="page-header ">
 		<div class="pull-right">
-			<button ng-if="!isReadOnly()" class="btn btn-primary" type="button" ng-click="jbValidate.checkForm(jbDetailFormDocument) && saveDetail(jbDetailFormDocument)">
+			<button ng-if="!readOnly && !isReadOnly()" class="btn btn-primary" type="button" ng-click="jbValidate.checkForm(jbDetailFormDocument) && saveDetail(jbDetailFormDocument)">
 				<span ng-hide="currentRownum == null"><i class="fa fa-floppy-o"></i> <fmt:message key="jsp.detail.update.submit"/></span>
 				<span ng-show="currentRownum == null"><i class="fa fa-floppy-o"></i> <fmt:message key="jsp.detail.insert.submit"/></span>
 			</button>
@@ -56,8 +56,8 @@
 				<div class="row jb-form-group">
 				  <label for="jbDetailFormDocument-name" class="control-label col-sm-4" title="<fmt:message key="jsp.document.name.title"/>"><fmt:message key="jsp.document.name.label" /></label>
 				  <div class="col-sm-8">
-				  	<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.name}}</p>
-				  	<input  ng-if="!isReadOnly()" ng-required="true" id="jbDetailFormDocument-name" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="text" name="name" ng-model="documentEditing.name" pattern="^\w+[\w\s\.-]*$"/>
+				  	<p ng-if="readOnly || isReadOnly()" class="form-control-static">{{documentEditing.name}}</p>
+				  	<input  ng-if="!readOnly && !isReadOnly()" ng-required="true" id="jbDetailFormDocument-name" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="text" name="name" ng-model="documentEditing.name" pattern="^\w+[\w\s\.-]*$"/>
 				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.name)"><fmt:message key="js.validate.filename"/></label>
 				  </div>
 				</div>
@@ -65,8 +65,8 @@
 				<div class="row jb-form-group">
 				  <label for="jbDetailFormDocument-description" class="control-label col-sm-4" title="<fmt:message key="jsp.document.description.title"/>"><fmt:message key="jsp.document.description.label" /></label>
 				  <div class="col-sm-8">
-				    <p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.description}}</p>
-				  	<input ng-if="!isReadOnly()" ng-required="true" id="jbDetailFormDocument-description" class="form-control" title="<fmt:message key="jsp.document.description.title"/>" type="text" name="description" ng-model="documentEditing.description"/>
+				    <p ng-if="readOnly || isReadOnly()" class="form-control-static">{{documentEditing.description}}</p>
+				  	<input ng-if="!readOnly && !isReadOnly()" ng-required="true" id="jbDetailFormDocument-description" class="form-control" title="<fmt:message key="jsp.document.description.title"/>" type="text" name="description" ng-model="documentEditing.description"/>
 				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.description)"><fmt:message key="js.validate.required"/></label>
 				  </div>
 				</div>
@@ -133,7 +133,7 @@
 					  
 					  <div ng-if="p.propertyType == 'INTEGER'">
 					  	<div ng-if="!readOnly"  ng-class="jbValidate.getClass(jbDetailFormDocument[p.queryName])">
-					  	<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value}}</p>
+					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value}}</p>
 						  	<input ng-if="!isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value" ng-pattern="jbPatterns.number(0)" jb-number="0"/>
 						 	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument[p.queryName])"><fmt:message key="js.validate.number"/></label>
 						</div>
