@@ -1,7 +1,7 @@
 <%@ include file="/include/directive.jsp" %>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<div class="container-fluid">
+<div class="container-fluid" ng-if="isUserLogged()">
 <div class="row" ng-hide="editing || contentReplace">
   <div class="page-header jb-page-header">
     <div class="pull-right" >
