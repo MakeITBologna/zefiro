@@ -34,9 +34,9 @@ angular.module('document', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentTy
 }])
 
 .controller('DocumentController', ['$scope', 'DocumentResource', 'DocumentTypeResource', 'ItemResource', 'RelationResource', 'SearchResource', 
-	'NgTableParams', 'jbMessages', 'jbPatterns', 'jbValidate', 'jbUtil', 'mioPropertyBlacklist', 'customConfiguration',
+	'NgTableParams', 'jbMessages', 'jbPatterns', 'jbValidate', 'jbUtil', 'mioPropertyBlacklist', 'customConfiguration', '$location',
 function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationResource, SearchResource, NgTableParams, jbMessages, jbPatterns, 
-		jbValidate, jbUtil, mioPropertyBlacklist, customConfiguration) {
+		jbValidate, jbUtil, mioPropertyBlacklist, customConfiguration, $location) {
 	
 	$scope.jbMessages = jbMessages;
 	$scope.jbPatterns = jbPatterns;

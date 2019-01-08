@@ -105,7 +105,6 @@ angular.module('main', [
 	.factory('responseErrorHandler', ['$q', '$location', '$rootScope','jbAuthFactory', function responseErrorHandler($q, $location, $rootScope, jbAuthFactory) {
 		return {
 			'responseError': function (response) {
-				//console.log(response.data);
 				switch (response.status) {	
 					case 403:
 						var rdata = response.data;
@@ -312,7 +311,8 @@ angular.module('main', [
 				return $cookies.getObject(storedUserLabel);
 			},
 			storeUser: function(jbuser){ 
-				$cookies.putObject(storedUserLabel, { idUser: jbuser.idUser, username: jbuser.username, enabled: jbuser.enabled, fullName: jbuser.fullName, process: jbuser.parametersMap.process, readOnly: jbuser.parametersMap.readOnly });
+				$cookies.putObject(storedUserLabel, { idUser: jbuser.idUser, username: jbuser.username, enabled: jbuser.enabled, fullName: jbuser.fullName, 
+					process: jbuser.parametersMap.process, readOnly: jbuser.parametersMap.readOnly });
 			},
 			removeUser(){
 				$cookies.remove(storedUserLabel);
@@ -320,27 +320,23 @@ angular.module('main', [
 			
 		}
 	}])
-	.constant("customConfiguration", {})
 	
-	.factory('CustomConfigurationResource',['$resource', function($resource) {
-		return $resource('a/customConfiguration/');
-	}])
-
+	.constant("customConfiguration", {})
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//CONTROLLER
 
 	//Logincontroller
-	.controller('LoginController', [ '$scope', '$http', '$location', 'jbValidate', 'jbAuthFactory', 'jbUtil', 'customConfiguration', 
+	.controller('LoginController', [ '$scope', '$http', '$location', 'jbValidate', 'jbAuthFactory', 'jbUtil', 'customConfiguration',
 		function ( $scope, $http, $location, jbValidate, jbAuthFactory, jbUtil, customConfiguration) {
 		
 		$scope.jbValidate = jbValidate;
 
 		$scope.credentials = {};
-
+		$scope.credentials.rootFolder = null;
 		$scope.login = function () {
 			 var headers =  {Authorization : "Basic "
-			        + jbUtil.b64EncodeUnicode($scope.credentials.username+ ":" +$scope.credentials.password)
+			        + jbUtil.b64EncodeUnicode($scope.credentials.username+ ":" +$scope.credentials.password+ ":" +$scope.credentials.rootFolder)
 			    };
 			    
 			$scope.loginPromise =
@@ -348,9 +344,9 @@ angular.module('main', [
 					.then(function (response) {
 						var jbuser = response.data;
 						jbAuthFactory.storeUser(jbuser);
-						
-						$http.get('a/customConfiguration').then(function (response) {
-							customConfiguration.value = response.data				
+						$http.get('a/customConfiguration/searchProperties')
+						.then(function (response) {
+							customConfiguration.value = response.data;				
 							$location.url('/home', true);							
 						});
 						
@@ -362,6 +358,13 @@ angular.module('main', [
 
 	//MainController
 	.controller('MainController', [ '$scope', '$http', 'jbAuthFactory', function ( $scope, $http, jbAuthFactory) {
+		
+		$scope.rootFoldersConfiguration = null;
+
+		$http.get('a/customConfiguration/rootFolders').then(function (response) {
+			$scope.rootFoldersConfiguration = response.data;
+			console.log($scope.rootFoldersConfiguration);
+		});
 		
 		$scope.serverMessageVisible = false;
 		$scope.serverMessageString = null;
@@ -395,6 +398,7 @@ angular.module('main', [
 			$http
 				.get("a/Login", { params: { action: 'logout' } })
 				.then(function (response) {
+					$scope.getUser().enabled = 0;
 					jbAuthFactory.removeUser();
 				});
 		};
@@ -404,6 +408,13 @@ angular.module('main', [
 		$scope.openCalendar = function (calendarName) {
 			$scope.calendarPopups[calendarName] = true;
 		};
+		
+		  $scope.$on('$routeChangeStart', function (scope, next, current) {
+		        //if (next && next.$$route && next.$$route.controller == "LoginController") 
+	        	if ($scope.getUser() && $scope.getUser().enabled == 1){
+		            console.log("BACK");
+	        	}
+		    });
 
 	}])
 

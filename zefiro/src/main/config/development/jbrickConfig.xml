@@ -12,9 +12,12 @@
 		<dataTypeConverter dataType="java.lang.Integer" pattern="pattern.integer" converter="org.apache.commons.beanutils.locale.converters.IntegerLocaleConverter"/>
 	</dataTypeConverters>
 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="d5696090-9897-46bb-9e00-3ec8ababddc7"/> 
- <!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://zefiro.yacme.com" rootFolderId="31aff755-357b-49fb-a447-1bb83a663bfa"/ -->
- <!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://80.211.32.70:8080" rootFolderId="d30361c3-bbb3-4e61-bedf-b8cc54df2112"/-->
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="16885330-1c40-4869-9231-b802f965f95c" label="Make IT"/> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="72cd9092-5597-4ae5-8fab-d9a58fa8a207" label="Yacme"/> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="c53faa48-cd6c-4d9e-ac11-a77f8560081a" label="Mynt"/> 
+	
+	<!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://zefiro.yacme.com" rootFolderId="b2e044b7-8bc1-48e0-95ae-657a1f5d53b9"/ -->	 
+	<!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://80.211.32.70:8080" rootFolderId="d30361c3-bbb3-4e61-bedf-b8cc54df2112"/ -->
 
 <types>
  	<type name = "D:makeit:fatturaAttiva">
@@ -50,6 +53,7 @@
  			<searchField name = "makeit:progressivoInvio" />
  			<searchField name = "makeit:tipo" />
  			<searchField name = "makeit:importo" />
+ 			<searchField name = "makeit:importoPresente" />
  			<searchField name = "makeit:dataScadenza" />		
  			<searchField name = "makeit:dataIncasso" />	
  			
@@ -58,6 +62,7 @@
  			<searchTableColumn name = "makeit:progressivoInvio" />
  			<searchTableColumn name = "makeit:tipo" />
  			<searchTableColumn name = "makeit:importo" />
+ 			<searchTableColumn name = "makeit:importoPresente" />
  			<searchTableColumn name = "makeit:dataScadenza" />		
  			<searchTableColumn name = "makeit:dataIncasso" />
  			

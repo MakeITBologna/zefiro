@@ -22,12 +22,12 @@ public class AuthenticationFilter implements ContainerRequestFilter {
  
     @Override
     public void filter(ContainerRequestContext pRequestContext) throws IOException {
-    	
     	mLog.debug("AuthenticationFilter start");
-    	
-    	if (!pRequestContext.getUriInfo().getPath().endsWith("Login")
-    		&& mRequest.getSession().getAttribute("utente") == null) {
-			
+    	boolean isNotLogin = !pRequestContext.getUriInfo().getPath().endsWith("Login") && mRequest.getSession().getAttribute("utente") == null;
+    	boolean isNotRootFolders = !pRequestContext.getUriInfo().getPath().endsWith("rootFolders");
+    	    	
+    	if (isNotLogin && isNotRootFolders) {
+    		
     		mLog.info("User not logged in!");
     		    		
     		pRequestContext.abortWith(

@@ -27,7 +27,6 @@ public final class Util {
 	}
 
 	public static AlfrescoConfig getDefaultAlfrescoConfig(String pUsername, String pPassword) {
-
 		URL lUrlHost;
 		try {
 			lUrlHost = new URL(JBrickConfigManager.getInstance().getMandatoryProperty("alfresco/@host"));
@@ -40,7 +39,6 @@ public final class Util {
 		String lStrUsername = pUsername;
 		String lStrPassword = pPassword;
 		String lStrRootFolderId = JBrickConfigManager.getInstance().getMandatoryProperty("alfresco/@rootFolderId");
-		
 		boolean toProcess = Boolean.valueOf(JBrickConfigManager.getInstance().getMandatoryProperty("properties/@process"));
 		boolean readOnly =  Boolean.valueOf(JBrickConfigManager.getInstance().getMandatoryProperty("properties/@readOnly"));
 		//return new AlfrescoConfig(lUrlHost, lStrUsername, lStrPassword, lStrRootFolderId);
@@ -115,7 +113,6 @@ public final class Util {
 
 	public static Map<String, Object> createPropertiesMapFromRequest(HttpServletRequest httpRequest) {
 		Map<String, Object> properties = new HashMap<String, Object>();
-		
 		AlfrescoConfig config = getUserAlfrescoConfig(httpRequest);
 		properties.put(ZefiroProperties.USER, config.getUsername());
 		

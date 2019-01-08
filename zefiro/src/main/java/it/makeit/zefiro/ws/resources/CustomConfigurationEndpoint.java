@@ -1,7 +1,10 @@
 package it.makeit.zefiro.ws.resources;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -18,8 +21,8 @@ import it.makeit.zefiro.dao.CustomConfiguration;
 public class CustomConfigurationEndpoint {
 	
 	@GET
-	@Path("/")
-	public Response get() {
+	@Path("/searchProperties")
+	public Response getSearchProperties() {
 		List<CustomConfiguration> customConfiguration = new ArrayList<CustomConfiguration>();
 		JBrickConfigManager configManager = JBrickConfigManager.getInstance();
 		
@@ -43,5 +46,24 @@ public class CustomConfigurationEndpoint {
 		
 		return Response.ok(customConfiguration).build();
 	}
+	
+	@GET
+	@Path("/rootFolders")
+	public Response getRootFolders() {
+		
+		Map<String, String> rootFoldersConfiguration = new LinkedHashMap<String, String>();
+		
+		JBrickConfigManager configManager = JBrickConfigManager.getInstance();
+		
+		String[] labelList = configManager.getPropertyList("./alfresco", "@label");
+		String[] rootFolderList = configManager.getPropertyList("./alfresco", "@rootFolderId");
+		
+		for (int i = 0; i<labelList.length; i++) {
+			rootFoldersConfiguration.put(labelList[i], rootFolderList[i]);
+		}
+
+		return Response.ok(rootFoldersConfiguration).build();
+	}
+	
 
 }

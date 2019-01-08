@@ -10,6 +10,11 @@
         <div class="form-group" ng-class="jbValidate.getClass(jbLoginForm.password)">
          <input type="password" name="password" ng-model="credentials.password" required class="form-control" placeholder="<fmt:message key="jsp.login.password" />">
         </div>
+        <div class="form-group" ng-class="jbValidate.getClass(jbLoginForm.rootFolder)">
+		  <select required class="form-control" name="rootFolder" ng-model="credentials.rootFolder"  >
+		    <option ng-repeat="(key, value) in rootFoldersConfiguration" value="{{value}}" >{{key}}</option>
+		  </select>
+		</div>
         <div class="form-group">
          <button class="btn btn-primary btn-block" name="login" type="button" ng-click="jbValidate.checkForm(jbLoginForm) && login()" promise-btn="loginPromise"><i class="fa fa-lock"></i> <fmt:message key="jsp.login.submit"/></button>
         </div>

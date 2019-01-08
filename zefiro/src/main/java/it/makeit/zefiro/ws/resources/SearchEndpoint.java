@@ -76,7 +76,6 @@ public class SearchEndpoint {
 
 	private static final String mAlfrescoBaseTypeId = JBrickConfigManager.getInstance().getMandatoryProperty("alfresco/@baseTypeId");
 	private static final String mAlfrescoBaseTypeItemId = JBrickConfigManager.getInstance().getProperty("alfresco/@baseTypeItemId");
-	private static final String mAlfrescoRootFolderID = JBrickConfigManager.getInstance().getMandatoryProperty("alfresco/@rootFolderId");
 	private static Log mLog = Log.getInstance(SearchEndpoint.class);
 	
 	private static final Integer ALFRESCORESULTSLIMIT = 100;
@@ -85,23 +84,21 @@ public class SearchEndpoint {
 	@Path("/")
 	public Response getDocuments() throws ParseException {
 		Session session = Util.getUserAlfrescoSession(httpRequest);
-		
+		String rootFolderId = (String) httpRequest.getSession().getAttribute("rootFolderId");
+
 		Map<String, String[]> mapParams = new HashMap<String, String[]>(httpRequest.getParameterMap());
-		
-		
-		
 		
 		if(mAlfrescoBaseTypeItemId != null) {
 			String typeId = mapParams.get("type")==null? mAlfrescoBaseTypeId:mapParams.get("type")[0];
 			String parentType = session.getTypeDefinition(typeId).getParentTypeId();
 			
 			if (parentType.equals(mAlfrescoBaseTypeItemId)) {
-				return Response.ok(searchItems(typeId, session)).build();
+				return Response.ok(searchItems(typeId, rootFolderId, session)).build();
 			}
 			
 		}
 		
-		return Response.ok(searchDocuments(mapParams, session)).build();
+		return Response.ok(searchDocuments(mapParams, rootFolderId, session)).build();
 	}
 	
 
@@ -109,8 +106,8 @@ public class SearchEndpoint {
 	@Path("/print/xls/")
 	public Response printXls(@Context HttpServletRequest pRequest, @Context ServletContext pServletContext)
 			throws IOException {
-
-		StreamingOutput lStreamingOutput = print(pRequest, pServletContext, PrintFormat.XLS.toString());
+		String rootFolderId = (String) httpRequest.getSession().getAttribute("rootFolderId");
+		StreamingOutput lStreamingOutput = print(pRequest, pServletContext, PrintFormat.XLS.toString(), rootFolderId);
 
 		return Response.ok(lStreamingOutput).header("Content-Disposition", "attachment; filename=Document.xls").build();
 	}
@@ -176,7 +173,7 @@ public class SearchEndpoint {
 		return lListFilters;
 	}
 
-	private List<CmisQueryPredicate<?>> getQueryPredicates(TypeDefinition pTypeDef, Map<String, String[]> pMapParams)
+	private List<CmisQueryPredicate<?>> getQueryPredicates(TypeDefinition pTypeDef, String rootFolderId, Map<String, String[]> pMapParams)
 			throws ParseException {
 
 		List<CmisQueryPredicate<?>> lList = new LinkedList<CmisQueryPredicate<?>>();
@@ -261,13 +258,13 @@ public class SearchEndpoint {
 		}
 
 		// La ricerca viene limitata alla cartella radice
-		lList.add(CmisQueryPredicate.inTree(mAlfrescoRootFolderID));
+		lList.add(CmisQueryPredicate.inTree(rootFolderId));
 
 		return lList;
 	}
 	
 	
-	private List<org.apache.chemistry.opencmis.client.api.Document> searchDocuments(Map<String, String[]> mapParams, Session lSession) throws ParseException {
+	private List<org.apache.chemistry.opencmis.client.api.Document> searchDocuments(Map<String, String[]> mapParams, String rootFolderId,Session lSession) throws ParseException {
 		// Copia mappa parametri poiché l'originale è immutabile
 		String[] lStrTypeFilter = mapParams.remove("type");
 		String lStrTypeId = lStrTypeFilter != null && StringUtils.isNotBlank(lStrTypeFilter[0]) ? lStrTypeFilter[0]
@@ -275,7 +272,7 @@ public class SearchEndpoint {
 
 		// TODO (Alessio): gestione CmisNotFound
 		TypeDefinition lTypeDef = lSession.getTypeDefinition(lStrTypeId);
-		List<CmisQueryPredicate<?>> lListPredicates = getQueryPredicates(lTypeDef, mapParams);
+		List<CmisQueryPredicate<?>> lListPredicates = getQueryPredicates(lTypeDef, rootFolderId, mapParams);
 
 		CmisQueryBuilder lQB = new CmisQueryBuilder(lSession);
 		String lStrQuery = lQB.selectFrom(lStrTypeId, (String[]) null).where(lListPredicates).build();
@@ -285,13 +282,13 @@ public class SearchEndpoint {
 		return lList;
 	}
 	
-	private List<Item> searchItems(String typeId, Session session){
+	private List<Item> searchItems(String typeId, String rootFolderId, Session session){
 		List<Item> itemsList = new ArrayList<Item>();
 
 		CmisQueryBuilder queryBuilder = new CmisQueryBuilder(session);
 		String strTypeId = typeId != null ? typeId : mAlfrescoBaseTypeItemId;
 		String query = queryBuilder.selectFrom(strTypeId, (String[]) null)
-									.where(CmisQueryPredicate.inTree(mAlfrescoRootFolderID))
+									.where(CmisQueryPredicate.inTree(rootFolderId))
 									.build();
 
 		ItemIterable<QueryResult> results = session.query(query, false);
@@ -319,7 +316,7 @@ public class SearchEndpoint {
 
 
 	
-	private StreamingOutput print(HttpServletRequest pRequest, ServletContext pServletContext, String pFormat) {
+	private StreamingOutput print(HttpServletRequest pRequest, ServletContext pServletContext, String pFormat, String rootFolderId) {
 		final String lDataFormat = (String) pRequest.getSession().getAttribute("localePatternTimestamp") != null? 
 				(String) pRequest.getSession().getAttribute("localePatternTimestamp") : "dd/MM/yyyy HH:mm:ss" ;
 		// Prendo i nomi dei campi da mostrare nella tabella di output
@@ -350,7 +347,7 @@ public class SearchEndpoint {
 		
 		try {
 			Session session = Util.getUserAlfrescoSession(httpRequest);
-			lDocumentList = searchDocuments(lMapParams, session);
+			lDocumentList = searchDocuments(lMapParams, rootFolderId, session);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

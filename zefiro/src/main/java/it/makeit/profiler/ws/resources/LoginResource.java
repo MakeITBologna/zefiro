@@ -56,6 +56,7 @@ public class LoginResource extends AbstractResource {
 	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	//@Context HttpServletRequest pRequest
 	public Response login(@Context HttpServletRequest pRequest, @Context HttpServletResponse pResponse) throws UnsupportedEncodingException, JsonProcessingException {
+
 		String authHeader = pRequest.getHeader("Authorization");
 		if(authHeader == null)
 			throw new JBrickException(JBrickException.FATAL, "Username o password inseriti risultano errati!");
@@ -90,9 +91,13 @@ public class LoginResource extends AbstractResource {
 		//String lUsername = pRequest.getParameter("username");
 		String lUsername = creadentials[0];
 		String lPassword = creadentials[1];
-
+		String lRootFolderId = creadentials[2];
 		
-		log.info("Login dell'untente " + lUsername);
+		if (lRootFolderId.equals(null)) {
+			System.out.println("XXXXXXXXXXXXXXXXXXXXXX");
+		}
+		
+		log.info("Login dell'utente " + lUsername);
 		
 		// lUsersBean = lUsersManager.checkLogin(lUsername, lPassword);
 		try {
@@ -103,6 +108,8 @@ public class LoginResource extends AbstractResource {
 			lUsersBean = null;
 		}
 		AlfrescoConfig lAlfrescoConfig = Util.getDefaultAlfrescoConfig(lUsername, lPassword);
+		//lAlfrescoConfig.setRootFolderId("c53faa48-cd6c-4d9e-ac11-a77f8560081a");
+
 		if (lUsersBean == null) {
 			UsersBean lUsersBeanFailed = new UsersBean();
 			Map<String, Object> jbrickConfigProperties =  lUsersBeanFailed.getParametersMap();
@@ -110,6 +117,7 @@ public class LoginResource extends AbstractResource {
 				jbrickConfigProperties = new HashMap<>();
 			jbrickConfigProperties.put("readOnly", lAlfrescoConfig.isReadOnly());
 			jbrickConfigProperties.put("process", lAlfrescoConfig.isProcess());
+			jbrickConfigProperties.put("rootFolderId", lRootFolderId);
 			lUsersBeanFailed.setParametersMap(jbrickConfigProperties);
 			return Response
 			        .status(Status.FORBIDDEN)
@@ -125,7 +133,7 @@ public class LoginResource extends AbstractResource {
 		// Per visualizzare il Guessed user nel Tomcat Manager
 		// (v. http://www.docjar.com/html/api/org/apache/catalina/manager/util/SessionUtils.java.html r. 63 e 168)
 		lSession.setAttribute("Login", lUsername);
-
+		lSession.setAttribute("rootFolderId", lRootFolderId);
 		
 		lSession.setAttribute("alfrescoConfig", lAlfrescoConfig);
 		Locale locale = LocaleUtil.getLocale(pRequest.getSession());
@@ -145,8 +153,8 @@ public class LoginResource extends AbstractResource {
 		
 		//userListenener.onLogin();
 		
-		
 		return Response.ok(lUsersBean).build();
+		
 	}
 	
 
@@ -154,8 +162,8 @@ public class LoginResource extends AbstractResource {
     	Person lPerson = null;
     	try {
     		AlfrescoConfig lAlfrescoConfig = Util.getDefaultAlfrescoConfig(pStrUsername,pStrPassword);
-        	
-        	HttpRequestFactory lHttpRequestFactory = AlfrescoHelper.HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
+
+    		HttpRequestFactory lHttpRequestFactory = AlfrescoHelper.HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
     			@Override
     			public void initialize(HttpRequest request) {
     				request
