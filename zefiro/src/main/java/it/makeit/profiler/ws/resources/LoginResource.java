@@ -32,6 +32,7 @@ import it.makeit.alfresco.AlfrescoConfig;
 import it.makeit.alfresco.AlfrescoException;
 import it.makeit.alfresco.AlfrescoHelper;
 import it.makeit.alfresco.publicapi.model.Person;
+import it.makeit.jbrick.JBrickConfigManager;
 import it.makeit.jbrick.JBrickException;
 import it.makeit.jbrick.Log;
 import it.makeit.jbrick.http.SessionUtil;
@@ -92,11 +93,7 @@ public class LoginResource extends AbstractResource {
 		String lUsername = creadentials[0];
 		String lPassword = creadentials[1];
 		String lRootFolderId = creadentials[2];
-		
-		if (lRootFolderId.equals(null)) {
-			System.out.println("XXXXXXXXXXXXXXXXXXXXXX");
-		}
-		
+				
 		log.info("Login dell'utente " + lUsername);
 		
 		// lUsersBean = lUsersManager.checkLogin(lUsername, lPassword);
@@ -108,7 +105,8 @@ public class LoginResource extends AbstractResource {
 			lUsersBean = null;
 		}
 		AlfrescoConfig lAlfrescoConfig = Util.getDefaultAlfrescoConfig(lUsername, lPassword);
-		//lAlfrescoConfig.setRootFolderId("c53faa48-cd6c-4d9e-ac11-a77f8560081a");
+		JBrickConfigManager configManager = JBrickConfigManager.getInstance();
+		String lRootFolderLabel = configManager.getProperty("./alfresco[@rootFolderId='"+ lRootFolderId +"']/@label");
 
 		if (lUsersBean == null) {
 			UsersBean lUsersBeanFailed = new UsersBean();
@@ -118,6 +116,7 @@ public class LoginResource extends AbstractResource {
 			jbrickConfigProperties.put("readOnly", lAlfrescoConfig.isReadOnly());
 			jbrickConfigProperties.put("process", lAlfrescoConfig.isProcess());
 			jbrickConfigProperties.put("rootFolderId", lRootFolderId);
+			jbrickConfigProperties.put("rootFolderLabel", lRootFolderLabel);
 			lUsersBeanFailed.setParametersMap(jbrickConfigProperties);
 			return Response
 			        .status(Status.FORBIDDEN)
@@ -145,6 +144,8 @@ public class LoginResource extends AbstractResource {
 			jbrickConfigProperties = new HashMap<>();
 		jbrickConfigProperties.put("readOnly", lAlfrescoConfig.isReadOnly());
 		jbrickConfigProperties.put("process", lAlfrescoConfig.isProcess());
+		jbrickConfigProperties.put("rootFolderId", lRootFolderId);
+		jbrickConfigProperties.put("rootFolderLabel", lRootFolderLabel);
 		lUsersBean.setParametersMap(jbrickConfigProperties);
 		lUsersBean.setNotLoggedIn(false);
 		lUsersBean.setEnabled(1);

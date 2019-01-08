@@ -312,7 +312,7 @@ angular.module('main', [
 			},
 			storeUser: function(jbuser){ 
 				$cookies.putObject(storedUserLabel, { idUser: jbuser.idUser, username: jbuser.username, enabled: jbuser.enabled, fullName: jbuser.fullName, 
-					process: jbuser.parametersMap.process, readOnly: jbuser.parametersMap.readOnly });
+					process: jbuser.parametersMap.process, readOnly: jbuser.parametersMap.readOnly, rootFolderLabel: jbuser.parametersMap.rootFolderLabel });
 			},
 			removeUser(){
 				$cookies.remove(storedUserLabel);
@@ -351,9 +351,8 @@ angular.module('main', [
 						});
 						
 					});
-	
 		};
-
+		
 	}])
 
 	//MainController
@@ -363,7 +362,6 @@ angular.module('main', [
 
 		$http.get('a/customConfiguration/rootFolders').then(function (response) {
 			$scope.rootFoldersConfiguration = response.data;
-			console.log($scope.rootFoldersConfiguration);
 		});
 		
 		$scope.serverMessageVisible = false;

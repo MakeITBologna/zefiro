@@ -64,6 +64,9 @@
       </a>
     </div>
     <ul class="nav navbar-nav">
+       <li><a class="jb-folder-filter-title">{{getUser().rootFolderLabel}}</a></li>
+    </ul>
+    <ul class="nav navbar-nav">
     	<li><a href="#home"><fmt:message key="jsp.document.label"/></a></li>
    	</ul>
    	<ul class="nav navbar-nav" ng-if="jbAuthFactory.getUser().process == true">
