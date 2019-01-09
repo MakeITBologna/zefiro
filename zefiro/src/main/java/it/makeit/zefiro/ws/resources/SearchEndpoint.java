@@ -90,14 +90,14 @@ public class SearchEndpoint {
 		
 		if(mAlfrescoBaseTypeItemId != null) {
 			String typeId = mapParams.get("type")==null? mAlfrescoBaseTypeId:mapParams.get("type")[0];
-			String parentType = session.getTypeDefinition(typeId).getParentTypeId();
-			
-			if (parentType.equals(mAlfrescoBaseTypeItemId)) {
-				return Response.ok(searchItems(typeId, rootFolderId, session)).build();
-			}
-			
-		}
-		
+
+			while (typeId != null) {
+				typeId = session.getTypeDefinition(typeId).getParentTypeId();
+				if (typeId.equals(mAlfrescoBaseTypeItemId)){
+					return Response.ok(searchItems(typeId, rootFolderId, session)).build();
+				};
+			};			
+		};
 		return Response.ok(searchDocuments(mapParams, rootFolderId, session)).build();
 	}
 	
