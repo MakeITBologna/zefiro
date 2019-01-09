@@ -214,3 +214,9 @@ table.workflow-list > thead {
 	margin: 0% 10% 0% 10%;
 	width: 50%;
 }
+
+.jb-folder-filter-title{
+	color: #337ab7 !important;
+	font-weight: bold;
+	margin-left: -10px;
+}

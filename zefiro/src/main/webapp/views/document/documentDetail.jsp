@@ -106,7 +106,7 @@
 				  </div>
 				</div>
 				
-				<!-- Proprietà aggiuntive -->
+				<!-- Proprietï¿½ aggiuntive -->
 				<div class="row jb-form-group" ng-repeat="p in documentTypeEdit.propertyList ">
 				  <label for="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="control-label col-sm-4" title="{{p.description}}">{{p.displayName}}</label>
 				  <div class="col-sm-8">
@@ -117,7 +117,6 @@
 					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value}}</p>
 					  	    <input ng-required="p.required" ng-if="!isReadOnly() && jbUtil.isEmptyObject(p.choices) && !p.linkType" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value" />
 					  	  	<select ng-required="p.required" ng-if="!isReadOnly() && !jbUtil.isEmptyObject(p.choices)" class="form-control" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value">
-						        <option></option>
 						    	<option ng-repeat="c in p.choices" value="{{c}}">{{c}}</option> 
 						    	
 						  	</select>
@@ -201,7 +200,7 @@
 				  </div>
 			
 				</div>
-				<!-- Fine Proprietà aggiuntive -->
+				<!-- Fine Proprietï¿½ aggiuntive -->
 			 
 			</form>
 			<!-- Fine informazioni di dettaglio -->
