@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -16,8 +15,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Map.Entry;
+import java.util.ResourceBundle;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -31,18 +30,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.chemistry.opencmis.client.api.CmisObject;
-import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Item;
 import org.apache.chemistry.opencmis.client.api.ItemIterable;
-import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.client.api.Property;
 import org.apache.chemistry.opencmis.client.api.QueryResult;
 import org.apache.chemistry.opencmis.client.api.Session;
-import org.apache.chemistry.opencmis.client.runtime.util.CollectionIterator;
 import org.apache.chemistry.opencmis.commons.data.PropertyData;
 import org.apache.chemistry.opencmis.commons.definitions.PropertyDefinition;
 import org.apache.chemistry.opencmis.commons.definitions.TypeDefinition;
-import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.commons.lang.StringUtils;
 
 import it.makeit.alfresco.AlfrescoHelper;
@@ -90,13 +85,14 @@ public class SearchEndpoint {
 		
 		if(mAlfrescoBaseTypeItemId != null) {
 			String typeId = mapParams.get("type")==null? mAlfrescoBaseTypeId:mapParams.get("type")[0];
-
-			while (typeId != null) {
-				if (typeId.equals(mAlfrescoBaseTypeItemId)){
-					return Response.ok(searchItems(typeId, rootFolderId, session)).build();
-				};
-				typeId = session.getTypeDefinition(typeId).getParentTypeId();
-			};			
+			String parentId = session.getTypeDefinition(typeId).getParentTypeId();
+			
+            while (parentId != null) {
+                if (parentId.equals(mAlfrescoBaseTypeItemId)){
+                        return Response.ok(searchItems(typeId, rootFolderId, session)).build();
+                };
+                parentId = session.getTypeDefinition(parentId).getParentTypeId();
+            };
 		};
 		return Response.ok(searchDocuments(mapParams, rootFolderId, session)).build();
 	}
