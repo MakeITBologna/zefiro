@@ -22,8 +22,8 @@ angular.module('main', [
 
 
 	//Contiene provider e costanti
-	.config(['$routeProvider', '$httpProvider', 'uibDatepickerPopupConfig', 'uiDatetimePickerConfig', 'jbMessages',
-		function ($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePickerConfig, jbMessages) {
+	.config(['$routeProvider', '$httpProvider', 'uibDatepickerPopupConfig', 'uiDatetimePickerConfig', 'jbMessages', '$sceDelegateProvider', 
+		function ($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePickerConfig, jbMessages, $sceDelegateProvider) {
 			$routeProvider
 				//Pagina home
 				.when('/home', {
@@ -70,6 +70,9 @@ angular.module('main', [
 					templateUrl: 'views/process/taskBrowser.jsp',
 					controller: 'TaskController'
 				})
+				.when('/inserimentoFattura', {
+					controller: 'InserimentoFatturaController'
+				})
 
 				//Ridireziona a login
 				.otherwise({
@@ -80,6 +83,34 @@ angular.module('main', [
 			
 			$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 
+			
+			
+			if(window.zefiroURL){
+				// necessario per le funzionalità portale: deve poter accedere a risorse esterne 
+				
+				$sceDelegateProvider.resourceUrlWhitelist([
+				    // Allow same origin resource loads.
+				    'self',
+				    // Allow loading from our assets domain.  Notice the difference between * and **.
+				    window.zefiroURl + '**'
+				  ]);
+				
+				
+				
+				$httpProvider.interceptors.push(function ($q) {
+		             return {
+		                 'request': function (config) {
+		                	 
+		                     if(window.zefiroURL){
+		                    	 config.url = zefiroURL + config.url 
+		                     } 
+		                     return config || $q.when(config);
+		                  }
+
+		             }
+		         });
+			}
+			
 			uibDatepickerPopupConfig.currentText = jbMessages.today;
 			uibDatepickerPopupConfig.clearText = jbMessages.clear;
 			uibDatepickerPopupConfig.closeText = jbMessages.close;
@@ -354,7 +385,10 @@ angular.module('main', [
 		};
 		
 	}])
-
+	.controller('InserimentoFatturaController', function(){
+		console.log("INSERIMENTO FATTURA");
+		window.dispatchPortalEvent("showInserimentoFattura");
+	})
 	//MainController
 	.controller('MainController', [ '$scope', '$http', 'jbAuthFactory', function ( $scope, $http, jbAuthFactory) {
 		
