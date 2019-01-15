@@ -125,7 +125,7 @@
 				<label class="col-sm-1 control-label" for="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}">{{p.displayName}}</label>
 				<div class="col-sm-3">
 				  <input ng-if="jbUtil.isEmptyObject(p.choices) && !p.suggestBox" class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentTemplate[p.queryName]"/>
-		    	  <input ng-if="jbUtil.isEmptyObject(p.choices) && p.suggestBox" ng-controller="TypeaheadCtrl" type="text" ng-model="asyncSelected" uib-typeahead="suggestion for suggestion in getSuggestions($viewValue, documentTemplate.type, p.name)" 
+		    	  <input ng-if="jbUtil.isEmptyObject(p.choices) && p.suggestBox" ng-controller="TypeaheadCtrl" type="text" ng-model="documentTemplate[p.queryName]" uib-typeahead="suggestion for suggestion in getSuggestions($viewValue, documentTemplate.type, p.name)" 
 		    		class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentTemplate[p.queryName]" autocomplete="off"/>
 				  <select ng-if="!jbUtil.isEmptyObject(p.choices)" class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" name="{{p.queryName}}" ng-model="documentTemplate[p.queryName]">
 				    <option></option>
