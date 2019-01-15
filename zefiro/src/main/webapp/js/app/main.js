@@ -392,12 +392,13 @@ angular.module('main', [
 						
 					});
 		};
+	
 		
 	}])
 	
 	.controller('InserimentoFatturaController', [function(){				
-		if(window.dispatchPortalEvent){
-			window.dispatchPortalEvent("showInserimentoFattura");
+		if(window.parent.dispatchPortalEvent){
+			window.parent.dispatchPortalEvent("showInserimentoFattura", {"azienda": "makeit"});
 		}
 	}])
 	//MainController
