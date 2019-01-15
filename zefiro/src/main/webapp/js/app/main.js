@@ -22,8 +22,8 @@ angular.module('main', [
 
 
 	//Contiene provider e costanti
-	.config(['$routeProvider', '$httpProvider', 'uibDatepickerPopupConfig', 'uiDatetimePickerConfig', 'jbMessages',
-		function ($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePickerConfig, jbMessages) {
+	.config(['$routeProvider', '$httpProvider', 'uibDatepickerPopupConfig', 'uiDatetimePickerConfig', 'jbMessages','$sceDelegateProvider',
+		function ($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePickerConfig, jbMessages, $sceDelegateProvider) {
 			$routeProvider
 				//Pagina home
 				.when('/home', {
@@ -74,14 +74,29 @@ angular.module('main', [
 				.when('/fatturazione', {
 					controller: 'FatturazioneController'
 				})
+				.when('/inserimentoFattura', {			
+					controller: 'InserimentoFatturaController'
+				})
 				//Ridireziona a login
 				.otherwise({
 					redirectTo: '/login'
 				});
-
+			
 			$httpProvider.interceptors.push('responseErrorHandler');
 			
 			$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+			
+			if(window.zefiroURL){			
+				// necessario per le funzionalità portale: deve poter accedere a risorse esterne 
+				
+				$sceDelegateProvider.resourceUrlWhitelist([
+				    // Allow same origin resource loads.
+				    'self',
+				    // Allow loading from our assets domain.  Notice the difference between * and **.
+				    window.zefiroURl + '**'
+				  ]);
+			
+
 
 			uibDatepickerPopupConfig.currentText = jbMessages.today;
 			uibDatepickerPopupConfig.clearText = jbMessages.clear;
@@ -357,7 +372,11 @@ angular.module('main', [
 		};
 		
 	}])
-
+	
+	.controller('InserimentoFatturaController', function(){				
+		console.log("INSERIMENTO FATTURA");
+		window.dispatchPortalEvent("showInserimentoFattura");
+	})
 	//MainController
 	.controller('MainController', [ '$scope', '$http', 'jbAuthFactory', function ( $scope, $http, jbAuthFactory) {
 		
@@ -420,6 +439,15 @@ angular.module('main', [
 
 	}])
 	
+	 $scope.$on('$routeChangeStart', function (scope, next, current) {
+		        //if (next && next.$$route && next.$$route.controller == "LoginController") 
+	        	if ($scope.getUser() && $scope.getUser().enabled == 1){
+		            console.log("BACK");
+	        	}
+		    });
+
+	}])
+	
 	//SuggestionController
 	.controller('TypeaheadCtrl', ['$scope', '$http', function($scope, $http) {
 	  $scope.getSuggestions = function(val, type, property) {
@@ -433,11 +461,6 @@ angular.module('main', [
 	  };
 	}])
 	
-	.controller('FatturazioneContoller', [function(){
-		if (windows.dispatchPortalEvent){
-			windows.dispatchPortalEvent('showInserimentoFattura');
-		}
-	}])
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Directive
