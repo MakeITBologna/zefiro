@@ -82,22 +82,6 @@ angular.module('main', [
 					redirectTo: '/login'
 				});
 			
-			$httpProvider.interceptors.push('responseErrorHandler');
-			
-			$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
-			
-			if(window.zefiroURL){			
-				// necessario per le funzionalità portale: deve poter accedere a risorse esterne 
-				
-				$sceDelegateProvider.resourceUrlWhitelist([
-				    // Allow same origin resource loads.
-				    'self',
-				    // Allow loading from our assets domain.  Notice the difference between * and **.
-				    window.zefiroURl + '**'
-				  ]);
-			
-
-
 			uibDatepickerPopupConfig.currentText = jbMessages.today;
 			uibDatepickerPopupConfig.clearText = jbMessages.clear;
 			uibDatepickerPopupConfig.closeText = jbMessages.close;
@@ -110,12 +94,7 @@ angular.module('main', [
 			uiDatetimePickerConfig.timeText = jbMessages.time;
 		}])
 
-	//Codice che deve esser eseguito per lanciare l'applicazione
-	.run(['$confirmModalDefaults', 'jbMessages', function ($confirmModalDefaults, jbMessages) {
-		$confirmModalDefaults.defaultLabels.title = jbMessages.confirmTitle;
-		$confirmModalDefaults.defaultLabels.ok = jbMessages.ok;
-		$confirmModalDefaults.defaultLabels.cancel = jbMessages.cancel;
-	}])
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//FACTORY
@@ -437,7 +416,6 @@ angular.module('main', [
 	        	}
 		    });*/
 
-	}])
 	
 	 $scope.$on('$routeChangeStart', function (scope, next, current) {
 		        //if (next && next.$$route && next.$$route.controller == "LoginController") 

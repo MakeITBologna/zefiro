@@ -13,7 +13,7 @@
 	</dataTypeConverters>
 
  	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="3f7d6b4d-f62c-4e44-8f20-7dc7b2810cb0" label="Make IT"/> 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="72cd9092-5597-4ae5-8fab-d9a58fa8a207" label="Yacme"/> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="7eb02d78-7bc9-431c-8d04-22e112c2cb2b" label="Yacme"/> 
  	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="c53faa48-cd6c-4d9e-ac11-a77f8560081a" label="Mynt"/> 
 	
 	<!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://zefiro.yacme.com" rootFolderId="b2e044b7-8bc1-48e0-95ae-657a1f5d53b9"/ -->	 
@@ -56,7 +56,7 @@
  			<searchField name = "makeit:imponibile" />
  			<searchField name = "makeit:importoIvaDetraibile" />
 			<searchField name = "makeit:dataContabilizzazione" />
-  			<searchField name = "makeit:tipoPagamento" />
+  			<searchField name = "makeit:modalitaPagamento" />
  			<searchField name = "makeit:dataPagamento" />
  			<searchField name = "makeit:dataScadenza" />		
  			<searchField name = "makeit:dataIncasso" />
@@ -74,7 +74,7 @@
  			<searchTableColumn name = "makeit:imponibile" />
  			<searchTableColumn name = "makeit:importoIvaDetraibile" />
 			<searchTableColumn name = "makeit:dataContabilizzazione" />
-  			<searchTableColumn name = "makeit:tipoPagamento" />
+  			<searchTableColumn name = "makeit:modalitaPagamento" />
  			<searchTableColumn name = "makeit:dataPagamento" />
  			<searchTableColumn name = "makeit:dataScadenza" />		
  			<searchTableColumn name = "makeit:dataIncasso" />
