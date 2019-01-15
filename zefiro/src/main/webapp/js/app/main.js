@@ -80,6 +80,7 @@ angular.module('main', [
 					redirectTo: '/login'
 				});
 			
+<<<<<<< HEAD
 			$httpProvider.interceptors.push('responseErrorHandler');
 			
 			$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
@@ -118,6 +119,8 @@ angular.module('main', [
 		         });
 			}
 
+=======
+>>>>>>> branch 'FEATURE/fatturazione' of http://git.rete.yacme/alfresco/zefiro.git
 			uibDatepickerPopupConfig.currentText = jbMessages.today;
 			uibDatepickerPopupConfig.clearText = jbMessages.clear;
 			uibDatepickerPopupConfig.closeText = jbMessages.close;
@@ -130,12 +133,7 @@ angular.module('main', [
 			uiDatetimePickerConfig.timeText = jbMessages.time;
 		}])
 
-	//Codice che deve esser eseguito per lanciare l'applicazione
-	.run(['$confirmModalDefaults', 'jbMessages', function ($confirmModalDefaults, jbMessages) {
-		$confirmModalDefaults.defaultLabels.title = jbMessages.confirmTitle;
-		$confirmModalDefaults.defaultLabels.ok = jbMessages.ok;
-		$confirmModalDefaults.defaultLabels.cancel = jbMessages.cancel;
-	}])
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//FACTORY
@@ -455,7 +453,12 @@ angular.module('main', [
 		
 		
 
+<<<<<<< HEAD
 		 $scope.$on('$routeChangeStart', function (scope, next, current) {
+=======
+	
+	 $scope.$on('$routeChangeStart', function (scope, next, current) {
+>>>>>>> branch 'FEATURE/fatturazione' of http://git.rete.yacme/alfresco/zefiro.git
 		        //if (next && next.$$route && next.$$route.controller == "LoginController") 
 	        	if ($scope.getUser() && $scope.getUser().enabled == 1){
 		            //console.log("BACK");
