@@ -38,6 +38,7 @@ angular.module('document', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentTy
 function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationResource, SearchResource, NgTableParams, jbMessages, jbPatterns, 
 		jbValidate, jbUtil, mioPropertyBlacklist, customConfiguration, $location) {
 	
+	
 	$scope.jbMessages = jbMessages;
 	$scope.jbPatterns = jbPatterns;
 	$scope.jbValidate = jbValidate;

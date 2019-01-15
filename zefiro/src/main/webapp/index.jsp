@@ -76,7 +76,7 @@
           <ul class="dropdown-menu" uib-dropdown-menu>
     		<li><a href="#process"><fmt:message key="jsp.myProcesses.label"/></a></li>
     		<li><a href="#task"><fmt:message key="jsp.myTasks.label"/></a></li>
-    		<li><a href="#fatturazione">Inserisci fattura</a></li>
+    		
     	  </ul>
         </li>
    	</ul>

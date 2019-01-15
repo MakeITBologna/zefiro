@@ -71,10 +71,8 @@ angular.module('main', [
 					controller: 'TaskController'
 				})
 				
-				.when('/fatturazione', {
-					controller: 'FatturazioneController'
-				})
-				.when('/inserimentoFattura', {			
+				.when('/inserimentoFattura', {	
+					template: "inserimento fattura",
 					controller: 'InserimentoFatturaController'
 				})
 				//Ridireziona a login
@@ -96,7 +94,29 @@ angular.module('main', [
 				    window.zefiroURl + '**'
 				  ]);
 			
+				$httpProvider.interceptors.push(function ($q) {
+		             return {
+		                 'request': function (config) {
+		                	 console.log(config.url);
+		                	 if(
+		                		config.url.startsWith("ng-table")
+		                		|| config.url.startsWith("uib")	 
+		                	 ){
+		                		 
+		                		 // per ng-table angular simula una chiamata per i template. 
+		                		 // In realtà i template sono in cache: ergo non è necessario riscrivere l'url
+		                		 return config || $q.when(config);
+		                	 }
+		                	 
+		                     if(window.zefiroURL){
+		                    	 config.url = zefiroURL + config.url 
+		                     } 
+		                     return config || $q.when(config);
+		                  }
 
+		             }
+		         });
+			}
 
 			uibDatepickerPopupConfig.currentText = jbMessages.today;
 			uibDatepickerPopupConfig.clearText = jbMessages.clear;
@@ -138,6 +158,7 @@ angular.module('main', [
 						}
 						break;
 					case 404:
+						console.log(response.status)
 						$location.url('/notfound', true);
 						break;
 					case 500:
@@ -364,8 +385,9 @@ angular.module('main', [
 						jbAuthFactory.storeUser(jbuser);
 						$http.get('a/customConfiguration/searchProperties')
 						.then(function (response) {
-							customConfiguration.value = response.data;				
-							$location.url('/home', true);							
+							customConfiguration.value = response.data;	
+							$location.url('/home', true);
+							
 						});
 						
 					});
@@ -373,10 +395,11 @@ angular.module('main', [
 		
 	}])
 	
-	.controller('InserimentoFatturaController', function(){				
-		console.log("INSERIMENTO FATTURA");
-		window.dispatchPortalEvent("showInserimentoFattura");
-	})
+	.controller('InserimentoFatturaController', [function(){				
+		if(window.dispatchPortalEvent){
+			window.dispatchPortalEvent("showInserimentoFattura");
+		}
+	}])
 	//MainController
 	.controller('MainController', [ '$scope', '$http', 'jbAuthFactory', function ( $scope, $http, jbAuthFactory) {
 		
@@ -429,20 +452,12 @@ angular.module('main', [
 			$scope.calendarPopups[calendarName] = true;
 		};
 		
-		//funzione per cogliere il back del browser
-		/*$scope.$on('$routeChangeStart', function (scope, next, current) {
-		        //if (next && next.$$route && next.$$route.controller == "LoginController") 
-	        	if ($scope.getUser() && $scope.getUser().enabled == 1){
-		            console.log("BACK");
-	        	}
-		    });*/
+		
 
-	}])
-	
-	 $scope.$on('$routeChangeStart', function (scope, next, current) {
+		 $scope.$on('$routeChangeStart', function (scope, next, current) {
 		        //if (next && next.$$route && next.$$route.controller == "LoginController") 
 	        	if ($scope.getUser() && $scope.getUser().enabled == 1){
-		            console.log("BACK");
+		            //console.log("BACK");
 	        	}
 		    });
 
