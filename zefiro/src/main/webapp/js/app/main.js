@@ -70,7 +70,10 @@ angular.module('main', [
 					templateUrl: 'views/process/taskBrowser.jsp',
 					controller: 'TaskController'
 				})
-
+				
+				.when('/fatturazione', {
+					controller: 'FatturazioneController'
+				})
 				//Ridireziona a login
 				.otherwise({
 					redirectTo: '/login'
@@ -407,13 +410,33 @@ angular.module('main', [
 			$scope.calendarPopups[calendarName] = true;
 		};
 		
-		  $scope.$on('$routeChangeStart', function (scope, next, current) {
+		//funzione per cogliere il back del browser
+		/*$scope.$on('$routeChangeStart', function (scope, next, current) {
 		        //if (next && next.$$route && next.$$route.controller == "LoginController") 
 	        	if ($scope.getUser() && $scope.getUser().enabled == 1){
 		            console.log("BACK");
 	        	}
-		    });
+		    });*/
 
+	}])
+	
+	//SuggestionController
+	.controller('TypeaheadCtrl', ['$scope', '$http', function($scope, $http) {
+	  $scope.getSuggestions = function(val, type, property) {
+ 	    return $http.get('a/suggest/'+type+'/'+property, {
+	      params: {
+	        hint: val,
+	      }
+	    }).then(function(response){
+	      return response.data
+	    });
+	  };
+	}])
+	
+	.controller('FatturazioneContoller', [function(){
+		if (windows.dispatchPortalEvent){
+			windows.dispatchPortalEvent('showInserimentoFattura');
+		}
 	}])
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -95,17 +95,40 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 		
 		availableSearchProp = [];
 		availableSearchCol = [];
+		suggestBox = [];
+		statusBadge = [];
 		
 		$scope.customConfiguration.value.map(function(d){
 			if (d.type == idType){
 				availableSearchProp = availableSearchProp.concat(d.searchField);
+				suggestBox = suggestBox.concat(d.suggestBox);
 				availableSearchCol = availableSearchCol.concat(d.searchTableColumn);
+				d.statusBadge.map(function(e){
+					statusBadge = statusBadge.concat(e.name);
+				})
 			}
 		});
 		
 		$scope.clearSearch(form);
 		$scope.setDocumentType("search", idType);
 		$scope.documentTemplate.type = idType;
+	}
+	
+	$scope.getBadgeClass = function(property, pvalue){
+		var cssBadge = {};
+		
+		$scope.customConfiguration.value.map(function(d){
+			if (d.type == $scope.documentTemplate.type){
+				d.statusBadge.map(function(e){
+					cssBadge[e.name]={};
+					e.option.map(function (x){
+						cssBadge[e.name][x.value]=x.style;
+					});
+				})
+			}
+		});
+
+		return cssBadge[property][pvalue];
 	}
 	
 	//Ricerca documenti a partire dalla form di ricerca
@@ -174,7 +197,7 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 	}
 	
 	//Gestisce la matrice utilizzata per creare il form di ricerca
-	$scope.getSearchMatrix = function(aProperties, nColumns, availableSearchProp) {
+	$scope.getSearchMatrix = function(aProperties, nColumns, availableSearchProp, suggestBox) {
 		
 		if (jbUtil.isEmptyObject(aProperties)) return;
 		aProperties = availableSearchProp.length > 0? aProperties.filter(prop => availableSearchProp.includes(prop.name)) : aProperties;
@@ -189,6 +212,10 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 						c = new Array();
 				}
 				
+				if (suggestBox.indexOf(aProperties[j].name) >= 0){
+					aProperties[j].suggestBox = true;
+				}
+
 				c.push(aProperties[j]);
 				i++;
 			//}
@@ -455,10 +482,26 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 				
 				if (context == "search") {
 					$scope.documentType = documentTypePromise;
-					$scope.searchMatrix = $scope.getSearchMatrix($scope.documentType.propertyList, 2, availableSearchProp);
+					$scope.searchMatrix = $scope.getSearchMatrix($scope.documentType.propertyList, 2, availableSearchProp, suggestBox);
+					// se esiste una list adi colonne disponibili filtro la lista delle proprietà
 					$scope.documentType.propertyList = availableSearchCol.length > 0? $scope.documentType.propertyList.filter(prop => availableSearchCol.includes(prop.name)) : $scope.documentType.propertyList;
-				}
-				else {
+					// inserisco proprietà statusBadge
+					$scope.documentType.propertyList.map(function(p){if (statusBadge.indexOf(p.name) >= 0){p.statusBadge = true;}});
+					// comparatore per riordinare le colonne di ricerca
+					if  (availableSearchCol.length > 0){
+						$scope.documentType.propertyList.sort(
+							function (a, b){
+								if (availableSearchCol.indexOf(a.name) < availableSearchCol.indexOf(b.name)){
+									return -1;
+								};
+								if (availableSearchCol.indexOf(a.name) > availableSearchCol.indexOf(b.name)){
+									return 1;
+								};
+								return 0;
+							});
+					};
+					
+				} else {
 					$scope.documentTypeEdit = documentTypePromise;
 				}
 
@@ -667,11 +710,6 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 	
 	$scope.isRelationOfType = function(relationType, side, documentId){
 		return function(relation) {
-			
-			console.log(relation);
-			console.log(relationType);
-			console.log(documentId);
-			
 			return relation.type.id == relationType.id && relation[side].id == documentId;
 		};
 	}

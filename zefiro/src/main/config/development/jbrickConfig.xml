@@ -12,7 +12,7 @@
 		<dataTypeConverter dataType="java.lang.Integer" pattern="pattern.integer" converter="org.apache.commons.beanutils.locale.converters.IntegerLocaleConverter"/>
 	</dataTypeConverters>
 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="16885330-1c40-4869-9231-b802f965f95c" label="Make IT"/> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="3f7d6b4d-f62c-4e44-8f20-7dc7b2810cb0" label="Make IT"/> 
  	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="72cd9092-5597-4ae5-8fab-d9a58fa8a207" label="Yacme"/> 
  	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="c53faa48-cd6c-4d9e-ac11-a77f8560081a" label="Mynt"/> 
 	
@@ -32,11 +32,9 @@
  			<searchField name = "makeit:dataIncasso" />
  			<searchField name = "makeit:stato" />
  			
- 			
  			<searchTableColumn name = "makeit:IVA" />
  			<searchTableColumn name = "makeit:numeroFattura" />
  			<searchTableColumn name = "makeit:sezionale" />
- 			<searchTableColumn name = "makeit:progressivoInvio" />
  			<searchTableColumn name = "makeit:tipo" />
  			<searchTableColumn name = "makeit:dataEmissione" />
  			<searchTableColumn name = "makeit:importo" />
@@ -48,25 +46,61 @@
  	
  	<type name = "D:makeit:fatturaPassiva">
  		<search>
+			<searchField name = "makeit:fornitore"/>
+			<searchField name = "makeit:tipoFornitore" />
+			<searchField name = "makeit:tipoFornitore" />			
  			<searchField name = "makeit:dataEmissione" />
  			<searchField name = "makeit:numeroFattura" />
- 			<searchField name = "makeit:progressivoInvio" />
  			<searchField name = "makeit:tipo" />
  			<searchField name = "makeit:importo" />
- 			<searchField name = "makeit:importoPresente" />
+ 			<searchField name = "makeit:imponibile" />
+ 			<searchField name = "makeit:importoIvaDetraibile" />
+			<searchField name = "makeit:dataContabilizzazione" />
+  			<searchField name = "makeit:tipoPagamento" />
+ 			<searchField name = "makeit:dataPagamento" />
  			<searchField name = "makeit:dataScadenza" />		
- 			<searchField name = "makeit:dataIncasso" />	
+ 			<searchField name = "makeit:dataIncasso" />
+ 			<searchField name = "makeit:allegati" />
+ 			<searchField name = "makeit:pagata" />
+ 			<searchField name = "makeit:checkImporto" />
  			
+			<searchTableColumn name = "makeit:fornitore" />
+			<searchTableColumn name = "makeit:tipoFornitore" />
+			<searchTableColumn name = "makeit:tipoFornitore" />			
  			<searchTableColumn name = "makeit:dataEmissione" />
  			<searchTableColumn name = "makeit:numeroFattura" />
- 			<searchTableColumn name = "makeit:progressivoInvio" />
  			<searchTableColumn name = "makeit:tipo" />
  			<searchTableColumn name = "makeit:importo" />
- 			<searchTableColumn name = "makeit:importoPresente" />
+ 			<searchTableColumn name = "makeit:imponibile" />
+ 			<searchTableColumn name = "makeit:importoIvaDetraibile" />
+			<searchTableColumn name = "makeit:dataContabilizzazione" />
+  			<searchTableColumn name = "makeit:tipoPagamento" />
+ 			<searchTableColumn name = "makeit:dataPagamento" />
  			<searchTableColumn name = "makeit:dataScadenza" />		
  			<searchTableColumn name = "makeit:dataIncasso" />
+ 			<searchTableColumn name = "makeit:allegati" />
+ 			<searchTableColumn name = "makeit:pagata" />
+ 			<searchTableColumn name = "makeit:checkImporto" />
+ 			<searchTableColumn name = "makeit:note" />
  			
- 		</search>
+ 			<suggestBoxes>
+ 				<suggestBox name="makeit:fornitore" />
+ 			</suggestBoxes>
+ 			
+ 			<statusBadges>
+ 				<statusBadge name="makeit:checkImporto">
+ 					<option value="Si" style="label-success" />
+ 					<option value="No" style="label-danger" />
+ 				</statusBadge>
+ 			</statusBadges>
+ 			 			<statusBadges>
+ 				<statusBadge name="makeit:pagata">
+ 					<option value="Si" style="label-success" />
+ 					<option value="No" style="label-danger" />
+ 				</statusBadge>
+ 			</statusBadges>
+ 			
+		</search>
  	</type>
 					
  </types>

@@ -214,7 +214,7 @@
 					</div>
 		  			<div  class="col-sm-6 ">
 		  				<div  ng-if="!isReadOnly()" class="pull-right">
-		  					<button class="btn btn-success btn-sm" type="button" ng-click="startContentReplace()"><i class="fa fa-plus"></i> <fmt:message key="jsp.document.update"/></button>
+		  					<!-- button class="btn btn-success btn-sm" type="button" ng-click="startContentReplace()"><i class="fa fa-plus"></i> <fmt:message key="jsp.document.update"/></button -->
 		  				</div>
 					</div>
 		  		</div>
@@ -257,7 +257,7 @@
 						</tr>
 						<tr ng-if="!isReadOnly() && isTypeSpecific(rt, documentTypeEdit.id)">
 							<td colspan="3">
-								<button class="btn btn-success btn-sm" type="button" ng-click="startAddRelation(rt)"><i class="fa fa-plus"></i> <fmt:message key="jsp.document.addRelationship"/></button>
+								<!-- button class="btn btn-success btn-sm" type="button" ng-click="startAddRelation(rt)"><i class="fa fa-plus"></i> <fmt:message key="jsp.document.addRelationship"/></button-->
 							</td>
 						</tr>
 					</tbody>

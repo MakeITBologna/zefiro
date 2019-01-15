@@ -51,6 +51,7 @@
 <script type="text/javascript" src="js/app/task.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/authority.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/applicationState.js?version=${version}"></script>
+<script id="customTemplate.html" type="text/ng-template"><a><span bind-html-unsafe="match.label | typeaheadHighlight:query"><i>({{match.model.capital}})</script>  
 
 </head>
 
@@ -75,6 +76,7 @@
           <ul class="dropdown-menu" uib-dropdown-menu>
     		<li><a href="#process"><fmt:message key="jsp.myProcesses.label"/></a></li>
     		<li><a href="#task"><fmt:message key="jsp.myTasks.label"/></a></li>
+    		<li><a href="#fatturazione">Inserisci fattura</a></li>
     	  </ul>
         </li>
    	</ul>

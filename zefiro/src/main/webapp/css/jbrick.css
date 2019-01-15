@@ -220,3 +220,7 @@ table.workflow-list > thead {
 	font-weight: bold;
 	margin-left: -10px;
 }
+
+.jb-center{
+	text-align: center;
+}

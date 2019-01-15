@@ -124,7 +124,9 @@
 			  <div ng-switch-when="STRING">
 				<label class="col-sm-1 control-label" for="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}">{{p.displayName}}</label>
 				<div class="col-sm-3">
-				  <input ng-if="jbUtil.isEmptyObject(p.choices)" class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentTemplate[p.queryName]"/>
+				  <input ng-if="jbUtil.isEmptyObject(p.choices) && !p.suggestBox" class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentTemplate[p.queryName]"/>
+		    	  <input ng-if="jbUtil.isEmptyObject(p.choices) && p.suggestBox" ng-controller="TypeaheadCtrl" type="text" ng-model="asyncSelected" uib-typeahead="suggestion for suggestion in getSuggestions($viewValue, documentTemplate.type, p.name)" 
+		    		class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentTemplate[p.queryName]" autocomplete="off"/>
 				  <select ng-if="!jbUtil.isEmptyObject(p.choices)" class="form-control" id="jbSearchFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" name="{{p.queryName}}" ng-model="documentTemplate[p.queryName]">
 				    <option></option>
 				    <option ng-repeat="c in p.choices" value="{{c}}">{{c}}</option>
@@ -194,9 +196,10 @@
           <td ng-if="p.queryable && p.propertyType == 'DECIMAL'" class="text-right" sortable="'\''+p.queryName+'\''">{{row[p.queryName] | number:2}}</td>
           <td ng-if="p.queryable && p.propertyType == 'DATETIME'" class="text-right" sortable="'\''+p.queryName+'\''">{{row[p.queryName] | date: '${localePatternDate}'}}</td>
           <td ng-if="p.queryable && p.propertyType == 'BOOLEAN'" sortable="'\''+p.queryName+'\''"><span ng-if="row[p.queryName] === true"><fmt:message key="jsp.boolean.1"/></span><span ng-if="row[p.queryName] === false"><fmt:message key="jsp.boolean.0"/></span></td>
-          <td ng-repeat-end ng-if="p.queryable && p.propertyType == 'STRING'" sortable="'\''+p.queryName+'\''">
-            <a ng-if="p.linkType" href ng-click="showDocument(row[p.queryName])">{{row[p.queryName].split('|')[1]}}</a>
-            <any ng-if="!p.linkType">{{row[p.queryName]}}</any>
+          <td ng-repeat-end ng-if="p.queryable && p.propertyType == 'STRING'" sortable="'\''+p.queryName+'\''" ng-class="p.statusBadge? 'jb-center':''">
+            <a ng-if="p.linkType && !p.statusBadge" href ng-click="showDocument(row[p.queryName])">{{row[p.queryName].split('|')[1]}}</a>
+            <any ng-if="!p.linkType && !p.statusBadge">{{row[p.queryName]}}</any>
+            <span ng-if="p.statusBadge" class="label" ng-class="getBadgeClass(p.queryName, row[p.queryName])">{{row[p.queryName]}}</any>
           </td>
           
           <td>
