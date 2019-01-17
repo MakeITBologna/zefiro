@@ -327,7 +327,8 @@ angular.module('main', [
 			},
 			storeUser: function(jbuser){ 
 				$cookies.putObject(storedUserLabel, { idUser: jbuser.idUser, username: jbuser.username, enabled: jbuser.enabled, fullName: jbuser.fullName, 
-					process: jbuser.parametersMap.process, readOnly: jbuser.parametersMap.readOnly, rootFolderLabel: jbuser.parametersMap.rootFolderLabel });
+					process: jbuser.parametersMap.process, readOnly: jbuser.parametersMap.readOnly, rootFolderLabel: jbuser.parametersMap.rootFolderLabel, 
+					rootFolderKey: jbuser.parametersMap.rootFolderKey });
 			},
 			removeUser(){
 				$cookies.remove(storedUserLabel);
@@ -374,9 +375,9 @@ angular.module('main', [
 		
 	}])
 	
-	.controller('InserimentoFatturaController', ['$location', '$rootScope', function($location, $rootScope){				
+	.controller('InserimentoFatturaController', ['$location', '$rootScope', '$scope', function($location, $rootScope, $scope){				
 		if(window.parent.dispatchPortalEvent){
-			window.parent.dispatchPortalEvent("showInserimentoFattura", {"azienda": "makeit"});
+			window.parent.dispatchPortalEvent("showInserimentoFattura", {"azienda": $scope.getUser().rootFolderKey});
 		}
 		
 
