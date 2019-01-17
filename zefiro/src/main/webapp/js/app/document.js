@@ -73,7 +73,14 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 	$scope.customConfiguration = customConfiguration;
 	$scope.customizedSearch = false;
 	
-	console.log(externalDocument);
+	
+	
+	
+	 
+	
+	
+	
+	
 	
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
@@ -266,51 +273,62 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 		if($scope.documentEditing.type)
 			$scope.setDocumentType("edit", $scope.documentEditing.type);
 	}
-	$rootScope.$on("fatturaInserita",  function(event, idAlfresco) {
-		console.log("emit");
-		
-		$scope.editing = true;
-		$scope.readOnly = false;
-		
-		
-		
-	});
-	/*
-	$rootScope.$on("fatturaInserita",  function(event, idAlfresco) {
-		
-		$scope.documentEditing = {};
-		$scope.documentEditing.id = idAlfresco;
-		
-		
-		var baseType = 'cmis:document';
-		$scope.isItem = baseType === 'cmis:document'? false : true;
-		
-		
-		var resource = $scope.isItem? ItemResource : DocumentResource;
-		var documentPromise = resource.get($scope.documentEditing, function() {
-			$scope.documentEditing = documentPromise;
-			$scope.documentBreadcrumbs = [];
+	
+	
+	$scope.externalDocumentInserted = function( idAlfresco) {
+		//$scope.$apply(function() {
+			$scope.documentEditing = {};
+			$scope.documentEditing.id = idAlfresco;
+			
+			$scope.currentRownum = -1;
+			
+			var baseType = 'cmis:document';
+			$scope.isItem = baseType === 'cmis:document'? false : true;
 			
 			
+			var resource = $scope.isItem? ItemResource : DocumentResource;
+			var documentPromise = resource.get($scope.documentEditing, function() {
+				$scope.documentEditing = documentPromise;
+				$scope.documentBreadcrumbs = [];
+				
+				
+				
+				
+				$scope.editing = true;
+				$scope.readOnly = false;
+				
+				$scope.setDocumentType("edit", $scope.documentEditing.type);
+				$scope.getHandledPropertyList($scope.documentEditing.properties);
+				
+				if (baseType == 'cmis:document'){
+					$scope.currentFileName = "a/Document/" + $scope.documentEditing.id + "/preview";
+				};
+							
+				if(baseType == 'cmis:document'){
+					$scope.loadVersions($scope.documentEditing.id);
+				};
+				
+				$scope.isExternalDocumentEditable =  $scope.documentEditing.type == 'D:makeit:fatturaAttiva';
+				console.log($scope.isExternalDocumentEditable);
+			});
+        //});
+		
+	};
+	
+	$scope.modifyExternalDocument = function(){
+		externalDocument.id = $scope.documentEditing.id;
+		$location.url('/modificaFattura', true);
+		
+		
+	}
+	
+	if(externalDocument.id){
+		$scope.externalDocumentInserted(externalDocument.id);
 			
-			
-			$scope.editing = true;
-			$scope.readOnly = false;
-			
-			$scope.setDocumentType("edit", $scope.documentEditing.type);
-			$scope.getHandledPropertyList($scope.documentEditing.properties);
-			
-			if (baseType == 'cmis:document'){
-				$scope.currentFileName = "a/Document/" + $scope.documentEditing.id + "/preview";
-			};
-						
-			if(baseType == 'cmis:document'){
-				$scope.loadVersions($scope.documentEditing.id);
-			};
-			
-		});
-	});
-	*/
+	} 
+	
+	
+	
 	$scope.startEdit = function(i, duplicate) {
 		$scope.currentRownum = i;
 		$scope.breadCrumbIndex = 0;
@@ -349,6 +367,8 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 			if(baseType == 'cmis:document'){
 				$scope.loadVersions($scope.documentEditing.id);
 			};
+			$scope.isExternalDocumentEditable =  $scope.documentEditing.type == 'D:makeit:fatturaAttiva';
+			console.log($scope.isExternalDocumentEditable);
 		});
 
 	}
