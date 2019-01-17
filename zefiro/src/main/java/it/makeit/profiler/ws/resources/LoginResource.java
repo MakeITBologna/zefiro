@@ -107,6 +107,7 @@ public class LoginResource extends AbstractResource {
 		AlfrescoConfig lAlfrescoConfig = Util.getDefaultAlfrescoConfig(lUsername, lPassword);
 		JBrickConfigManager configManager = JBrickConfigManager.getInstance();
 		String lRootFolderLabel = configManager.getProperty("./alfresco[@rootFolderId='"+ lRootFolderId +"']/@label");
+		String lRootFolderKey = configManager.getProperty("./alfresco[@rootFolderId='"+ lRootFolderId +"']/@key");
 
 		if (lUsersBean == null) {
 			UsersBean lUsersBeanFailed = new UsersBean();
@@ -117,6 +118,7 @@ public class LoginResource extends AbstractResource {
 			jbrickConfigProperties.put("process", lAlfrescoConfig.isProcess());
 			jbrickConfigProperties.put("rootFolderId", lRootFolderId);
 			jbrickConfigProperties.put("rootFolderLabel", lRootFolderLabel);
+			jbrickConfigProperties.put("rootFolderKey", lRootFolderKey);
 			lUsersBeanFailed.setParametersMap(jbrickConfigProperties);
 			return Response
 			        .status(Status.FORBIDDEN)
@@ -146,6 +148,7 @@ public class LoginResource extends AbstractResource {
 		jbrickConfigProperties.put("process", lAlfrescoConfig.isProcess());
 		jbrickConfigProperties.put("rootFolderId", lRootFolderId);
 		jbrickConfigProperties.put("rootFolderLabel", lRootFolderLabel);
+		jbrickConfigProperties.put("rootFolderKey", lRootFolderKey);
 		lUsersBean.setParametersMap(jbrickConfigProperties);
 		lUsersBean.setNotLoggedIn(false);
 		lUsersBean.setEnabled(1);

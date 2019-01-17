@@ -32,13 +32,9 @@ public class CustomConfigurationEndpoint {
 		if(typeNames != null) {
 			for (String type: typeNames) {	
 				
-				System.out.println("START!");
 				String[] searchField = configManager.getPropertyList("./types/type[@name='"+ type +"']/search/searchField", "@name");
-				System.out.println("suggestBox start");
 				String[] suggestBox = configManager.getPropertyList("./types/type[@name='"+ type +"']/search/suggestBoxes/suggestBox", "@name");
-				System.out.println("searchTableColumn start");
 				String[] searchTableColumn = configManager.getPropertyList("./types/type[@name='"+ type +"']/search/searchTableColumn", "@name");
-				System.out.println("statusBadge start");
 				List<StatusBadgeBean> statusBadge = new ArrayList<StatusBadgeBean>();
 				String[] badgeNames = configManager.getPropertyList("./types/type[@name='"+ type +"']/search/statusBadges/statusBadge", "@name");
 				StatusBadgeBean[] statusBadgeArray = new StatusBadgeBean[0];

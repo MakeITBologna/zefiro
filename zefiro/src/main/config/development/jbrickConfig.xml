@@ -16,7 +16,7 @@
  	<!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="72cd9092-5597-4ae5-8fab-d9a58fa8a207" label="Yacme"/> 
  	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="c53faa48-cd6c-4d9e-ac11-a77f8560081a" label="Mynt"/--> 
 
-	
+
 	<!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://zefiro.yacme.com" rootFolderId="b2e044b7-8bc1-48e0-95ae-657a1f5d53b9"/ -->	 
 	<!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://80.211.32.70:8080" rootFolderId="d30361c3-bbb3-4e61-bedf-b8cc54df2112"/ -->
 
@@ -72,6 +72,7 @@
  			<searchTableColumn name = "makeit:numeroFattura" />
  			<searchTableColumn name = "makeit:tipo" />
  			<searchTableColumn name = "makeit:importo" />
+ 			<searchTableColumn name = "makeit:checkImporto" />
  			<searchTableColumn name = "makeit:imponibile" />
  			<searchTableColumn name = "makeit:importoIvaDetraibile" />
 			<searchTableColumn name = "makeit:dataContabilizzazione" />
@@ -81,7 +82,6 @@
  			<searchTableColumn name = "makeit:dataIncasso" />
  			<searchTableColumn name = "makeit:allegati" />
  			<searchTableColumn name = "makeit:pagata" />
- 			<searchTableColumn name = "makeit:checkImporto" />
  			<searchTableColumn name = "makeit:note" />
  			
  			<suggestBoxes>
