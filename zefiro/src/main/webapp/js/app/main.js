@@ -22,7 +22,7 @@ angular.module('main', [
 
 
 	//Contiene provider e costanti
-	.config(['$routeProvider', '$httpProvider', 'uibDatepickerPopupConfig', 'uiDatetimePickerConfig', 'jbMessages','$sceDelegateProvider',
+	.config(['$routeProvider', '$httpProvider', 'uibDatepickerPopupConfig', 'uiDatetimePickerConfig', 'jbMessages','$sceDelegateProvider', 
 		function ($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePickerConfig, jbMessages, $sceDelegateProvider) {
 			$routeProvider
 				//Pagina home
@@ -30,7 +30,6 @@ angular.module('main', [
 					templateUrl: 'views/document/documentBrowser.jsp',
 					controller: 'DocumentController'
 				})
-			
 				//Errore generico
 				.when('/error', {
 					templateUrl: 'views/error.jsp'
@@ -75,6 +74,10 @@ angular.module('main', [
 					template: "inserimento fattura",
 					controller: 'InserimentoFatturaController'
 				})
+				.when('/fatturaInserita', {	
+					template: "fatturaInserita",
+					controller: 'FatturaInseritacontroller'
+				})
 				//Ridireziona a login
 				.otherwise({
 					redirectTo: '/login'
@@ -84,40 +87,7 @@ angular.module('main', [
 			
 			$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 			
-			if(window.zefiroURL){			
-				// necessario per le funzionalità portale: deve poter accedere a risorse esterne 
-				
-				$sceDelegateProvider.resourceUrlWhitelist([
-				    // Allow same origin resource loads.
-				    'self',
-				    // Allow loading from our assets domain.  Notice the difference between * and **.
-				    window.zefiroURl + '**'
-				  ]);
 			
-				$httpProvider.interceptors.push(function ($q) {
-		             return {
-		                 'request': function (config) {
-		                	 console.log(config.url);
-		                	 if(
-		                		config.url.startsWith("ng-table")
-		                		|| config.url.startsWith("uib")	 
-		                	 ){
-		                		 
-		                		 // per ng-table angular simula una chiamata per i template. 
-		                		 // In realtà i template sono in cache: ergo non è necessario riscrivere l'url
-		                		 return config || $q.when(config);
-		                	 }
-		                	 
-		                     if(window.zefiroURL){
-		                    	 config.url = zefiroURL + config.url 
-		                     } 
-		                     return config || $q.when(config);
-		                  }
-
-		             }
-		         });
-			}
-
 
 			uibDatepickerPopupConfig.currentText = jbMessages.today;
 			uibDatepickerPopupConfig.clearText = jbMessages.clear;
@@ -129,6 +99,10 @@ angular.module('main', [
 			uiDatetimePickerConfig.nowText = jbMessages.now;
 			uiDatetimePickerConfig.dateText = jbMessages.date;
 			uiDatetimePickerConfig.timeText = jbMessages.time;
+			
+			
+			
+			
 		}])
 
 
@@ -160,7 +134,13 @@ angular.module('main', [
 					case 500:
 						$rootScope.lastException = response.data;
 						$location.url('/error', true);
-						break;
+						break;window.registerPortalEventListener("showInserimentoFattura", e=> {
+					        zefiro.hidden = true;
+					        fatturazione.hidden = false;
+
+					       
+					    });
+
 				}
 				return $q.reject(response);
 			}
@@ -357,13 +337,14 @@ angular.module('main', [
 	}])
 	
 	.constant("customConfiguration", {})
-
+	.constant('externalDocument', {})
+	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//CONTROLLER
 
 	//Logincontroller
-	.controller('LoginController', [ '$scope', '$http', '$location', 'jbValidate', 'jbAuthFactory', 'jbUtil', 'customConfiguration',
-		function ( $scope, $http, $location, jbValidate, jbAuthFactory, jbUtil, customConfiguration) {
+	.controller('LoginController', [ '$scope', '$http', '$location', 'jbValidate', 'jbAuthFactory', 'jbUtil', 'customConfiguration', '$rootScope', 'externalDocument',
+		function ( $scope, $http, $location, jbValidate, jbAuthFactory, jbUtil, customConfiguration, $rootScope, externalDocument) {
 		
 		$scope.jbValidate = jbValidate;
 
@@ -389,13 +370,30 @@ angular.module('main', [
 					});
 		};
 	
+			
 		
 	}])
 	
-	.controller('InserimentoFatturaController', [function(){				
+	.controller('InserimentoFatturaController', ['$location', '$rootScope', function($location, $rootScope){				
 		if(window.parent.dispatchPortalEvent){
 			window.parent.dispatchPortalEvent("showInserimentoFattura", {"azienda": "makeit"});
 		}
+		
+
+		if(window.parent.registerPortalEventListener){
+			window.parent.registerPortalEventListener("fatturaInserita", function(data){
+				$rootScope.$emit('fatturaInserita', data.idAlfrescoFattura);
+				
+			});
+		}
+		 		
+		$rootScope.$on("fatturaInserita", function( idAlfresco){
+			$location.url('/fatturaInserita', true);
+			
+		});
+	}])
+	.controller('FatturaInseritaController', ['$location', function($location){				
+		console.log('fatturaInserita');
 	}])
 	//MainController
 	.controller('MainController', [ '$scope', '$http', 'jbAuthFactory', function ( $scope, $http, jbAuthFactory) {
@@ -500,6 +498,7 @@ angular.module('main', [
 			}
 		};
 	})
+	
 
 	// validazione per uguaglianza
 	.directive('equals', function () {

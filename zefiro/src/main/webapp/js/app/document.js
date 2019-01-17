@@ -34,9 +34,9 @@ angular.module('document', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentTy
 }])
 
 .controller('DocumentController', ['$scope', 'DocumentResource', 'DocumentTypeResource', 'ItemResource', 'RelationResource', 'SearchResource', 
-	'NgTableParams', 'jbMessages', 'jbPatterns', 'jbValidate', 'jbUtil', 'mioPropertyBlacklist', 'customConfiguration', '$location',
+	'NgTableParams', 'jbMessages', 'jbPatterns', 'jbValidate', 'jbUtil', 'mioPropertyBlacklist', 'customConfiguration', '$location', '$rootScope', '$route', 'externalDocument', 
 function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationResource, SearchResource, NgTableParams, jbMessages, jbPatterns, 
-		jbValidate, jbUtil, mioPropertyBlacklist, customConfiguration, $location) {
+		jbValidate, jbUtil, mioPropertyBlacklist, customConfiguration, $location, $rootScope, $route, externalDocument) {
 	
 	
 	$scope.jbMessages = jbMessages;
@@ -72,6 +72,9 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 	$scope.isItem = false;
 	$scope.customConfiguration = customConfiguration;
 	$scope.customizedSearch = false;
+	
+	console.log(externalDocument);
+	
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -263,8 +266,51 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 		if($scope.documentEditing.type)
 			$scope.setDocumentType("edit", $scope.documentEditing.type);
 	}
-	
-	
+	$rootScope.$on("fatturaInserita",  function(event, idAlfresco) {
+		console.log("emit");
+		
+		$scope.editing = true;
+		$scope.readOnly = false;
+		
+		
+		
+	});
+	/*
+	$rootScope.$on("fatturaInserita",  function(event, idAlfresco) {
+		
+		$scope.documentEditing = {};
+		$scope.documentEditing.id = idAlfresco;
+		
+		
+		var baseType = 'cmis:document';
+		$scope.isItem = baseType === 'cmis:document'? false : true;
+		
+		
+		var resource = $scope.isItem? ItemResource : DocumentResource;
+		var documentPromise = resource.get($scope.documentEditing, function() {
+			$scope.documentEditing = documentPromise;
+			$scope.documentBreadcrumbs = [];
+			
+			
+			
+			
+			$scope.editing = true;
+			$scope.readOnly = false;
+			
+			$scope.setDocumentType("edit", $scope.documentEditing.type);
+			$scope.getHandledPropertyList($scope.documentEditing.properties);
+			
+			if (baseType == 'cmis:document'){
+				$scope.currentFileName = "a/Document/" + $scope.documentEditing.id + "/preview";
+			};
+						
+			if(baseType == 'cmis:document'){
+				$scope.loadVersions($scope.documentEditing.id);
+			};
+			
+		});
+	});
+	*/
 	$scope.startEdit = function(i, duplicate) {
 		$scope.currentRownum = i;
 		$scope.breadCrumbIndex = 0;
