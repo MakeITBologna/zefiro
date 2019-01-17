@@ -12,9 +12,10 @@
 		<dataTypeConverter dataType="java.lang.Integer" pattern="pattern.integer" converter="org.apache.commons.beanutils.locale.converters.IntegerLocaleConverter"/>
 	</dataTypeConverters>
 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="36907e8e-237d-4a9e-8db0-8d2fba7b9528" label="Make IT"/> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="makeit" rootFolderId="4f0279e3-61da-4075-993b-80bc6c324585" label="Make IT"/> 
  	<!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="72cd9092-5597-4ae5-8fab-d9a58fa8a207" label="Yacme"/> 
  	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="c53faa48-cd6c-4d9e-ac11-a77f8560081a" label="Mynt"/--> 
+
 	
 	<!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://zefiro.yacme.com" rootFolderId="b2e044b7-8bc1-48e0-95ae-657a1f5d53b9"/ -->	 
 	<!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://80.211.32.70:8080" rootFolderId="d30361c3-bbb3-4e61-bedf-b8cc54df2112"/ -->
@@ -56,7 +57,7 @@
  			<searchField name = "makeit:imponibile" />
  			<searchField name = "makeit:importoIvaDetraibile" />
 			<searchField name = "makeit:dataContabilizzazione" />
-  			<searchField name = "makeit:tipoPagamento" />
+  			<searchField name = "makeit:modalitaPagamento" />
  			<searchField name = "makeit:dataPagamento" />
  			<searchField name = "makeit:dataScadenza" />		
  			<searchField name = "makeit:dataIncasso" />
@@ -74,7 +75,7 @@
  			<searchTableColumn name = "makeit:imponibile" />
  			<searchTableColumn name = "makeit:importoIvaDetraibile" />
 			<searchTableColumn name = "makeit:dataContabilizzazione" />
-  			<searchTableColumn name = "makeit:tipoPagamento" />
+  			<searchTableColumn name = "makeit:modalitaPagamento" />
  			<searchTableColumn name = "makeit:dataPagamento" />
  			<searchTableColumn name = "makeit:dataScadenza" />		
  			<searchTableColumn name = "makeit:dataIncasso" />
