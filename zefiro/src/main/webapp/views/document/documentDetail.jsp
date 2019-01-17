@@ -17,6 +17,7 @@
 				<span ng-hide="currentRownum == null"><i class="fa fa-floppy-o"></i> <fmt:message key="jsp.detail.update.submit"/></span>
 				<span ng-show="currentRownum == null"><i class="fa fa-floppy-o"></i> <fmt:message key="jsp.detail.insert.submit"/></span>
 			</button>
+			<button ng-show="currentRownum != null && isExternalDocumentEditable == true" class="btn btn-default" type="button" ng-click="modifyExternalDocument()"><i class="fa fa-download"></i> Modifica fattura</button>	
 			<button ng-hide="currentRownum == null || isItem" class="btn btn-default" type="button" ng-click="jbDetailFormDocument.print()"><i class="fa fa-download"></i> <fmt:message key="jsp.detail.download"/></button>
 			<button class="btn btn-default" type="button" ng-click="gotoDocumentBreadcrumb(breadCrumbIndex-1, jbDetailFormDocument)"><i class="fa fa-times"></i> <fmt:message key="js.dialog.back"/></button>
 		</div>

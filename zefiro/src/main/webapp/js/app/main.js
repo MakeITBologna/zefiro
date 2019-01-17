@@ -74,10 +74,11 @@ angular.module('main', [
 					template: "inserimento fattura",
 					controller: 'InserimentoFatturaController'
 				})
-				.when('/fatturaInserita', {	
-					template: "fatturaInserita",
-					controller: 'FatturaInseritacontroller'
+				.when('/modificaFattura', {	
+					template: "modifica fattura",
+					controller: 'ModificaFatturaController'
 				})
+				
 				//Ridireziona a login
 				.otherwise({
 					redirectTo: '/login'
@@ -375,7 +376,8 @@ angular.module('main', [
 		
 	}])
 	
-	.controller('InserimentoFatturaController', ['$location', '$rootScope', '$scope', function($location, $rootScope, $scope){				
+
+	.controller('InserimentoFatturaController', ['$scope', '$location', '$rootScope', 'externalDocument',  function($scope, $location, $rootScope, externalDocument){				
 		if(window.parent.dispatchPortalEvent){
 			window.parent.dispatchPortalEvent("showInserimentoFattura", {"azienda": $scope.getUser().rootFolderKey});
 		}
@@ -383,19 +385,35 @@ angular.module('main', [
 
 		if(window.parent.registerPortalEventListener){
 			window.parent.registerPortalEventListener("fatturaInserita", function(data){
-				$rootScope.$emit('fatturaInserita', data.idAlfrescoFattura);
+				$scope.$apply(function(){
+					externalDocument.id = data.idAlfrescoFattura;
+					$location.url('/home', true);
+				})
 				
+				
+
 			});
 		}
-		 		
-		$rootScope.$on("fatturaInserita", function( idAlfresco){
-			$location.url('/fatturaInserita', true);
-			
-		});
+		
 	}])
-	.controller('FatturaInseritaController', ['$location', function($location){				
-		console.log('fatturaInserita');
+	.controller('ModificaFatturaController', ['$scope', '$location', '$rootScope', 'externalDocument',  function($scope, $location, $rootScope, externalDocument){				
+		if(window.parent.dispatchPortalEvent){
+			window.parent.dispatchPortalEvent("showModificaFattura", {"idAlfresco": externalDocument.id});
+		}
+		
+
+		if(window.parent.registerPortalEventListener){
+			window.parent.registerPortalEventListener("fatturaInserita", function(data){
+				$scope.$apply(function(){
+					externalDocument.id = data.idAlfrescoFattura;
+					$location.url('/home', true);
+				})
+		
+			});
+		}
+		
 	}])
+	
 	//MainController
 	.controller('MainController', [ '$scope', '$http', 'jbAuthFactory', function ( $scope, $http, jbAuthFactory) {
 		
