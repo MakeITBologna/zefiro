@@ -309,7 +309,7 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 				};
 				
 				$scope.isExternalDocumentEditable =  $scope.documentEditing.type == 'D:makeit:fatturaAttiva';
-				console.log($scope.isExternalDocumentEditable);
+				
 			});
         //});
 		

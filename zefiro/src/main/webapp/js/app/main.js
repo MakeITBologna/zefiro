@@ -135,13 +135,7 @@ angular.module('main', [
 					case 500:
 						$rootScope.lastException = response.data;
 						$location.url('/error', true);
-						break;window.registerPortalEventListener("showInserimentoFattura", e=> {
-					        zefiro.hidden = true;
-					        fatturazione.hidden = false;
-
-					       
-					    });
-
+						break;
 				}
 				return $q.reject(response);
 			}
@@ -372,7 +366,10 @@ angular.module('main', [
 					});
 		};
 	
+		
+		
 			
+		
 		
 	}])
 	
@@ -382,35 +379,52 @@ angular.module('main', [
 			window.parent.dispatchPortalEvent("showInserimentoFattura", {"azienda": $scope.getUser().rootFolderKey});
 		}
 		
-
+		
 		if(window.parent.registerPortalEventListener){
-			window.parent.registerPortalEventListener("fatturaInserita", function(data){
+				
+			window.parent.removePortalEventListener("fatturaInseritaBackToZefiro");
+			window.parent.registerPortalEventListener("fatturaInseritaBackToZefiro", function(data){
 				$scope.$apply(function(){
 					externalDocument.id = data.idAlfrescoFattura;
 					$location.url('/home', true);
 				})
+		
+			});
+			
+			window.parent.removePortalEventListener("backFromFatturaToZefiro");
+			window.parent.registerPortalEventListener("backFromFatturaToZefiro", function(data){
 				
-				
-
+				$scope.$apply(function(){
+					
+					externalDocument.id = undefined;
+					$location.url('/home', true);
+				})
+		
 			});
 		}
+			
 		
 	}])
 	.controller('ModificaFatturaController', ['$scope', '$location', '$rootScope', 'externalDocument',  function($scope, $location, $rootScope, externalDocument){				
 		if(window.parent.dispatchPortalEvent){
-			window.parent.dispatchPortalEvent("showModificaFattura", {"idAlfresco": externalDocument.id});
+			window.parent.dispatchPortalEvent("showModificaFattura", {"idAlfresco": externalDocument.id, "azienda": $scope.getUser().rootFolderKey});
 		}
-		
-
+			
 		if(window.parent.registerPortalEventListener){
-			window.parent.registerPortalEventListener("fatturaInserita", function(data){
+			
+			window.parent.removePortalEventListener("backFromFatturaToZefiro");
+			window.parent.registerPortalEventListener("backFromFatturaToZefiro", function(data){
+				
 				$scope.$apply(function(){
-					externalDocument.id = data.idAlfrescoFattura;
+					
+					externalDocument.id = undefined;
 					$location.url('/home', true);
 				})
 		
 			});
+			
 		}
+		
 		
 	}])
 	
