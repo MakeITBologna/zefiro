@@ -12,9 +12,9 @@
 		<dataTypeConverter dataType="java.lang.Integer" pattern="pattern.integer" converter="org.apache.commons.beanutils.locale.converters.IntegerLocaleConverter"/>
 	</dataTypeConverters>
 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="makeit" rootFolderId="4f0279e3-61da-4075-993b-80bc6c324585" label="Make IT"/> 
- 	<!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="72cd9092-5597-4ae5-8fab-d9a58fa8a207" label="Yacme"/> 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" rootFolderId="c53faa48-cd6c-4d9e-ac11-a77f8560081a" label="Mynt"/--> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="makeit" rootFolderId="3f7d6b4d-f62c-4e44-8f20-7dc7b2810cb0" label="Make IT"/> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="yacme" rootFolderId="72cd9092-5597-4ae5-8fab-d9a58fa8a207" label="Yacme"/> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="mynt" rootFolderId="c53faa48-cd6c-4d9e-ac11-a77f8560081a" label="Mynt"/> 
 
 
 	<!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://zefiro.yacme.com" rootFolderId="b2e044b7-8bc1-48e0-95ae-657a1f5d53b9"/ -->	 
@@ -27,21 +27,42 @@
  			<searchField name = "makeit:sezionale" />
  			<searchField name = "makeit:progressivoInvio" />
  			<searchField name = "makeit:tipo" />
+ 			<searchField name = "makeit:storno" />
+ 			<searchField name = "makeit:cliente" />
  			<searchField name = "makeit:dataEmissione" />
  			<searchField name = "makeit:importo" />
- 			<searchField name = "makeit:dataScadenza" />		
+ 			<searchField name = "makeit:dataScadenza" />
+ 			<searchField name = "makeit:allegati" />
+ 			<searchField name = "makeit:pagataAttiva" />
  			<searchField name = "makeit:dataIncasso" />
  			<searchField name = "makeit:stato" />
+ 			<searchField name = "makeit:commessa" />
+ 			<searchField name = "makeit:banca" />
+ 			<searchField name = "makeit:anticipata" />
+ 			<searchField name = "makeit:importoAnticipo" />
+ 			<searchField name = "makeit:dataContabilizzazione" />
+ 			<searchField name = "makeit:note" />
  			
- 			<searchTableColumn name = "makeit:IVA" />
  			<searchTableColumn name = "makeit:numeroFattura" />
  			<searchTableColumn name = "makeit:sezionale" />
+ 			<searchTableColumn name = "makeit:progressivoInvio" />
  			<searchTableColumn name = "makeit:tipo" />
+ 			<searchTableColumn name = "makeit:storno" />
+ 			<searchTableColumn name = "makeit:cliente" />
  			<searchTableColumn name = "makeit:dataEmissione" />
  			<searchTableColumn name = "makeit:importo" />
+ 			<searchTableColumn name = "makeit:dataScadenza" />
+ 			<searchTableColumn name = "makeit:allegati" />
+ 			<searchTableColumn name = "makeit:pagataAttiva" />
  			<searchTableColumn name = "makeit:dataIncasso" />
  			<searchTableColumn name = "makeit:stato" />
- 			
+ 			<searchTableColumn name = "makeit:commessa" />
+ 			<searchTableColumn name = "makeit:banca" />
+ 			<searchTableColumn name = "makeit:anticipata" />
+ 			<searchTableColumn name = "makeit:importoAnticipo" />
+ 			<searchTableColumn name = "makeit:dataContabilizzazione" />
+ 			<searchTableColumn name = "makeit:note" />
+		
  		</search>
  	</type>
  	
@@ -151,7 +172,8 @@
 		<entry name="exif:resolutionUnit" />
 		<entry name="exif:software" />
 		<entry name="exif:xResolution" />
-		<entry name="exif:yResolution" />	
+		<entry name="exif:yResolution" />
+		<entry name="makeit:azienda" />	
 	</propertyBlacklist>
 	
 	<processDefinitionBlackList>
