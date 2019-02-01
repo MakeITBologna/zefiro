@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -22,9 +23,11 @@ import javax.ws.rs.core.Response;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Item;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
+import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.apache.chemistry.opencmis.commons.definitions.PropertyDefinition;
 import org.apache.chemistry.opencmis.commons.enums.IncludeRelationships;
 import org.apache.commons.io.FileUtils;
 import org.apache.tika.Tika;
@@ -80,11 +83,19 @@ public class ItemEndpoint {
 		mapProperties.put(PropertyIds.DESCRIPTION, itemBean.getDescription());
 		mapProperties.put(PropertyIds.OBJECT_TYPE_ID, itemBean.getType());
 
+		ObjectType typeDef = AlfrescoHelper.getTypeDefinition(session, itemBean.getType());
+		
+		Map<String, PropertyDefinition<?>> lMapProperties = typeDef.getPropertyDefinitions();
+		Map<String, String> propertiesNameKeys = new HashMap<>(); // possono essere differenti: as4:filespool_x002d_as4 -> as4:filespool-x002d-as4 oppure  makeit:citt_x00e0_
+		for(Entry<String, PropertyDefinition<?>> e: lMapProperties.entrySet()) {
+			propertiesNameKeys.put(e.getValue().getQueryName(), e.getKey());
+		}
+		
 		// type properties
 		Map<String, DocumentPropertyBean> documentProperties = itemBean.getProperties();
 		for (Map.Entry<String, DocumentPropertyBean> lproperty : documentProperties.entrySet()) {
 			Object object = lproperty.getValue().getValue();
-			mapProperties.put(lproperty.getKey(), object);
+			mapProperties.put(propertiesNameKeys.get(lproperty.getKey()), object);
 		}
 
 		// get uploaded file and create document
