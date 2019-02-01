@@ -126,10 +126,21 @@ public class ItemEndpoint {
 		Map<String, Object> mapProperties = new HashMap<String, Object>();
 		mapProperties.put(PropertyIds.NAME, itemBean.getName());
 		mapProperties.put(PropertyIds.DESCRIPTION, itemBean.getDescription());
+		
+		
+		ObjectType typeDef = AlfrescoHelper.getTypeDefinition(session, itemBean.getType());
+		
+		Map<String, PropertyDefinition<?>> lMapProperties = typeDef.getPropertyDefinitions();
+		Map<String, String> propertiesNameKeys = new HashMap<>(); // possono essere differenti: as4:filespool_x002d_as4 -> as4:filespool-x002d-as4 oppure  makeit:citt_x00e0_
+		for(Entry<String, PropertyDefinition<?>> e: lMapProperties.entrySet()) {
+			propertiesNameKeys.put(e.getValue().getQueryName(), e.getKey());
+		}
+		
 
 		Map<String, DocumentPropertyBean> documentProperties = itemBean.getProperties();
 		for (Map.Entry<String, DocumentPropertyBean> property : documentProperties.entrySet()) {
-			mapProperties.put(property.getKey(), property.getValue().getValue());
+			Object object = property.getValue().getValue();
+			mapProperties.put(propertiesNameKeys.get(property.getKey()), object);
 		}			
 
 		Item item = (Item) session.getObject(itemId);
