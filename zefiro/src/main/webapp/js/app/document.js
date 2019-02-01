@@ -269,9 +269,11 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 		$scope.currentFileName = null;
 		$scope.uploadedFileName = null;
 		$scope.documentEditing.type = $scope.documentTemplate.type ;
+		$scope.documentEditing.baseType = $scope.documentTemplate.baseType ;
 		$scope.documentTypeEdit = {};
 		if($scope.documentEditing.type)
 			$scope.setDocumentType("edit", $scope.documentEditing.type);
+		
 	}
 	
 	
@@ -287,6 +289,9 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 			
 			
 			var resource = $scope.isItem? ItemResource : DocumentResource;
+			console.log($scope.isItem);
+			console.log(resource);
+			
 			var documentPromise = resource.get($scope.documentEditing, function() {
 				$scope.documentEditing = documentPromise;
 				$scope.documentBreadcrumbs = [];
@@ -297,7 +302,7 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 				$scope.editing = true;
 				$scope.readOnly = false;
 				
-				$scope.setDocumentType("edit", $scope.documentEditing.type);
+				$scope.setDocumentType("externalDocument", $scope.documentEditing.type);
 				$scope.getHandledPropertyList($scope.documentEditing.properties);
 				
 				if (baseType == 'cmis:document'){
@@ -338,6 +343,7 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 		var baseType = $scope.documentTable.data[$scope.currentRownum].baseType;
 		$scope.isItem = baseType === 'cmis:document'? false : true;
 		
+		
 		var resource = $scope.isItem? ItemResource : DocumentResource;
 		var documentPromise = resource.get($scope.documentEditing, function() {
 			$scope.documentEditing = documentPromise;
@@ -368,7 +374,6 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 				$scope.loadVersions($scope.documentEditing.id);
 			};
 			$scope.isExternalDocumentEditable =  $scope.documentEditing.type == 'D:makeit:fatturaAttiva';
-			console.log($scope.isExternalDocumentEditable);
 		});
 
 	}
@@ -441,23 +446,38 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 	
 	//Inserisce / modifica elemento
 	$scope.saveDetail = function(form) {
-		var resource = $scope.isItem? ItemResource : DocumentResource;
+
+		$scope.isItem = $scope.documentType.baseType === 'cmis:document'? false : true; 
+		//fix per external document
+		
+		var resource =  $scope.isItem == true? ItemResource : DocumentResource;
 
 		if ($scope.currentRownum != null) {
-			resource
+			
+				resource
 				.update($scope.documentEditing)
 				.$promise
 				.then(function(data) {
-					if (data && data.properties) {
-						for (j in $scope.documentType.propertyList) {
-							var p = $scope.documentType.propertyList[j];
-							data[p.queryName] = $scope.getColumnValue(data, p.queryName);
+					if($scope.currentRownum == -1){		
+						// inserimento dell'externalDocument
+						// allo stato attuale non aggiorno la tabella
+					} else {
+						if (data && data.properties) {
+							for (j in $scope.documentType.propertyList) {
+								var p = $scope.documentType.propertyList[j];
+								data[p.queryName] = $scope.getColumnValue(data, p.queryName);
+							}
 						}
-					}
-					angular.extend($scope.documentTable.data[$scope.currentRownum], data);
-					$scope.closeDetail(form);
-					$scope.documentTable.reload();
-				});
+						angular.extend($scope.documentTable.data[$scope.currentRownum], data);
+						$scope.closeDetail(form);
+						$scope.documentTable.reload();	
+					}	
+					
+					
+				});	
+			
+			
+			
 		} else {
 			$scope.documentEditing.createdBy = $scope.getUser().fullName;
 			$scope.documentEditing.created = Date.now();
@@ -539,15 +559,16 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 	
 	//Aggiorna la lista delle proprietà del tipo documento
 	$scope.setDocumentType = function(context, id, callback){
-
 		var documentTypePromise = DocumentTypeResource.get({id: id}, function() {
-			
 			angular.extend(documentTypePromise, {propertyList: $scope.getHandledPropertyList(documentTypePromise.properties)});
 			
 			var relationTypesPromise = DocumentTypeResource.getRelations({id: id}, function() {
 				angular.extend(documentTypePromise, {relationTypes: relationTypesPromise});
 				
-				if (context == "search") {
+				if(context == "externalDocument"){
+					$scope.documentType = documentTypePromise;
+					$scope.documentTypeEdit = documentTypePromise;
+				} else if (context == "search") {
 					$scope.documentType = documentTypePromise;
 					$scope.searchMatrix = $scope.getSearchMatrix($scope.documentType.propertyList, 2, availableSearchProp, suggestBox);
 					// se esiste una list adi colonne disponibili filtro la lista delle proprietà

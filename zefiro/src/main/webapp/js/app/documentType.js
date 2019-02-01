@@ -70,7 +70,6 @@ angular.module('documentType', ['ngResource', 'ui.bootstrap', 'ngTable'])
 
 .controller('DocumentTypeController', ['$scope', 'DocumentTypeResource', 'NgTableParams', 'jbMessages', 'jbPatterns', 'jbValidate', 'jbUtil',
 function($scope, DocumentTypeResource, NgTableParams, jbMessages, jbPatterns, jbValidate, jbUtil) {
-	
 	$scope.jbMessages = jbMessages;
 	$scope.jbPatterns = jbPatterns;
 	$scope.jbValidate = jbValidate;

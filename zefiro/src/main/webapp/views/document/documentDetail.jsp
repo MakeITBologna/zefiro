@@ -29,7 +29,7 @@
 	</div>
 	<div class="row form-group">
 		<!-- Preview -->
-		<div class="col-sm-8" ng-if="!isItem">
+		<div class="col-sm-8" >
 			
 			<div  ng-if="currentFileName != null" ng-bind-html="getDocumentObjectHTML() | trusted">
 			
@@ -42,36 +42,6 @@
 			<form name="jbDetailFormDocument" class="form-horizontal" novalidate jb-print="a/Document/{{documentEditing.id}}/content">
 				<input ng-if="currentRownum != null" type="hidden" name="id" ng-model="documentEditing.id"/>
 			
-				<div ng-if="currentRownum == null" class="row jb-form-group">
-					<label for="jbDetailFormDocument-file" class="control-label col-sm-4" title="<fmt:message key="jsp.document.file.title"/>"><fmt:message key="jsp.document.file.title"/></label>
-					<div class="col-sm-8">
-						<div class="input-group">
-						 <input id="jbDetailFormDocument-file" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="file" name="file" jb-upload="setCurrentFileName(newUrl, uploaded, userFilename)" />
-						 <span class="input-group-btn">
-						   <button class="btn btn-default" type="button" promise-btn="uploadPromise"><i class="fa fa-upload"></i> Upload</button>
-						 </span>
-						</div>
-					</div>
-				</div>
-				
-				<div class="row jb-form-group">
-				  <label for="jbDetailFormDocument-name" class="control-label col-sm-4" title="<fmt:message key="jsp.document.name.title"/>"><fmt:message key="jsp.document.name.label" /></label>
-				  <div class="col-sm-8">
-				  	<p ng-if="readOnly || isReadOnly()" class="form-control-static">{{documentEditing.name}}</p>
-				  	<input  ng-if="!readOnly && !isReadOnly()" ng-required="true" id="jbDetailFormDocument-name" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="text" name="name" ng-model="documentEditing.name" pattern="^\w+[\w\s\.-]*$"/>
-				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.name)"><fmt:message key="js.validate.filename"/></label>
-				  </div>
-				</div>
-				
-				<div class="row jb-form-group">
-				  <label for="jbDetailFormDocument-description" class="control-label col-sm-4" title="<fmt:message key="jsp.document.description.title"/>"><fmt:message key="jsp.document.description.label" /></label>
-				  <div class="col-sm-8">
-				    <p ng-if="readOnly || isReadOnly()" class="form-control-static">{{documentEditing.description}}</p>
-				  	<input ng-if="!readOnly && !isReadOnly()" ng-required="true" id="jbDetailFormDocument-description" class="form-control" title="<fmt:message key="jsp.document.description.title"/>" type="text" name="description" ng-model="documentEditing.description"/>
-				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.description)"><fmt:message key="js.validate.required"/></label>
-				  </div>
-				</div>
-				
 				<div  class="row jb-form-group">
 				  <label for="jbDetailFormDocument-type" class="control-label col-sm-4" title="<fmt:message key="jsp.document.type.title"/>"><fmt:message key="jsp.document.type.label" /></label>
 				  <div class="col-sm-8">
@@ -85,22 +55,54 @@
 					<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.type)"><fmt:message key="js.validate.required"/></label>
 				  </div>
 				</div>	
+			
+				<div ng-if="currentRownum == null && documentTypeEdit.baseType != 'cmis:item'" class="row jb-form-group">
+					<label for="jbDetailFormDocument-file" class="control-label col-sm-4" title="<fmt:message key="jsp.document.file.title"/>"><fmt:message key="jsp.document.file.title"/></label>
+					<div class="col-sm-8">
+						<div class="input-group">
+						 <input id="jbDetailFormDocument-file" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="file" name="file" jb-upload="setCurrentFileName(newUrl, uploaded, userFilename)" />
+						 <span class="input-group-btn">
+						   <button class="btn btn-default" type="button" promise-btn="uploadPromise"><i class="fa fa-upload"></i> Upload</button>
+						 </span>
+						</div>
+					</div>
+				</div>
 				
-				<div ng-if="currentRownum != null" class="row jb-form-group">
+				<div class="row jb-form-group"  >
+				  <label for="jbDetailFormDocument-name" class="control-label col-sm-4" title="<fmt:message key="jsp.document.name.title"/>"><fmt:message key="jsp.document.name.label" /></label>
+				  <div class="col-sm-8">
+				  	<p ng-if="readOnly || isReadOnly()" class="form-control-static">{{documentEditing.name}}</p>
+				  	<input  ng-if="!readOnly && !isReadOnly()" ng-required="true" id="jbDetailFormDocument-name" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="text" name="name" ng-model="documentEditing.name" pattern="^\w+[\w\s\.-]*$"/>
+				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.name)"><fmt:message key="js.validate.filename"/></label>
+				  </div>
+				</div>
+				
+				<div class="row jb-form-group" >
+				  <label for="jbDetailFormDocument-description" class="control-label col-sm-4" title="<fmt:message key="jsp.document.description.title"/>"><fmt:message key="jsp.document.description.label" /></label>
+				  <div class="col-sm-8">
+				    <p ng-if="readOnly || isReadOnly()" class="form-control-static">{{documentEditing.description}}</p>
+				  	<input ng-if="!readOnly && !isReadOnly()" ng-required="true" id="jbDetailFormDocument-description" class="form-control" title="<fmt:message key="jsp.document.description.title"/>" type="text" name="description" ng-model="documentEditing.description"/>
+				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.description)"><fmt:message key="js.validate.required"/></label>
+				  </div>
+				</div>
+				
+		
+				
+				<div ng-if="currentRownum != null && documentTypeEdit.baseType != 'cmis:item'" class="row jb-form-group">
 				  <label for="jbDetailFormDocument-version" class="control-label col-sm-4" title="<fmt:message key="jsp.document.version.title"/>"><fmt:message key="jsp.document.version.label" /></label>
 				  <div class="col-sm-8">
 				  <p class="form-control-static">{{documentEditing.version}}</p>
 				  </div>
 				</div>	
 					
-				<div ng-if="currentRownum != null" class="row jb-form-group">
+				<div ng-if="currentRownum != null  && documentTypeEdit.baseType != 'cmis:item'" class="row jb-form-group">
 				  <label for="jbDetailFormDocument-created" class="control-label col-sm-4" title="<fmt:message key="jsp.document.created.title"/>"><fmt:message key="jsp.document.created.label" /></label>
 				  <div class="col-sm-8">
 					<p class="form-control-static">{{documentEditing.created | date: '${localePatternTimestamp}'}}</p>  
 				  </div>
 				</div>
 					
-				<div ng-if="currentRownum != null" class="row jb-form-group">
+				<div ng-if="currentRownum != null  && documentTypeEdit.baseType != 'cmis:item'" class="row jb-form-group">
 				  <label for="jbDetailFormDocument-createdBy" class="control-label col-sm-4" title="<fmt:message key="jsp.document.createdBy.title"/>"><fmt:message key="jsp.document.createdBy.label" /></label>
 				  <div class="col-sm-8">
 				 	 <p class="form-control-static">{{documentEditing.createdBy}}</p>

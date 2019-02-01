@@ -12,9 +12,9 @@
 		<dataTypeConverter dataType="java.lang.Integer" pattern="pattern.integer" converter="org.apache.commons.beanutils.locale.converters.IntegerLocaleConverter"/>
 	</dataTypeConverters>
 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="makeit" rootFolderId="3f7d6b4d-f62c-4e44-8f20-7dc7b2810cb0" label="Make IT"/> 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="yacme" rootFolderId="72cd9092-5597-4ae5-8fab-d9a58fa8a207" label="Yacme"/> 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="mynt" rootFolderId="c53faa48-cd6c-4d9e-ac11-a77f8560081a" label="Mynt"/> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="makeit" rootFolderId="64b9c50c-7ddf-4ff4-a76a-24fcad43dc2e" label="Make IT"/> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="yacme" rootFolderId="5bfbd272-3d6a-4b97-a090-cbd3ba700ab4" label="Yacme"/> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="mynt" rootFolderId="64c289e7-eb29-4e4f-b9d9-2343276d7983" label="Mynt"/> 
 
 
 	<!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://zefiro.yacme.com" rootFolderId="b2e044b7-8bc1-48e0-95ae-657a1f5d53b9"/ -->	 

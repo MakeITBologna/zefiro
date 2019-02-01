@@ -327,7 +327,7 @@ angular.module('main', [
 			},
 			removeUser(){
 				$cookies.remove(storedUserLabel);
-			}
+			},
 			
 		}
 	}])
@@ -340,7 +340,8 @@ angular.module('main', [
 
 	//Logincontroller
 	.controller('LoginController', [ '$scope', '$http', '$location', 'jbValidate', 'jbAuthFactory', 'jbUtil', 'customConfiguration', '$rootScope', 'externalDocument',
-		function ( $scope, $http, $location, jbValidate, jbAuthFactory, jbUtil, customConfiguration, $rootScope, externalDocument) {
+		'DocumentTypeResource',
+		function ( $scope, $http, $location, jbValidate, jbAuthFactory, jbUtil, customConfiguration, $rootScope, externalDocument, DocumentTypeResource) {
 		
 		$scope.jbValidate = jbValidate;
 
@@ -361,8 +362,25 @@ angular.module('main', [
 							customConfiguration.value = response.data;	
 							$location.url('/home', true);
 							
-						});
 						
+							/*DocumentTypes = DocumentTypeResource.query($scope.getUser()).then(
+									
+									console.log(DocumentTypes);
+									console.log(DocumentTypes.length)
+							
+							)
+							
+							console.log(DocumentTypes);
+							console.log(DocumentTypes.length)
+							
+							for (let i =0; i < DocumentTypes.length; i++){
+								let docType = DocumentTypes[i];
+								console.log(docType.id);
+							}
+							*/
+							
+							
+						});
 					});
 		};
 	
@@ -412,6 +430,15 @@ angular.module('main', [
 			
 		if(window.parent.registerPortalEventListener){
 			
+			window.parent.removePortalEventListener("fatturaInseritaBackToZefiro");
+			window.parent.registerPortalEventListener("fatturaInseritaBackToZefiro", function(data){
+				$scope.$apply(function(){
+					externalDocument.id = data.idAlfrescoFattura;
+					$location.url('/home', true);
+				})
+		
+			});
+			
 			window.parent.removePortalEventListener("backFromFatturaToZefiro");
 			window.parent.registerPortalEventListener("backFromFatturaToZefiro", function(data){
 				
@@ -422,7 +449,6 @@ angular.module('main', [
 				})
 		
 			});
-			
 		}
 		
 		
