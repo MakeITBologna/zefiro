@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -47,7 +48,6 @@ import it.makeit.alfresco.RenditionKinds;
 import it.makeit.alfresco.addon.DocumentListenener;
 import it.makeit.alfresco.webscriptsapi.services.ThumbnailDefinitions;
 import it.makeit.alfresco.workflow.AlfrescoRendition;
-import it.makeit.jbrick.JBrickConfigManager;
 import it.makeit.jbrick.JBrickException;
 import it.makeit.jbrick.Log;
 import it.makeit.zefiro.MimeType;
@@ -63,8 +63,6 @@ public class Document {
 
 
 
-	private static final String mAlfrescoRootFolderID = JBrickConfigManager.getInstance()
-			.getMandatoryProperty("alfresco/@rootFolderId");
 	private static Log mLog = Log.getInstance(Document.class);
 
 	@Context
@@ -77,6 +75,9 @@ public class Document {
 	
 
 	private String getOrCreateFolder(Session pSession, String pStrDocumentType) {
+		HttpSession httpSession = httpRequest.getSession();
+		String mAlfrescoRootFolderID = (String) httpSession.getAttribute("rootFolderId");
+		
 		String lFileName = pStrDocumentType.substring(pStrDocumentType.lastIndexOf(':') + 1);
 		String lFolderPath = AlfrescoHelper.getFolderById(pSession, mAlfrescoRootFolderID).getPath() + "/" + lFileName;
 		Folder lFolder = AlfrescoHelper.getFolderByPath(pSession, lFolderPath);

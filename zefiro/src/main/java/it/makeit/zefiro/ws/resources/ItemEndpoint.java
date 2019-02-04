@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -46,9 +47,7 @@ import it.makeit.zefiro.dao.DocumentPropertyBean;
 @Path("/Item")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ItemEndpoint {
-	
-	private static final String mAlfrescoRootFolderID = JBrickConfigManager.getInstance()
-			.getMandatoryProperty("alfresco/@rootFolderId");
+
 	private static Log mLog = Log.getInstance(Item.class);	
 	private static final Tika TIKA = new Tika();
 
@@ -74,7 +73,7 @@ public class ItemEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	public Response insert(DocumentBean itemBean, @Context ServletContext servletContext) {
 		Session session = Util.getUserAlfrescoSession(httpRequest);
-
+	
 		// populate property map
 		Map<String, Object> mapProperties = new HashMap<String, Object>();
 
@@ -125,8 +124,7 @@ public class ItemEndpoint {
 		
 		Map<String, Object> mapProperties = new HashMap<String, Object>();
 		mapProperties.put(PropertyIds.NAME, itemBean.getName());
-		mapProperties.put(PropertyIds.DESCRIPTION, itemBean.getDescription());
-		
+		mapProperties.put(PropertyIds.DESCRIPTION, itemBean.getDescription());	
 		
 		ObjectType typeDef = AlfrescoHelper.getTypeDefinition(session, itemBean.getType());
 		
@@ -160,11 +158,13 @@ public class ItemEndpoint {
 	}
 	
 	private ObjectId getFolder(Session pSession, String pStrDocumentType) {
+		HttpSession httpSession = httpRequest.getSession();
+		String AlfrescoRootFolderId = (String) httpSession.getAttribute("rootFolderId");
 		String lFileName = pStrDocumentType.substring(pStrDocumentType.lastIndexOf(':') + 1);
-		String lFolderPath = AlfrescoHelper.getFolderById(pSession, mAlfrescoRootFolderID).getPath() + "/" + lFileName;
+		String lFolderPath = AlfrescoHelper.getFolderById(pSession, AlfrescoRootFolderId).getPath() + "/" + lFileName;
 		Folder lFolder = AlfrescoHelper.getFolderByPath(pSession, lFolderPath);
 		if (lFolder == null) {
-			AlfrescoHelper.createFolder(pSession, mAlfrescoRootFolderID, lFileName);
+			AlfrescoHelper.createFolder(pSession, AlfrescoRootFolderId, lFileName);
 			lFolder = AlfrescoHelper.getFolderByPath(pSession, lFolderPath);
 		}
 		
