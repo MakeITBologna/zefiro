@@ -22,6 +22,10 @@
 
 <types>
  	<type name = "D:makeit:fatturaAttiva">
+ 		<actions>
+ 			<action name="duplicate" portalEvent="duplicaFattura" />
+ 		</actions>
+ 		
  		<search>
  			<searchField name = "makeit:numeroFattura" />
  			<searchField name = "makeit:sezionale" />

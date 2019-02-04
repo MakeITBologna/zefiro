@@ -34,7 +34,8 @@ angular.module('document', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentTy
 }])
 
 .controller('DocumentController', ['$scope', 'DocumentResource', 'DocumentTypeResource', 'ItemResource', 'RelationResource', 'SearchResource', 
-	'NgTableParams', 'jbMessages', 'jbPatterns', 'jbValidate', 'jbUtil', 'mioPropertyBlacklist', 'customConfiguration', '$location', '$rootScope', '$route', 'externalDocument', 
+	'NgTableParams', 'jbMessages', 'jbPatterns', 'jbValidate', 'jbUtil', 'mioPropertyBlacklist', 'customConfiguration', '$location', '$rootScope', 
+	'$route', 'externalDocument',
 function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationResource, SearchResource, NgTableParams, jbMessages, jbPatterns, 
 		jbValidate, jbUtil, mioPropertyBlacklist, customConfiguration, $location, $rootScope, $route, externalDocument) {
 	
@@ -322,9 +323,8 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 	
 	$scope.modifyExternalDocument = function(){
 		externalDocument.id = $scope.documentEditing.id;
-		$location.url('/modificaFattura', true);
-		
-		
+		externalDocument.portalEvent = "showModificaFattura";
+		$location.url('/modificaFattura', true);	
 	}
 	
 	if(externalDocument.id){
@@ -551,7 +551,23 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 	}
 	
 	$scope.startDuplicate = function(i) {
-		$scope.startEdit(i, true);
+	
+		var configuration = $scope.customConfiguration.value.filter(config => {return config.type == $scope.documentTemplate.type})[0];
+		var duplicateAction = configuration != undefined? configuration.actions.filter(action => {return action.name = "duplicate"}): [];
+		var action = duplicateAction.length != 0? duplicateAction[0] : null;
+
+		if (action){
+			documentId = $scope.documentTable.data[i].id;
+			
+			$location
+				.url('/modificaFattura', true)
+				.search(externalDocument.id= documentId, 
+						externalDocument.portalEvent = action.portalEvent
+						);	
+		} else {
+			$scope.startEdit(i, true);
+		}
+		
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////

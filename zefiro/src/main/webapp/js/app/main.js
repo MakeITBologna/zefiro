@@ -70,13 +70,9 @@ angular.module('main', [
 					controller: 'TaskController'
 				})
 				
-				.when('/inserimentoFattura', {	
-					template: "inserimento fattura",
-					controller: 'InserimentoFatturaController'
-				})
 				.when('/modificaFattura', {	
-					template: "modifica fattura",
-					controller: 'ModificaFatturaController'
+					template: "portale esterno",
+					controller: 'ExternalActionController'
 				})
 				
 				//Ridireziona a login
@@ -334,7 +330,6 @@ angular.module('main', [
 	
 	.constant("customConfiguration", {})
 	.constant('externalDocument', {})
-	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//CONTROLLER
 
@@ -392,40 +387,13 @@ angular.module('main', [
 	}])
 	
 
-	.controller('InserimentoFatturaController', ['$scope', '$location', '$rootScope', 'externalDocument',  function($scope, $location, $rootScope, externalDocument){				
+	.controller('ExternalActionController', ['$scope', '$location', '$rootScope', 'externalDocument',  function($scope, $location, $rootScope, externalDocument){	
+		
+		externalDocument.portalEvent = externalDocument.portalEvent == undefined ? "showInserimentoFattura" : externalDocument.portalEvent;
+		console.log(externalDocument);
+		
 		if(window.parent.dispatchPortalEvent){
-			window.parent.dispatchPortalEvent("showInserimentoFattura", {"azienda": $scope.getUser().rootFolderKey});
-		}
-		
-		
-		if(window.parent.registerPortalEventListener){
-				
-			window.parent.removePortalEventListener("fatturaInseritaBackToZefiro");
-			window.parent.registerPortalEventListener("fatturaInseritaBackToZefiro", function(data){
-				$scope.$apply(function(){
-					externalDocument.id = data.idAlfrescoFattura;
-					$location.url('/home', true);
-				})
-		
-			});
-			
-			window.parent.removePortalEventListener("backFromFatturaToZefiro");
-			window.parent.registerPortalEventListener("backFromFatturaToZefiro", function(data){
-				
-				$scope.$apply(function(){
-					
-					externalDocument.id = undefined;
-					$location.url('/home', true);
-				})
-		
-			});
-		}
-			
-		
-	}])
-	.controller('ModificaFatturaController', ['$scope', '$location', '$rootScope', 'externalDocument',  function($scope, $location, $rootScope, externalDocument){				
-		if(window.parent.dispatchPortalEvent){
-			window.parent.dispatchPortalEvent("showModificaFattura", {"idAlfresco": externalDocument.id, "azienda": $scope.getUser().rootFolderKey});
+			window.parent.dispatchPortalEvent(externalDocument.portalEvent, {"idAlfresco": externalDocument.id, "azienda": $scope.getUser().rootFolderKey});
 		}
 			
 		if(window.parent.registerPortalEventListener){

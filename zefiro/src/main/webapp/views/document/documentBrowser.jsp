@@ -180,7 +180,7 @@
 
 	    <table ng-table="documentTable" template-header="views/document/documentHeaders.jsp" class="table table-condensed table-bordered table-striped ng-table-responsive" show-filter="false">
 		<tbody>
-		<!-- ng-dblclick definisce il comportamento all'utilizzo di doppio click sugli elementi. !relation permette di disattivare questa funzionali� nella modalit� di selezione delle relazioni per i documenti -->
+		<!-- ng-dblclick definisce il comportamento all'utilizzo di doppio click sugli elementi. !relation permette di disattivare questa funzionaliï¿½ nella modalitï¿½ di selezione delle relazioni per i documenti -->
 		<tr ng-repeat="row in $data track by $index" ng-dblclick="!relation && startEdit($index)">
 		 
 	      <td ng-if="jbUtil.isEmptyObject(documentType)" sortable="'typeName'">{{row.typeName}}</td>
@@ -203,17 +203,15 @@
           </td>
           
           <td>
-	        <div class="btn-group" uib-dropdown ng-show="row.id != null && !relation">
+<div class="btn-group" uib-dropdown ng-show="row.id != null && !relation">
 	          <button type="button" class="btn btn-primary btn-xs" ng-click="startEdit($index)"><i class="fa fa-pencil-square-o fa-lg"></i></button>
-			  <div ng-if="jbAuthFactory.getUser().parametersMap.readOnly == false" class="display: inline-block">
 	          <button type="button" class="btn btn-default btn-xs" uib-dropdown-toggle><i class="fa fa-bars fa-lg"></i></button>
-			  <ul uib-dropdown-menu role="menu" class="dropdown-menu-right" >
+			  <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
 			    <li role="menuitem"><a href ng-click="startDuplicate($index)"><i class="fa fa-files-o fa-fw"></i> <fmt:message key="jsp.document.duplicate"/></a></li>
-			    <li role="menuitem"><a href ng-click="deleteRow($index)" confirm="{{jbMessages.confirmDelete}}"><i class="fa fa-trash fa-fw"></i> <fmt:message key="jsp.document.delete"/></a></li>
+			    <!-- li role="menuitem"><a href ng-click="deleteRow($index)" confirm="{{jbMessages.confirmDelete}}"><i class="fa fa-trash fa-fw"></i> <fmt:message key="jsp.document.delete"/></a></li-->
 			  </ul>
-			  </div>
 		    </div>
-		    <!-- Modalit� aggiunta relazioni -->
+		    <!-- Modalità aggiunta relazioni -->
 		    <div ng-show="relation">
 		    	<button type="button" class="btn btn-primary btn-xs" ng-click="addRelation(row.id)"><i class="fa fa-plus fa-lg"></i></button>
 		    </div>

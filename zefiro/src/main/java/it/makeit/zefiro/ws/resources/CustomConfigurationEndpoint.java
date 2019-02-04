@@ -2,7 +2,6 @@ package it.makeit.zefiro.ws.resources;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import it.makeit.jbrick.JBrickConfigManager;
+import it.makeit.zefiro.dao.ActionBean;
 import it.makeit.zefiro.dao.CustomConfiguration;
 import it.makeit.zefiro.dao.StatusBadgeBean;
 import it.makeit.zefiro.dao.StatusBadgeOptionType;
@@ -21,6 +21,7 @@ import it.makeit.zefiro.dao.StatusBadgeOptionType;
 @Path("/customConfiguration")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class CustomConfigurationEndpoint {
+	//TODO: Rinominare Endpoint principale searchProperties -> 
 	
 	@GET
 	@Path("/searchProperties")
@@ -35,10 +36,9 @@ public class CustomConfigurationEndpoint {
 				String[] searchField = configManager.getPropertyList("./types/type[@name='"+ type +"']/search/searchField", "@name");
 				String[] suggestBox = configManager.getPropertyList("./types/type[@name='"+ type +"']/search/suggestBoxes/suggestBox", "@name");
 				String[] searchTableColumn = configManager.getPropertyList("./types/type[@name='"+ type +"']/search/searchTableColumn", "@name");
+				
 				List<StatusBadgeBean> statusBadge = new ArrayList<StatusBadgeBean>();
 				String[] badgeNames = configManager.getPropertyList("./types/type[@name='"+ type +"']/search/statusBadges/statusBadge", "@name");
-				StatusBadgeBean[] statusBadgeArray = new StatusBadgeBean[0];
-
 				if (badgeNames != null) {
 					Arrays.asList(badgeNames).forEach(badgeName -> {
 						StatusBadgeBean sb = new StatusBadgeBean();
@@ -57,17 +57,27 @@ public class CustomConfigurationEndpoint {
 						sb.setOption(optionsArray);
 						statusBadge.add(sb);
 					});
-					
-					statusBadgeArray = new StatusBadgeBean[statusBadge.size()];
-					statusBadge.toArray(statusBadgeArray);
+				};
+				
+				List<ActionBean> actionList = new ArrayList<ActionBean>();
+				String[] actionNames = configManager.getPropertyList("./types/type[@name='"+ type +"']/actions/action", "@name");
+				if (actionNames != null) {
+					Arrays.asList(actionNames).forEach(actionName -> {
+						String portalEvent = configManager.getPropertyList("./types/type[@name='"+ type +"']/actions/action[@name='"+actionName+"']", "@portalEvent")[0];
+						ActionBean action = new ActionBean();
+						action.setName(actionName);
+						action.setPortalEvent(portalEvent);
+						actionList.add(action);
+					});
 				};
 				
 				CustomConfiguration conf = new CustomConfiguration();
 				conf.setType(type);
+				conf.setActions(actionList);
 				conf.setSearchField(searchField);
 				conf.setSearchTableColumn(searchTableColumn);
 				conf.setSuggestBox(suggestBox != null? suggestBox : new String[0]);
-				conf.setStatusBadge(statusBadgeArray);
+				conf.setStatusBadge(statusBadge);
 
 				customConfiguration.add(conf);
 			}

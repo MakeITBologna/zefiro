@@ -1,12 +1,15 @@
 package it.makeit.zefiro.dao;
 
+import java.util.List;
+
 public class CustomConfiguration {
 	
 	private String type;
 	private String[] searchField;
 	private String[] searchTableColumn;
 	private String[] suggestBox;
-	private StatusBadgeBean[] statusBadge;
+	private List<StatusBadgeBean> statusBadge;
+	private List<ActionBean> actions;
 	
 	public String getType() {
 		return type;
@@ -32,11 +35,19 @@ public class CustomConfiguration {
 	public void setSuggestBox(String[] suggestBox) {
 		this.suggestBox = suggestBox;
 	}
-	public StatusBadgeBean[] getStatusBadge() {
+	public List<StatusBadgeBean> getStatusBadge() {
 		return statusBadge;
 	}
-	public void setStatusBadge(StatusBadgeBean[] statusBadge) {
+	public void setStatusBadge(List<StatusBadgeBean> statusBadge) {
 		this.statusBadge = statusBadge;
 	}
+	public List<ActionBean> getActions() {
+		return actions;
+	}
+	public void setActions(List<ActionBean> actions) {
+		this.actions = actions;
+	}
+
 }
+
 
