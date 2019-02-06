@@ -386,7 +386,6 @@ angular.module('main', [
 	.controller('ExternalActionController', ['$scope', '$location', '$rootScope', 'externalDocument', function($scope, $location, $rootScope, externalDocument){	
 		console.log(externalDocument)
 		if ( externalDocument.portalEvent == undefined){
-			console.log("DEFAULT EXTERNAL")
 			externalDocument.portalEvent = "showInserimentoFattura";
 			externalDocument.context = {idAlfresco: null, azienda: $scope.getUser().rootFolderKey};
 		}
@@ -468,7 +467,7 @@ angular.module('main', [
 				window.parent.registerPortalEventListener("backToZefiro", function(data){
 
 					$scope.$apply(function(){
-						externalDocument.context.id = data.idAlfrescoFattura;
+						externalDocument.context.idAlfresco = data.idAlfrescoFattura;
 						externalDocument.portalEvent = null;
 						$location.url('/home', true);
 					})
