@@ -1,16 +1,8 @@
-package it.makeit.zefiro.ws.resources;
+package it.makeit.zefiro.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import it.makeit.jbrick.JBrickConfigManager;
 import it.makeit.zefiro.dao.ActionBean;
@@ -18,14 +10,9 @@ import it.makeit.zefiro.dao.CustomConfiguration;
 import it.makeit.zefiro.dao.StatusBadgeBean;
 import it.makeit.zefiro.dao.StatusBadgeOptionType;
 
-@Path("/customConfiguration")
-@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class CustomConfigurationEndpoint {
-	//TODO: Rinominare Endpoint principale searchProperties -> 
+public class TypeConfigurationService {
 	
-	@GET
-	@Path("/searchProperties")
-	public Response getSearchProperties() {
+	public List<CustomConfiguration> getTypeConfigurations() {
 		List<CustomConfiguration> customConfiguration = new ArrayList<CustomConfiguration>();
 		JBrickConfigManager configManager = JBrickConfigManager.getInstance();
 		String[] typeNames = configManager.getPropertyList("./types/type", "@name");
@@ -82,26 +69,7 @@ public class CustomConfigurationEndpoint {
 				customConfiguration.add(conf);
 			}
 		}
-		return Response.ok(customConfiguration).build();
+		return customConfiguration;
 	}
-	
-	@GET
-	@Path("/rootFolders")
-	public Response getRootFolders() {
 		
-		Map<String, String> rootFoldersConfiguration = new LinkedHashMap<String, String>();
-		
-		JBrickConfigManager configManager = JBrickConfigManager.getInstance();
-		
-		String[] labelList = configManager.getPropertyList("./alfresco", "@label");
-		String[] rootFolderList = configManager.getPropertyList("./alfresco", "@rootFolderId");
-		
-		for (int i = 0; i<labelList.length; i++) {
-			rootFoldersConfiguration.put(labelList[i], rootFolderList[i]);
-		}
-
-		return Response.ok(rootFoldersConfiguration).build();
-	}
-	
-
 }

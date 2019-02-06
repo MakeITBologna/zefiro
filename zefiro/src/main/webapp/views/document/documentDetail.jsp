@@ -172,10 +172,11 @@
 						</div>
 					  </div>
 					  
-					  <div ng-if="p.propertyType == 'DATETIME'">
+					  <!-- TODO: Fix - unico tipo in CMIS (date e datetime stessa cosa) -->
+					  <!-- div ng-if="p.propertyType == 'DATETIME'">
 					  	<div class="input-group" ng-if="!readOnly">
 					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value | date: '${localePatternTimestamp}'}}</p>
-					  		<input ng-if="!isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" readonly datetime-picker="${localePatternTimestamp}" ng-model="documentEditing.properties[p.queryName].value" is-open="calendarPopups['jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName)]" />
+					  		<input name="DATETIME"ng-if="!isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" readonly datetime-picker="${localePatternTimestamp}" ng-model="documentEditing.properties[p.queryName].value" is-open="calendarPopups['jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName)]" />
 					  		<span ng-if="!isReadOnly()" class="input-group-btn">
 	       						<button type="button" class="btn btn-default" ng-click="openCalendar('jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName))"><i class="fa fa-calendar"></i></button>
 	      					</span>
@@ -184,19 +185,19 @@
 					  	<div ng-if="readOnly">
 							<p class="form-control-static">{{documentEditing.properties[p.queryName].value | date: '${localePatternTimestamp}'}}</p>
 						</div>
-					  </div>
+					  </div-->
 					  
-					  <div ng-if="p.propertyType == 'DATE'">
+					  <div ng-if="p.propertyType == 'DATETIME'">
 					  	<div class="input-group" ng-if="!readOnly">
-					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value | date: '${localePatternTimestamp}'}}</p>
-					  		<input  ng-if="isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" readonly uib-datepicker-popup="${localePatternDate}" ng-model="documentEditing.properties[p.queryName].value" is-open="calendarPopups['jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName)]"/>
-					  		<span class="input-group-btn">
+					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value | date: '${localePatternDate}'}}</p>
+					  		<input ng-if="!isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" readonly uib-datepicker-popup="${localePatternDate}" ng-model="documentEditing.properties[p.queryName].value" is-open="calendarPopups['jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName)]"/>
+					  		<span ng-if="!isReadOnly()" class="input-group-btn">
 	       						<button type="button" class="btn btn-default" ng-click="openCalendar('jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName))"><i class="fa fa-calendar"></i></button>
 	      					</span>
 	      					<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument[p.queryName])"><fmt:message key="js.validate.required"/></label>
 					  	</div>
 					  	<div ng-if="readOnly">
-							<p class="form-control-static">{{documentEditing.properties[p.queryName].value | date: '${localePatternTimestamp}'}}</p>
+							<p class="form-control-static">{{documentEditing.properties[p.queryName].value | date: '${localePatternDate}'}}</p>
 						</div>
 					  </div>
 				  	

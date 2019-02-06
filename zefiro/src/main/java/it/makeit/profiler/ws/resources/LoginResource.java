@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -41,6 +42,8 @@ import it.makeit.jbrick.ws.filters.LogFilter;
 import it.makeit.jbrick.ws.resources.AbstractResource;
 import it.makeit.profiler.dao.UsersBean;
 import it.makeit.zefiro.Util;
+import it.makeit.zefiro.dao.CustomConfiguration;
+import it.makeit.zefiro.service.TypeConfigurationService;
 
 /**
  * @author MAKE IT
@@ -135,10 +138,12 @@ public class LoginResource extends AbstractResource {
 		// (v. http://www.docjar.com/html/api/org/apache/catalina/manager/util/SessionUtils.java.html r. 63 e 168)
 		lSession.setAttribute("Login", lUsername);
 		lSession.setAttribute("rootFolderId", lRootFolderId);
-		
 		lSession.setAttribute("alfrescoConfig", lAlfrescoConfig);
 		Locale locale = LocaleUtil.getLocale(pRequest.getSession());
 		lSession.setAttribute("alfrescoSession", AlfrescoHelper.createSession(lAlfrescoConfig, locale));
+		
+		List<CustomConfiguration> typeConfiguration = new TypeConfigurationService().getTypeConfigurations(); 
+		lSession.setAttribute("typeConfiguration", typeConfiguration);
 		
 		//only needed to send jBrickConfig's properties(readonly, process) to client 
 		Map<String, Object> jbrickConfigProperties =  lUsersBean.getParametersMap();

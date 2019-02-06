@@ -70,7 +70,7 @@ angular.module('main', [
 					controller: 'TaskController'
 				})
 				
-				.when('/modificaFattura', {	
+				.when('/portalAction', {	
 					template: "portale esterno",
 					controller: 'ExternalActionController'
 				})
@@ -329,13 +329,12 @@ angular.module('main', [
 	}])
 	
 	.constant("customConfiguration", {})
-	.constant('externalDocument', {})
+	.constant('externalDocument', {'portalEvent':null, 'context':{}})
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//CONTROLLER
 
 	//Logincontroller
-	.controller('LoginController', [ '$scope', '$http', '$location', 'jbValidate', 'jbAuthFactory', 'jbUtil', 'customConfiguration', '$rootScope', 'externalDocument',
-		'DocumentTypeResource',
+	.controller('LoginController', [ '$scope', '$http', '$location', 'jbValidate', 'jbAuthFactory', 'jbUtil', 'customConfiguration', '$rootScope', 'externalDocument', 'DocumentTypeResource',
 		function ( $scope, $http, $location, jbValidate, jbAuthFactory, jbUtil, customConfiguration, $rootScope, externalDocument, DocumentTypeResource) {
 		
 		$scope.jbValidate = jbValidate;
@@ -352,7 +351,7 @@ angular.module('main', [
 					.then(function (response) {
 						var jbuser = response.data;
 						jbAuthFactory.storeUser(jbuser);
-						$http.get('a/customConfiguration/searchProperties')
+						$http.get('a/configuration/type')
 						.then(function (response) {
 							customConfiguration.value = response.data;	
 							$location.url('/home', true);
@@ -378,56 +377,35 @@ angular.module('main', [
 						});
 					});
 		};
-	
 		
-		
-			
 		
 		
 	}])
 	
 
-	.controller('ExternalActionController', ['$scope', '$location', '$rootScope', 'externalDocument',  function($scope, $location, $rootScope, externalDocument){	
-		
-		externalDocument.portalEvent = externalDocument.portalEvent == undefined ? "showInserimentoFattura" : externalDocument.portalEvent;
-		console.log(externalDocument);
+	.controller('ExternalActionController', ['$scope', '$location', '$rootScope', 'externalDocument', function($scope, $location, $rootScope, externalDocument){	
+		console.log(externalDocument)
+		if ( externalDocument.portalEvent == undefined){
+			console.log("DEFAULT EXTERNAL")
+			externalDocument.portalEvent = "showInserimentoFattura";
+			externalDocument.context = {idAlfresco: null, azienda: $scope.getUser().rootFolderKey};
+		}
 		
 		if(window.parent.dispatchPortalEvent){
-			window.parent.dispatchPortalEvent(externalDocument.portalEvent, {"idAlfresco": externalDocument.id, "azienda": $scope.getUser().rootFolderKey});
+			window.parent.dispatchPortalEvent(externalDocument.portalEvent, externalDocument.context);
 		}
 			
-		if(window.parent.registerPortalEventListener){
-			
-			window.parent.removePortalEventListener("fatturaInseritaBackToZefiro");
-			window.parent.registerPortalEventListener("fatturaInseritaBackToZefiro", function(data){
-				$scope.$apply(function(){
-					externalDocument.id = data.idAlfrescoFattura;
-					$location.url('/home', true);
-				})
-		
-			});
-			
-			window.parent.removePortalEventListener("backFromFatturaToZefiro");
-			window.parent.registerPortalEventListener("backFromFatturaToZefiro", function(data){
-				
-				$scope.$apply(function(){
-					
-					externalDocument.id = undefined;
-					$location.url('/home', true);
-				})
-		
-			});
-		}
 		
 		
 	}])
 	
 	//MainController
-	.controller('MainController', [ '$scope', '$http', 'jbAuthFactory', function ( $scope, $http, jbAuthFactory) {
+	.controller('MainController', [ '$scope', '$http', '$location', 'jbAuthFactory', 'externalDocument', 
+		function ( $scope, $http, $location, jbAuthFactory, externalDocument) {
 		
 		$scope.rootFoldersConfiguration = null;
 
-		$http.get('a/customConfiguration/rootFolders').then(function (response) {
+		$http.get('a/configuration/rootFolders').then(function (response) {
 			$scope.rootFoldersConfiguration = response.data;
 		});
 		
@@ -484,6 +462,18 @@ angular.module('main', [
 	        	}
 		    });
 
+		 
+		 if(window.parent.registerPortalEventListener){
+				
+				window.parent.registerPortalEventListener("backToZefiro", function(data){
+
+					$scope.$apply(function(){
+						externalDocument.context.id = data.idAlfrescoFattura;
+						externalDocument.portalEvent = null;
+						$location.url('/home', true);
+					})
+				});
+			}
 	}])
 	
 	//SuggestionController

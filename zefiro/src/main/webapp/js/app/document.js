@@ -35,7 +35,7 @@ angular.module('document', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentTy
 
 .controller('DocumentController', ['$scope', 'DocumentResource', 'DocumentTypeResource', 'ItemResource', 'RelationResource', 'SearchResource', 
 	'NgTableParams', 'jbMessages', 'jbPatterns', 'jbValidate', 'jbUtil', 'mioPropertyBlacklist', 'customConfiguration', '$location', '$rootScope', 
-	'$route', 'externalDocument',
+	'$route', 'externalDocument', 
 function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationResource, SearchResource, NgTableParams, jbMessages, jbPatterns, 
 		jbValidate, jbUtil, mioPropertyBlacklist, customConfiguration, $location, $rootScope, $route, externalDocument) {
 	
@@ -286,13 +286,9 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 			$scope.currentRownum = -1;
 			
 			var baseType = 'cmis:document';
-			$scope.isItem = baseType === 'cmis:document'? false : true;
-			
-			
+			$scope.isItem = baseType === 'cmis:document'? false : true;			
 			var resource = $scope.isItem? ItemResource : DocumentResource;
-			console.log($scope.isItem);
-			console.log(resource);
-			
+
 			var documentPromise = resource.get($scope.documentEditing, function() {
 				$scope.documentEditing = documentPromise;
 				$scope.documentBreadcrumbs = [];
@@ -322,13 +318,16 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 	};
 	
 	$scope.modifyExternalDocument = function(){
-		externalDocument.id = $scope.documentEditing.id;
+		
 		externalDocument.portalEvent = "showModificaFattura";
-		$location.url('/modificaFattura', true);	
+		externalDocument.context.idAlfresco = $scope.documentEditing.id;
+		externalDocument.context.azienda = $scope.getUser().rootFolderKey;
+
+		$location.url('/portalAction', true);	
 	}
 	
-	if(externalDocument.id){
-		$scope.externalDocumentInserted(externalDocument.id);
+	if(externalDocument.context.idAlfresco){
+		$scope.externalDocumentInserted(externalDocument.context.idAlfresco);
 			
 	} 
 	
@@ -359,7 +358,6 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 			
 			$scope.setDocumentType("edit", $scope.documentEditing.type);
 			$scope.getHandledPropertyList($scope.documentEditing.properties);
-			
 			if (duplicate === true) {
 				$scope.currentRownum = null;
 				$scope.documentEditing.name = null;
@@ -540,9 +538,13 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 	//ELIMINAZIONE  / DUPLICAZIONE
 	
 	$scope.deleteRow = function(i) {
+		let baseType = $scope.documentTable.data[i].baseType;
+		let resource = baseType === 'cmis:document'? DocumentResource : ItemResource;
+
 		$scope.documentEditing = {};
 		$scope.documentEditing.id = $scope.documentTable.data[i].id;
-		DocumentResource.delete($scope.documentEditing, function() {
+		
+		resource.delete($scope.documentEditing, function() {
 			var j = jbUtil.findRowWithKey($scope.documentTable.settings().dataset, 'id', $scope.documentEditing.id);
 			$scope.documentTable.settings().dataset.splice(j, 1);
 			$scope.documentTable.data.splice(i, 1);
@@ -557,19 +559,17 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 		var action = duplicateAction.length != 0? duplicateAction[0] : null;
 
 		if (action){
-			documentId = $scope.documentTable.data[i].id;
-			
-			$location
-				.url('/modificaFattura', true)
-				.search(externalDocument.id= documentId, 
-						externalDocument.portalEvent = action.portalEvent
-						);	
+			externalDocument.portalEvent = 'duplicaFattura';
+			externalDocument.context.idAlfresco = $scope.documentTable.data[i].id;
+			externalDocument.context.azienda = $scope.getUser().rootFolderKey;
+
+			$location.url('/portalAction', true);	
+
 		} else {
 			$scope.startEdit(i, true);
 		}
 		
 	}
-	
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	//UTILITA'
 	

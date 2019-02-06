@@ -71,7 +71,7 @@
     	<li><a href="#home"><fmt:message key="jsp.document.label"/></a></li>
    	</ul>
    	<ul class="nav navbar-nav">
-    	<li><a href="#modificaFattura">Inserisci fattura</a></li>
+    	<li><a href="#portalAction">Inserisci fattura</a></li>
    	</ul>
    	<ul class="nav navbar-nav" ng-if="jbAuthFactory.getUser().process == true">
    	<li class="dropdown" uib-dropdown>

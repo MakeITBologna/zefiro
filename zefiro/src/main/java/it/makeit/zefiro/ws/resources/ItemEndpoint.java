@@ -11,6 +11,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -51,7 +52,7 @@ public class ItemEndpoint {
 	private static Log mLog = Log.getInstance(Item.class);	
 	private static final Tika TIKA = new Tika();
 
-	@Inject DocumentListenener documentListenener;
+	//@Inject DocumentListenener documentListenener;
 	
 	@Context
 	private HttpServletRequest httpRequest;
@@ -146,6 +147,21 @@ public class ItemEndpoint {
 
 		return Response.ok(item).build();
 	}
+	
+	@DELETE
+	@Path("/{id}")
+	public Response deleteById(@PathParam("id") String objectId) {
+		Session session = Util.getUserAlfrescoSession(httpRequest);		
+		Item item = (Item) session.getObject(objectId);
+		item.delete(true);
+		
+		Map<String, Object> properties = Util.createPropertiesMapFromRequest(httpRequest);
+		//documentListenener.onDocumentDelete(lDocument, properties);
+		
+		return Response.ok().build();
+	}
+
+
 	
 	private void deleteFile(File lFile) {
 		if (lFile != null)
