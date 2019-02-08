@@ -79,6 +79,7 @@ public class Document {
 		String mAlfrescoRootFolderID = (String) httpSession.getAttribute("rootFolderId");
 		
 		String lFileName = pStrDocumentType.substring(pStrDocumentType.lastIndexOf(':') + 1);
+		System.out.println("@@@@@@@@@@@@@@@@@"+lFileName);
 		String lFolderPath = AlfrescoHelper.getFolderById(pSession, mAlfrescoRootFolderID).getPath() + "/" + lFileName;
 		Folder lFolder = AlfrescoHelper.getFolderByPath(pSession, lFolderPath);
 		if (lFolder == null) {
@@ -267,7 +268,7 @@ public class Document {
 		File lFile = null;
 		String lFileContentType = null;
 		String lFileName = pDocumentBean.getUploadedFileName();
-
+		String path = pDocumentBean.getAlfrescoDir() == null?  pDocumentBean.getType() : pDocumentBean.getAlfrescoDir();
 		try {
 			// XXX (Alessio): inspiegabilmente il servizio SPI di Tika non viene
 			// registrato,
@@ -280,13 +281,13 @@ public class Document {
 				lInputStream = new FileInputStream(lFile);
 
 				lMapProperties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, lFileContentType);
-
-				lDocument = AlfrescoHelper.createDocument(lSession,
-						getOrCreateFolder(lSession, pDocumentBean.getType()), pDocumentBean.getName(), lFile.length(),
+				
+				lDocument = AlfrescoHelper.createDocument(lSession, getOrCreateFolder(lSession, path)
+						, pDocumentBean.getName(), lFile.length(),
 						lFileContentType, lInputStream, lMapProperties, null, pDocumentBean.getType());
 			} else {
 				lDocument = AlfrescoHelper.createDocument(lSession,
-						getOrCreateFolder(lSession, pDocumentBean.getType()), pDocumentBean.getName(), -1, null, null,
+						getOrCreateFolder(lSession, path), pDocumentBean.getName(), -1, null, null,
 						lMapProperties, null, pDocumentBean.getType());
 			}
 			

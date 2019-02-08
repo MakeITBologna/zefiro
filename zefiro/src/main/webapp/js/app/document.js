@@ -495,6 +495,12 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 					propertyType: p.propertyType
 				});
 			}
+			
+			action = $scope.getAction("insert", $scope.documentTypeEdit.id);
+			if (action){
+				$scope.documentEditing.alfrescoDir = action.alfrescoDir;
+			}
+			
 			resource.save($scope.documentEditing)
 				.$promise
 				.then(function(data) {
@@ -553,10 +559,8 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 	}
 	
 	$scope.startDuplicate = function(i) {
-	
-		var configuration = $scope.customConfiguration.value.filter(config => {return config.type == $scope.documentTemplate.type})[0];
-		var duplicateAction = configuration != undefined? configuration.actions.filter(action => {return action.name = "duplicate"}): [];
-		var action = duplicateAction.length != 0? duplicateAction[0] : null;
+		
+		var action = $scope.getAction("duplicate", $scope.documentTemplate.type);
 
 		if (action){
 			externalDocument.portalEvent = 'duplicaFattura';
@@ -569,6 +573,13 @@ function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationR
 			$scope.startEdit(i, true);
 		}
 		
+	}
+	
+	$scope.getAction = function (actionName, type){
+		var configuration = $scope.customConfiguration.value.filter(config => {return config.type == type})[0];
+		var duplicateAction = configuration != undefined? configuration.actions.filter(action => {return action.name = actionName}): [];
+		var action = duplicateAction.length != 0? duplicateAction[0] : null;
+		return action;
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	//UTILITA'

@@ -3,6 +3,7 @@ package it.makeit.zefiro.dao;
 public class ActionBean {
 	String name;
 	String portalEvent;
+	String alfrescoDir;
 	
 	public String getName() {
 		return name;
@@ -15,6 +16,12 @@ public class ActionBean {
 	}
 	public void setPortalEvent(String portalEvent) {
 		this.portalEvent = portalEvent;
+	}
+	public String getAlfrescoDir() {
+		return alfrescoDir;
+	}
+	public void setAlfrescoDir(String alfrescoDir) {
+		this.alfrescoDir = alfrescoDir;
 	}
 
 }

@@ -71,6 +71,10 @@
  	</type>
  	
  	<type name = "D:makeit:fatturaPassiva">
+ 		<actions>
+ 			<action name="insert" alfrescoDir="Fatture" />
+ 		</actions>
+ 		
  		<search>
 			<searchField name = "makeit:fornitore"/>
 			<searchField name = "makeit:tipoFornitore" />

@@ -51,9 +51,11 @@ public class TypeConfigurationService {
 				if (actionNames != null) {
 					Arrays.asList(actionNames).forEach(actionName -> {
 						String portalEvent = configManager.getPropertyList("./types/type[@name='"+ type +"']/actions/action[@name='"+actionName+"']", "@portalEvent")[0];
+						String alfrescoDir = configManager.getPropertyList("./types/type[@name='"+ type +"']/actions/action[@name='"+actionName+"']", "@alfrescoDir")[0];
 						ActionBean action = new ActionBean();
 						action.setName(actionName);
 						action.setPortalEvent(portalEvent);
+						action.setAlfrescoDir(alfrescoDir);
 						actionList.add(action);
 					});
 				};
