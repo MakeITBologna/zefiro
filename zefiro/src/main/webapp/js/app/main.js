@@ -54,6 +54,7 @@ angular.module('main', [
 					resolve: {
 						reset: function (jbAuthFactory) {
 							jbAuthFactory.removeUser();
+							externalDocument = {'portalEvent':null, 'context':{}};
 						}
 					}
 				})
