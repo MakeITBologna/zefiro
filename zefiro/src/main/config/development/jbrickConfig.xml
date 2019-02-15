@@ -12,128 +12,133 @@
 		<dataTypeConverter dataType="java.lang.Integer" pattern="pattern.integer" converter="org.apache.commons.beanutils.locale.converters.IntegerLocaleConverter"/>
 	</dataTypeConverters>
 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="makeit" rootFolderId="64b9c50c-7ddf-4ff4-a76a-24fcad43dc2e" label="Make IT"/> 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="yacme" rootFolderId="5bfbd272-3d6a-4b97-a090-cbd3ba700ab4" label="Yacme"/> 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="mynt" rootFolderId="64c289e7-eb29-4e4f-b9d9-2343276d7983" label="Mynt"/> 
+
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="makeit" rootFolderId="910f9cdc-bf12-41f9-beba-0969841a257f" label="Make IT"/> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="yacme" rootFolderId="ed483515-3f65-4f76-ba18-75a104c0164b" label="Yacme"/> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="mynt" rootFolderId="6c7fcb21-8f36-4366-901c-e974b09209f3" label="Mynt"/> 
 
 
-	<!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://zefiro.yacme.com" rootFolderId="b2e044b7-8bc1-48e0-95ae-657a1f5d53b9"/ -->	 
-	<!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://80.211.32.70:8080" rootFolderId="d30361c3-bbb3-4e61-bedf-b8cc54df2112"/ -->
 
-<types>
- 	<type name = "D:makeit:fatturaAttiva">
- 		<actions>
- 			<action name="duplicate" portalEvent="duplicaFattura" />
- 		</actions>
+ 	<!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://80.211.32.70:8080" rootFolderId="2903ddda-53bf-48ae-b53d-14b1c0b43c1e" label="Make IT" key="makeit" /> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://80.211.32.70:8080" rootFolderId="61970cf0-1aef-4a7c-aff2-4cdcb908ef16" label="Yacme" key="yacme" /> 
+ 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://80.211.32.70:8080" rootFolderId="21f3071b-5ce5-4aef-967a-44c208f71b1c" label="Mynt" key="mynt" /--> 
+	
+	<types>
+ 		<type name = "D:makeit:fatturaAttiva">
  		
- 		<search>
- 			<searchField name = "makeit:numeroFattura" />
- 			<searchField name = "makeit:sezionale" />
- 			<searchField name = "makeit:progressivoInvio" />
- 			<searchField name = "makeit:tipo" />
- 			<searchField name = "makeit:storno" />
- 			<searchField name = "makeit:cliente" />
- 			<searchField name = "makeit:dataEmissione" />
- 			<searchField name = "makeit:importo" />
- 			<searchField name = "makeit:dataScadenza" />
- 			<searchField name = "makeit:allegati" />
- 			<searchField name = "makeit:pagataAttiva" />
- 			<searchField name = "makeit:dataIncasso" />
- 			<searchField name = "makeit:stato" />
- 			<searchField name = "makeit:commessa" />
- 			<searchField name = "makeit:banca" />
- 			<searchField name = "makeit:anticipata" />
- 			<searchField name = "makeit:importoAnticipo" />
- 			<searchField name = "makeit:dataContabilizzazione" />
- 			<searchField name = "makeit:note" />
+			<actions>
+ 				<action name="duplicate" portalEvent="duplicaFattura" />
+ 			</actions>
+ 		
+			<search>
+				<searchField name = "makeit:numeroFattura" />
+ 				<searchField name = "makeit:imponibile" />
+ 				<searchField name = "makeit:BAF" />
+	 			<searchField name = "makeit:progressivoInvio" />
+ 				<searchField name = "makeit:tipo" />
+ 				<searchField name = "makeit:storno" />
+ 				<searchField name = "makeit:cliente" />
+ 				<searchField name = "makeit:dataEmissione" />
+ 				<searchField name = "makeit:importo" />
+ 				<searchField name = "makeit:dataScadenza" />
+ 				<searchField name = "makeit:allegati" />
+ 				<searchField name = "makeit:pagataAttiva" />
+ 				<searchField name = "makeit:dataIncasso" />
+ 				<searchField name = "makeit:stato" />
+ 				<searchField name = "makeit:commessa" />
+ 				<searchField name = "makeit:banca" />
+ 				<searchField name = "makeit:anticipata" />
+ 				<searchField name = "makeit:importoAnticipo" />
+ 				<searchField name = "makeit:dataContabilizzazione" />
+ 				<searchField name = "makeit:note" />
  			
- 			<searchTableColumn name = "makeit:numeroFattura" />
- 			<searchTableColumn name = "makeit:sezionale" />
- 			<searchTableColumn name = "makeit:progressivoInvio" />
- 			<searchTableColumn name = "makeit:tipo" />
- 			<searchTableColumn name = "makeit:storno" />
- 			<searchTableColumn name = "makeit:cliente" />
- 			<searchTableColumn name = "makeit:dataEmissione" />
- 			<searchTableColumn name = "makeit:importo" />
- 			<searchTableColumn name = "makeit:dataScadenza" />
- 			<searchTableColumn name = "makeit:allegati" />
- 			<searchTableColumn name = "makeit:pagataAttiva" />
- 			<searchTableColumn name = "makeit:dataIncasso" />
- 			<searchTableColumn name = "makeit:stato" />
- 			<searchTableColumn name = "makeit:commessa" />
- 			<searchTableColumn name = "makeit:banca" />
- 			<searchTableColumn name = "makeit:anticipata" />
- 			<searchTableColumn name = "makeit:importoAnticipo" />
- 			<searchTableColumn name = "makeit:dataContabilizzazione" />
- 			<searchTableColumn name = "makeit:note" />
-		
- 		</search>
- 	</type>
+ 				<searchTableColumn name = "makeit:numeroFattura" />
+ 				<searchTableColumn name = "makeit:imponibile" />
+ 				<searchTableColumn name = "makeit:progressivoInvio" />
+ 				<searchTableColumn name = "makeit:tipo" />
+ 				<searchTableColumn name = "makeit:storno" />
+ 				<searchTableColumn name = "makeit:cliente" />
+ 				<searchTableColumn name = "makeit:dataEmissione" />
+ 				<searchTableColumn name = "makeit:importo" />
+ 				<searchTableColumn name = "makeit:dataScadenza" />
+ 				<searchTableColumn name = "makeit:BAF" />
+ 				<searchTableColumn name = "makeit:pagataAttiva" />
+ 				<searchTableColumn name = "makeit:dataIncasso" />
+ 				<searchTableColumn name = "makeit:stato" />
+ 				<searchTableColumn name = "makeit:commessa" />
+ 				<searchTableColumn name = "makeit:banca" />
+ 				<searchTableColumn name = "makeit:anticipata" />
+ 				<searchTableColumn name = "makeit:importoAnticipo" />
+ 				<searchTableColumn name = "makeit:dataContabilizzazione" />
+ 				<searchTableColumn name = "makeit:note" />
+ 			</search>
+ 		</type>
  	
- 	<type name = "D:makeit:fatturaPassiva">
- 		<actions>
- 			<action name="insert" alfrescoDir="Fatture" />
- 		</actions>
+ 		<type name = "D:makeit:fatturaPassiva">
+ 			
+			<actions>
+ 				<action name="insert" alfrescoDir="Fatture" />
+ 			</actions>
+		
+			<search>
+				<searchField name = "makeit:tipo"/>
+				<searchField name = "makeit:tipoFornitore" />
+				<searchField name = "makeit:tipoFornitore" />	
+ 				<searchField name = "makeit:dataEmissione" />
+ 				<searchField name = "makeit:numeroFattura" />
+ 				<searchField name = "makeit:fornitore" />
+ 				<searchField name = "makeit:importo" />
+				<searchField name = "makeit:checkImporto" />
+ 				<searchField name = "makeit:imponibile" />
+ 				<searchField name = "makeit:importoIvaDetraibile" />
+				<searchField name = "makeit:modalitaPagamento" />
+ 				<searchField name = "makeit:dataPagamento" />
+ 				<searchField name = "makeit:dataScadenza" />	
+ 				<searchField name = "makeit:dataIncasso" />
+ 				<searchField name = "makeit:allegati" />
+ 				<searchField name = "makeit:pagataPassiva" />
+ 				<searchField name = "makeit:note" />
+ 			
+				<searchTableColumn name = "makeit:tipo" />
+				<searchTableColumn name = "makeit:tipoFornitore" />
+				<searchTableColumn name = "makeit:tipoFornitore" />			
+ 				<searchTableColumn name = "makeit:numeroFattura" />
+ 				<searchTableColumn name = "makeit:dataEmissione" />
+				<searchTableColumn name = "makeit:dataScadenza" />
+				<searchTableColumn name = "makeit:dataPagamento" />
+				<searchTableColumn name = "makeit:dataIncasso" />
+
+				<searchTableColumn name = "makeit:fornitore" />
+ 				<searchTableColumn name = "makeit:importo" />
+ 				<searchTableColumn name = "makeit:checkImporto" />
+				<searchTableColumn name = "makeit:imponibile" />
+ 				<searchTableColumn name = "makeit:importoIvaDetraibile" />
+  				<searchTableColumn name = "makeit:modalitaPagamento" />
+ 				<searchTableColumn name = "makeit:allegati" />
+ 				<searchTableColumn name = "makeit:pagataPassiva" />
+ 				<searchTableColumn name = "makeit:note" />
  		
- 		<search>
-			<searchField name = "makeit:fornitore"/>
-			<searchField name = "makeit:tipoFornitore" />
-			<searchField name = "makeit:tipoFornitore" />			
- 			<searchField name = "makeit:dataEmissione" />
- 			<searchField name = "makeit:numeroFattura" />
- 			<searchField name = "makeit:tipo" />
- 			<searchField name = "makeit:importo" />
- 			<searchField name = "makeit:imponibile" />
- 			<searchField name = "makeit:importoIvaDetraibile" />
-			<searchField name = "makeit:dataContabilizzazione" />
-  			<searchField name = "makeit:modalitaPagamento" />
- 			<searchField name = "makeit:dataPagamento" />
- 			<searchField name = "makeit:dataScadenza" />		
- 			<searchField name = "makeit:dataIncasso" />
- 			<searchField name = "makeit:allegati" />
- 			<searchField name = "makeit:pagata" />
- 			<searchField name = "makeit:checkImporto" />
+ 				<suggestBoxes>
+ 					<suggestBox name="makeit:fornitore" />
+ 				</suggestBoxes>
  			
-			<searchTableColumn name = "makeit:fornitore" />
-			<searchTableColumn name = "makeit:tipoFornitore" />
-			<searchTableColumn name = "makeit:tipoFornitore" />			
- 			<searchTableColumn name = "makeit:dataEmissione" />
- 			<searchTableColumn name = "makeit:numeroFattura" />
- 			<searchTableColumn name = "makeit:tipo" />
- 			<searchTableColumn name = "makeit:importo" />
- 			<searchTableColumn name = "makeit:checkImporto" />
- 			<searchTableColumn name = "makeit:imponibile" />
- 			<searchTableColumn name = "makeit:importoIvaDetraibile" />
-			<searchTableColumn name = "makeit:dataContabilizzazione" />
-  			<searchTableColumn name = "makeit:modalitaPagamento" />
- 			<searchTableColumn name = "makeit:dataPagamento" />
- 			<searchTableColumn name = "makeit:dataScadenza" />		
- 			<searchTableColumn name = "makeit:dataIncasso" />
- 			<searchTableColumn name = "makeit:allegati" />
- 			<searchTableColumn name = "makeit:pagata" />
- 			<searchTableColumn name = "makeit:note" />
- 			
- 			<suggestBoxes>
- 				<suggestBox name="makeit:fornitore" />
- 			</suggestBoxes>
- 			
- 			<statusBadges>
- 				<statusBadge name="makeit:checkImporto">
- 					<option value="Si" style="label-success" />
- 					<option value="No" style="label-danger" />
- 				</statusBadge>
- 			</statusBadges>
- 			 			<statusBadges>
- 				<statusBadge name="makeit:pagata">
- 					<option value="Si" style="label-success" />
- 					<option value="No" style="label-danger" />
- 				</statusBadge>
- 			</statusBadges>
- 			
-		</search>
- 	</type>
+ 				<statusBadges>
+ 					<statusBadge name="makeit:checkImporto">
+ 						<option value="Si" style="label-success" />
+ 						<option value="No" style="label-danger" />
+ 					</statusBadge>
+ 				</statusBadges>
+ 				<statusBadges>
+ 					<statusBadge name="makeit:pagata">
+ 						<option value="Si" style="label-success" />
+ 						<option value="No" style="label-danger" />
+ 					</statusBadge>
+ 				</statusBadges>
+		
+			</search>
+ 		</type>
 					
- </types>
+	 </types>
  
   <properties process="false" readOnly="false" />
 
@@ -180,8 +185,8 @@
 		<entry name="exif:resolutionUnit" />
 		<entry name="exif:software" />
 		<entry name="exif:xResolution" />
-		<entry name="exif:yResolution" />
-		<entry name="makeit:azienda" />	
+		<entry name="exif:yResolution" />	
+		<entry name="makeit:azienda" />		
 	</propertyBlacklist>
 	
 	<processDefinitionBlackList>

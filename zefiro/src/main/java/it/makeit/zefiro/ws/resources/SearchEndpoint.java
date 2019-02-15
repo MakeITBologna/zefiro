@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -213,11 +214,12 @@ public class SearchEndpoint {
 				// XXX (Alessio): usare un'istanza statica di SimpleDateFormat?
 				SimpleDateFormat lFormatter = new SimpleDateFormat(DATE_PATTERN);
 				Date lDate = lFormatter.parse(queryFilter.value);
+				
 				if (queryFilter.operator == Operator.LE) {
-					lPredicate = CmisQueryPredicate.between(propertyId, null, lDate);
+					lPredicate = CmisQueryPredicate.between(propertyId, null, this.getEndOfDay(lDate));
 
 				} else if (queryFilter.operator == Operator.GE) {
-					lPredicate = CmisQueryPredicate.between(propertyId, lDate, null);
+					lPredicate = CmisQueryPredicate.between(propertyId, this.getStartOfDay(lDate), null);
 
 				} else {
 					lPredicate = CmisQueryPredicate.eqTo(propertyId, lDate);
@@ -272,7 +274,7 @@ public class SearchEndpoint {
 
 		CmisQueryBuilder lQB = new CmisQueryBuilder(lSession);
 		String lStrQuery = lQB.selectFrom(lStrTypeId, (String[]) null).where(lListPredicates).build();
-
+		System.out.println("QUERY"+lStrQuery);
 		List<org.apache.chemistry.opencmis.client.api.Document> lList = AlfrescoHelper.searchDocuments(lSession, lStrQuery);
 
 		return lList;
@@ -461,5 +463,30 @@ public class SearchEndpoint {
 		}
 		return lStreamingOutput;
 	}
+	
+	private Date getEndOfDay(Date date) {
+	   Calendar calendar = Calendar.getInstance();
+	   calendar.setTime(date);
+	  
+	   int year = calendar.get(Calendar.YEAR);
+	   int month = calendar.get(Calendar.MONTH);
+	   int day = calendar.get(Calendar.DATE);
+	   
+	   calendar.set(year, month, day, 23, 59, 59);
+	   return calendar.getTime();
+	  	   
+	}
+	
+	private Date getStartOfDay(Date date) {
+		   Calendar calendar = Calendar.getInstance();
+		   calendar.setTime(date);
+		   
+		   int year = calendar.get(Calendar.YEAR);
+		   int month = calendar.get(Calendar.MONTH);
+		   int day = calendar.get(Calendar.DATE);
+		   
+		   calendar.set(year, month, day, 0, 0, 0);
+		   return calendar.getTime();
+		}
 
 }
