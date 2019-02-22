@@ -1,5 +1,4 @@
 <config usedb="false">
-
 	<dataTypeConverters>
 		<dataTypeConverter dataType="java.lang.Long" pattern="pattern.integer" converter="org.apache.commons.beanutils.locale.converters.LongLocaleConverter"/>
 		<dataTypeConverter dataType="java.lang.Float" pattern="pattern.decimal" converter="org.apache.commons.beanutils.locale.converters.FloatLocaleConverter"/>
@@ -11,186 +10,57 @@
 		<dataTypeConverter dataType="java.sql.Timestamp" pattern="pattern.timestamp" converter="org.apache.commons.beanutils.locale.converters.SqlTimestampLocaleConverter"/>
 		<dataTypeConverter dataType="java.lang.Integer" pattern="pattern.integer" converter="org.apache.commons.beanutils.locale.converters.IntegerLocaleConverter"/>
 	</dataTypeConverters>
-
-
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="makeit" rootFolderId="910f9cdc-bf12-41f9-beba-0969841a257f" label="Make IT"/> 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="yacme" rootFolderId="ed483515-3f65-4f76-ba18-75a104c0164b" label="Yacme"/> 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://localhost:8081" key="mynt" rootFolderId="6c7fcb21-8f36-4366-901c-e974b09209f3" label="Mynt"/> 
-
-
-
- 	<!-- alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://80.211.32.70:8080" rootFolderId="2903ddda-53bf-48ae-b53d-14b1c0b43c1e" label="Make IT" key="makeit" /> 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://80.211.32.70:8080" rootFolderId="61970cf0-1aef-4a7c-aff2-4cdcb908ef16" label="Yacme" key="yacme" /> 
- 	<alfresco baseTypeId="D:makeit:abstractFattura" baseTypeItemId="I:makeit:abstractItem" host="http://80.211.32.70:8080" rootFolderId="21f3071b-5ce5-4aef-967a-44c208f71b1c" label="Mynt" key="mynt" /--> 
 	
-	<types>
- 		<type name = "D:makeit:fatturaAttiva">
- 		
-			<actions>
- 				<action name="duplicate" portalEvent="duplicaFattura" />
- 			</actions>
- 		
-			<search>
-				<searchField name = "makeit:numeroFattura" />
- 				<searchField name = "makeit:imponibile" />
- 				<searchField name = "makeit:BAF" />
-	 			<searchField name = "makeit:progressivoInvio" />
- 				<searchField name = "makeit:tipo" />
- 				<searchField name = "makeit:storno" />
- 				<searchField name = "makeit:cliente" />
- 				<searchField name = "makeit:dataEmissione" />
- 				<searchField name = "makeit:importo" />
- 				<searchField name = "makeit:dataScadenza" />
- 				<searchField name = "makeit:allegati" />
- 				<searchField name = "makeit:pagataAttiva" />
- 				<searchField name = "makeit:dataIncasso" />
- 				<searchField name = "makeit:stato" />
- 				<searchField name = "makeit:commessa" />
- 				<searchField name = "makeit:banca" />
- 				<searchField name = "makeit:anticipata" />
- 				<searchField name = "makeit:importoAnticipo" />
- 				<searchField name = "makeit:dataContabilizzazione" />
- 				<searchField name = "makeit:note" />
- 			
- 				<searchTableColumn name = "makeit:numeroFattura" />
- 				<searchTableColumn name = "makeit:imponibile" />
- 				<searchTableColumn name = "makeit:progressivoInvio" />
- 				<searchTableColumn name = "makeit:tipo" />
- 				<searchTableColumn name = "makeit:storno" />
- 				<searchTableColumn name = "makeit:cliente" />
- 				<searchTableColumn name = "makeit:dataEmissione" />
- 				<searchTableColumn name = "makeit:importo" />
- 				<searchTableColumn name = "makeit:dataScadenza" />
- 				<searchTableColumn name = "makeit:BAF" />
- 				<searchTableColumn name = "makeit:pagataAttiva" />
- 				<searchTableColumn name = "makeit:dataIncasso" />
- 				<searchTableColumn name = "makeit:stato" />
- 				<searchTableColumn name = "makeit:commessa" />
- 				<searchTableColumn name = "makeit:banca" />
- 				<searchTableColumn name = "makeit:anticipata" />
- 				<searchTableColumn name = "makeit:importoAnticipo" />
- 				<searchTableColumn name = "makeit:dataContabilizzazione" />
- 				<searchTableColumn name = "makeit:note" />
- 			</search>
- 		</type>
- 	
- 		<type name = "D:makeit:fatturaPassiva">
- 			
-			<actions>
- 				<action name="insert" alfrescoDir="Fatture" />
- 			</actions>
-		
-			<search>
-				<searchField name = "makeit:tipo"/>
-				<searchField name = "makeit:tipoFornitore" />
-				<searchField name = "makeit:tipoFornitore" />	
- 				<searchField name = "makeit:dataEmissione" />
- 				<searchField name = "makeit:numeroFattura" />
- 				<searchField name = "makeit:fornitore" />
- 				<searchField name = "makeit:importo" />
-				<searchField name = "makeit:checkImporto" />
- 				<searchField name = "makeit:imponibile" />
- 				<searchField name = "makeit:importoIvaDetraibile" />
-				<searchField name = "makeit:modalitaPagamento" />
- 				<searchField name = "makeit:dataPagamento" />
- 				<searchField name = "makeit:dataScadenza" />	
- 				<searchField name = "makeit:dataIncasso" />
- 				<searchField name = "makeit:allegati" />
- 				<searchField name = "makeit:pagataPassiva" />
- 				<searchField name = "makeit:note" />
- 			
-				<searchTableColumn name = "makeit:tipo" />
-				<searchTableColumn name = "makeit:tipoFornitore" />
-				<searchTableColumn name = "makeit:tipoFornitore" />			
- 				<searchTableColumn name = "makeit:numeroFattura" />
- 				<searchTableColumn name = "makeit:dataEmissione" />
-				<searchTableColumn name = "makeit:dataScadenza" />
-				<searchTableColumn name = "makeit:dataPagamento" />
-				<searchTableColumn name = "makeit:dataIncasso" />
-
-				<searchTableColumn name = "makeit:fornitore" />
- 				<searchTableColumn name = "makeit:importo" />
- 				<searchTableColumn name = "makeit:checkImporto" />
-				<searchTableColumn name = "makeit:imponibile" />
- 				<searchTableColumn name = "makeit:importoIvaDetraibile" />
-  				<searchTableColumn name = "makeit:modalitaPagamento" />
- 				<searchTableColumn name = "makeit:allegati" />
- 				<searchTableColumn name = "makeit:pagataPassiva" />
- 				<searchTableColumn name = "makeit:note" />
- 		
- 				<suggestBoxes>
- 					<suggestBox name="makeit:fornitore" />
- 				</suggestBoxes>
- 			
- 				<statusBadges>
- 					<statusBadge name="makeit:checkImporto">
- 						<option value="Si" style="label-success" />
- 						<option value="No" style="label-danger" />
- 					</statusBadge>
- 				</statusBadges>
- 				<statusBadges>
- 					<statusBadge name="makeit:pagata">
- 						<option value="Si" style="label-success" />
- 						<option value="No" style="label-danger" />
- 					</statusBadge>
- 				</statusBadges>
-		
-			</search>
- 		</type>
-					
-	 </types>
- 
-  <properties process="false" readOnly="false" />
-
-
+ 	<alfresco baseTypeId="D:mio:mioDocument" host="http://zefiro.yacme.com" rootFolderId="dd44465f-7563-4130-b672-b49dfb254e06"/> 
+	
+	<properties process="false" readOnly="false"/>
+	
 	<propertyBlacklist>
-		<entry name="alfcmis:nodeRef" />
-		<entry name="cmis:isImmutable" />
-		<entry name="cmis:versionLabel" />
-		<entry name="cmis:objectTypeId" />
-		<entry name="cmis:description" />
-		<entry name="cmis:createdBy" />
-		<entry name="cmis:checkinComment" />
-		<entry name="cmis:creationDate" />
-		<entry name="cmis:isMajorVersion" />
-		<entry name="cmis:contentStreamFileName" />
-		<entry name="cmis:name" />
-		<entry name="cmis:isLatestVersion" />
-		<entry name="cmis:lastModificationDate" />
-		<entry name="cmis:contentStreamLength" />
-		<entry name="cmis:objectId" />
-		<entry name="cmis:lastModifiedBy" />
-		<entry name="cmis:secondaryObjectTypeIds" />
-		<entry name="cmis:contentStreamId" />
-		<entry name="cmis:contentStreamMimeType" />
-		<entry name="cmis:changeToken" />
-		<entry name="cmis:isPrivateWorkingCopy" />
-		<entry name="cmis:versionSeriesCheckedOutBy" />
-		<entry name="cmis:isVersionSeriesCheckedOut" />
-		<entry name="cmis:versionSeriesId" />
-		<entry name="cmis:isLatestMajorVersion" />
-		<entry name="cmis:versionSeriesCheckedOutId" />
-		<entry name="cmis:baseTypeId" />
-		<entry name="exif:dateTimeOriginal" />
-		<entry name="exif:exposureTime" />
-		<entry name="exif:fNumber" />
-		<entry name="exif:flash" />
-		<entry name="exif:focalLength" />
-		<entry name="exif:isoSpeedRatings" />
-		<entry name="exif:manufacturer" />
-		<entry name="exif:model" />
-		<entry name="exif:orientation" />
-		<entry name="exif:pixelXDimension" />
-		<entry name="exif:pixelYDimension" />
-		<entry name="exif:resolutionUnit" />
-		<entry name="exif:software" />
-		<entry name="exif:xResolution" />
-		<entry name="exif:yResolution" />	
-		<entry name="makeit:azienda" />		
+		<entry name="alfcmis:nodeRef"/>
+		<entry name="cmis:isImmutable"/>
+		<entry name="cmis:versionLabel"/>
+		<entry name="cmis:objectTypeId"/>
+		<entry name="cmis:description"/>
+		<entry name="cmis:createdBy"/>
+		<entry name="cmis:checkinComment"/>
+		<entry name="cmis:creationDate"/>
+		<entry name="cmis:isMajorVersion"/>
+		<entry name="cmis:contentStreamFileName"/>
+		<entry name="cmis:name"/>
+		<entry name="cmis:isLatestVersion"/>
+		<entry name="cmis:lastModificationDate"/>
+		<entry name="cmis:contentStreamLength"/>
+		<entry name="cmis:objectId"/>
+		<entry name="cmis:lastModifiedBy"/>
+		<entry name="cmis:secondaryObjectTypeIds"/>
+		<entry name="cmis:contentStreamId"/>
+		<entry name="cmis:contentStreamMimeType"/>
+		<entry name="cmis:changeToken"/>
+		<entry name="cmis:isPrivateWorkingCopy"/>
+		<entry name="cmis:versionSeriesCheckedOutBy"/>
+		<entry name="cmis:isVersionSeriesCheckedOut"/>
+		<entry name="cmis:versionSeriesId"/>
+		<entry name="cmis:isLatestMajorVersion"/>
+		<entry name="cmis:versionSeriesCheckedOutId"/>
+		<entry name="cmis:baseTypeId"/>
+		<entry name="exif:dateTimeOriginal"/>
+		<entry name="exif:exposureTime"/>
+		<entry name="exif:fNumber"/>
+		<entry name="exif:flash"/>
+		<entry name="exif:focalLength"/>
+		<entry name="exif:isoSpeedRatings"/>
+		<entry name="exif:manufacturer"/>
+		<entry name="exif:model"/>
+		<entry name="exif:orientation"/>
+		<entry name="exif:pixelXDimension"/>
+		<entry name="exif:pixelYDimension"/>
+		<entry name="exif:resolutionUnit"/>
+		<entry name="exif:software"/>
+		<entry name="exif:xResolution"/>
+		<entry name="exif:yResolution"/>
 	</propertyBlacklist>
 	
 	<processDefinitionBlackList>
-		<entry key="activity$mioworkflow" />	
+		<entry key="activity$mioworkflow"/>
 	</processDefinitionBlackList>
-
 </config>

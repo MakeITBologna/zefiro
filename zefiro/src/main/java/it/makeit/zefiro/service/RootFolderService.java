@@ -16,8 +16,9 @@ public class RootFolderService {
 		String[] rootFolderList = configManager.getPropertyList("./alfresco", "@rootFolderId");
 		
 		for (int i = 0; i<labelList.length; i++) {
+			if (labelList[i] == null) { labelList[i] = "default_"+(i+1); };
 			rootFoldersConfiguration.put(labelList[i], rootFolderList[i]);
-		}
+		};
 		
 		return rootFoldersConfiguration;
 	}

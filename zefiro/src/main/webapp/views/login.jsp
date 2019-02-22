@@ -10,7 +10,7 @@
         <div class="form-group" ng-class="jbValidate.getClass(jbLoginForm.password)">
          <input type="password" name="password" ng-model="credentials.password" required class="form-control" placeholder="<fmt:message key="jsp.login.password" />">
         </div>
-        <div class="form-group" ng-class="jbValidate.getClass(jbLoginForm.rootFolder)">
+       <div class="form-group" ng-class="jbValidate.getClass(jbLoginForm.rootFolder)" ng-if="(rootFoldersConfiguration | objSize) > 1">
 		  <select required class="form-control" name="rootFolder" ng-model="credentials.rootFolder"  >
 		    <option ng-repeat="(key, value) in rootFoldersConfiguration" value="{{value}}" >{{key}}</option>
 		  </select>

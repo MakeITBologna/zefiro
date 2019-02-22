@@ -1,16 +1,17 @@
 package it.makeit.jbrick.ws.filters;
 
-import it.makeit.jbrick.Log;
-
 import java.io.IOException;
 
 import javax.annotation.Priority;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+
+import it.makeit.jbrick.Log;
 
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
@@ -20,13 +21,17 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 	@Context
 	private HttpServletRequest mRequest;
  
+	@Context
+	private HttpServletResponse mResponse;
+	
     @Override
     public void filter(ContainerRequestContext pRequestContext) throws IOException {
     	mLog.debug("AuthenticationFilter start");
     	boolean isNotLogin = !pRequestContext.getUriInfo().getPath().endsWith("Login") && mRequest.getSession().getAttribute("utente") == null;
     	boolean isNotRootFolders = !pRequestContext.getUriInfo().getPath().endsWith("rootFolders");
-    	    	
-    	if (isNotLogin && isNotRootFolders) {
+    	boolean isNotValid = !mRequest.isRequestedSessionIdValid();
+
+    	if (isNotLogin && (isNotRootFolders || isNotValid)) {
     		
     		mLog.info("User not logged in!");
     		    		

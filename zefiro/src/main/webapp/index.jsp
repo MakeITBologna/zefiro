@@ -70,9 +70,9 @@
     <ul class="nav navbar-nav">
     	<li><a href="#home"><fmt:message key="jsp.document.label"/></a></li>
    	</ul>
-   	<ul class="nav navbar-nav">
+   	<!-- ul class="nav navbar-nav">
     	<li><a href="#portalAction">Inserisci fattura</a></li>
-   	</ul>
+   	</ul-->
    	<ul class="nav navbar-nav" ng-if="jbAuthFactory.getUser().process == true">
    	<li class="dropdown" uib-dropdown>
           <a class="dropdown-toggle" href uib-dropdown-toggle><fmt:message key="jsp.processes.label"/><span class="caret"></span></a>

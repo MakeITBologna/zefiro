@@ -38,7 +38,6 @@ import it.makeit.jbrick.JBrickException;
 import it.makeit.jbrick.Log;
 import it.makeit.jbrick.http.SessionUtil;
 import it.makeit.jbrick.web.LocaleUtil;
-import it.makeit.jbrick.ws.filters.LogFilter;
 import it.makeit.jbrick.ws.resources.AbstractResource;
 import it.makeit.profiler.dao.UsersBean;
 import it.makeit.zefiro.Util;
@@ -76,7 +75,6 @@ public class LoginResource extends AbstractResource {
 		String[] creadentials = userpassword.split(":");
 		
 		HttpSession lSession = pRequest.getSession();
-
 		String lAction = pRequest.getParameter("action");
 
 		if (!StringUtils.isBlank(lAction) && lAction.equalsIgnoreCase("logout")) {

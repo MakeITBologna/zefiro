@@ -121,12 +121,10 @@ angular.module('main', [
 							jbAuthFactory.storeUser(rdata );
 							$location.url('/login', true);
 						} else { // accesso non consentito
-							
 							$location.url('/forbidden', true);
 						}
 						break;
 					case 404:
-						console.log(response.status)
 						$location.url('/notfound', true);
 						break;
 					case 500:
@@ -318,9 +316,14 @@ angular.module('main', [
 				return $cookies.getObject(storedUserLabel);
 			},
 			storeUser: function(jbuser){ 
+				
+				let process = jbuser.parametersMap != undefined?  jbuser.parametersMap.process : null;
+				let readOnly = jbuser.parametersMap != undefined?  jbuser.parametersMap.readOnly : null;
+				let rootFolderLabel = jbuser.parametersMap != undefined?  jbuser.parametersMap.rootFolderLabel : null;
+				let rootFolderKey = jbuser.parametersMap != undefined?  jbuser.parametersMap.rootFolderKey : null;
+
 				$cookies.putObject(storedUserLabel, { idUser: jbuser.idUser, username: jbuser.username, enabled: jbuser.enabled, fullName: jbuser.fullName, 
-					process: jbuser.parametersMap.process, readOnly: jbuser.parametersMap.readOnly, rootFolderLabel: jbuser.parametersMap.rootFolderLabel, 
-					rootFolderKey: jbuser.parametersMap.rootFolderKey });
+					process: process, readOnly: readOnly, rootFolderLabel: rootFolderLabel, rootFolderKey: rootFolderKey });
 			},
 			removeUser(){
 				$cookies.remove(storedUserLabel);
@@ -343,9 +346,12 @@ angular.module('main', [
 		$scope.credentials = {};
 		$scope.credentials.rootFolder = null;
 		$scope.login = function () {
+			if ($scope.credentials.rootFolder == null){
+				$scope.credentials.rootFolder = $scope.rootFoldersConfiguration[Object.keys($scope.rootFoldersConfiguration)[0]];
+			}
 			 var headers =  {Authorization : "Basic "
 			        + jbUtil.b64EncodeUnicode($scope.credentials.username+ ":" +$scope.credentials.password+ ":" +$scope.credentials.rootFolder)
-			    };
+		    };
 			    
 			$scope.loginPromise =
 				$http.get('a/Login',{headers: headers} )
@@ -612,9 +618,19 @@ angular.module('main', [
 			return $sce.trustAsHtml(url);
 		};
 
-	}]).filter('yesOrNo',function () {
+	}])
+	
+	.filter('yesOrNo',function () {
 		return function (input) {
 			return input ? 'yes' : 'no';
 		};
+	})
 
+	.filter('objSize', function() {
+	  return function(object) {
+		  if (object == null || object == undefined){
+			  return 0;
+		  }
+	    return Object.keys(object).length;
+	  }
 	});

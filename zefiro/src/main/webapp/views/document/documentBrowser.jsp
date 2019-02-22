@@ -167,10 +167,11 @@
 	  <div class="panel-body">
 
 		<div class="row jb-toolbar">
-			<div class="col-sm-3">
+			<div class="col-sm-4">
 				<h4>{{documentTable.total()}} <fmt:message key="jsp.document.label"/> <any ng-if="!jbUtil.isEmptyObject(documentType)">( {{documentType.name}} )</any></h4>
+				<h5 ng-if="documentTable.total() >= 100">limite di estrazione 100 documenti </h5>
 			</div>
-  			<div class="col-sm-9 ">
+  			<div class="col-sm-8">
   				<div class="pull-right">
 					<!-- <button type="button" class="btn btn-default btn-sm" title="<fmt:message key="jsp.results.export.pdf"/>" ng-click="jbSearchFormDocument.print('pdf')"><i class="fa fa-file-pdf-o fa-lg"></i> <fmt:message key="jsp.results.export.pdf"/></button>-->
 					<button ng-show="!relation" type="button" class="btn btn-default btn-sm" title="<fmt:message key="jsp.results.export.xls"/>" ng-click="jbSearchFormDocument.print('xls')"><i class="fa fa-file-excel-o fa-lg"></i> <fmt:message key="jsp.results.export.xls"/></button>
