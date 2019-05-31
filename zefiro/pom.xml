@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-
-	<parent>
-		<groupId>it.makeit</groupId>
-		<artifactId>makeit-project</artifactId>
-		<version>1.4.2</version>
-	</parent>
 
 	<groupId>it.makeit.alfresco.addon</groupId>
 	<artifactId>zefiro</artifactId>
@@ -21,7 +14,7 @@
 	<properties>
 		<deploy-config.basedir>${basedir}/src/main/config</deploy-config.basedir>
 
-		<servlet.version>3.0.1</servlet.version>
+		<servlet.version>3.1.0</servlet.version>
 		<jsp-el.version>2.2.1</jsp-el.version>
 		<taglib.version>1.2.1</taglib.version>
 		<jersey.version>2.22.1</jersey.version>
@@ -30,6 +23,19 @@
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>it.makeit.alfresco.addon</groupId>
+			<artifactId>zefiro-sdk</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.11</version>
+		</dependency>
+
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -149,21 +155,8 @@
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
 		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>log4j-over-slf4j</artifactId>
-			<version>1.6.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-			<version>1.6.4</version>
-		</dependency>
+
+
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
@@ -178,22 +171,52 @@
 			<groupId>net.sourceforge.jexcelapi</groupId>
 			<artifactId>jxl</artifactId>
 			<version>2.6.10</version>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
 			<version>3.8</version>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.5</version>
-		</dependency>
+
+
+
 		<dependency>
 			<groupId>org.apache.chemistry.opencmis</groupId>
 			<artifactId>chemistry-opencmis-client-impl</artifactId>
 			<version>0.13.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+
+
+
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+
+
+
+
+
 		<dependency>
 			<groupId>com.google.http-client</groupId>
 			<artifactId>google-http-client</artifactId>
@@ -216,9 +239,9 @@
 			<version>2.2.4</version>
 		</dependency>
 		<dependency>
-    		<groupId>com.google.http-client</groupId>
-    		<artifactId>google-http-client-gson</artifactId>
-    		<version>1.21.0</version>
+			<groupId>com.google.http-client</groupId>
+			<artifactId>google-http-client-gson</artifactId>
+			<version>1.21.0</version>
 		</dependency>
 
 		<dependency>
@@ -246,15 +269,9 @@
 
 	<build>
 		<finalName>zefiro</finalName>
-		
+
 		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
+
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.3</version>
@@ -282,29 +299,16 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 
-			<plugin>
-				<groupId>external.atlassian.jgitflow</groupId>
-				<artifactId>jgitflow-maven-plugin</artifactId>
-				<configuration>
-					<featureRebase>true</featureRebase>
 
-					<allowSnapshots>true</allowSnapshots>
-					<allowUntracked>true</allowUntracked>
-					<noFeatureBuild>true</noFeatureBuild>
-				</configuration>
-			</plugin>
-			<plugin>
-    			<groupId>org.apache.maven.plugins</groupId>
-    			<artifactId>maven-javadoc-plugin</artifactId>
-    			<version>3.0.1</version>
-    		</plugin>
+
 		</plugins>
 	</build>
+
 	<profiles>
 		<profile>
 			<id>development</id>
@@ -316,5 +320,25 @@
 				<directoryConfigurationXml>${deploy-config.basedir}/development</directoryConfigurationXml>
 			</properties>
 		</profile>
+		<profile>
+			<id>external</id>
+			<properties>
+				<webXmlPath>${deploy-config.basedir}/external/web.xml</webXmlPath>
+				<directoryConfigurationXml>${deploy-config.basedir}/external</directoryConfigurationXml>
+			</properties>
+		</profile>
 	</profiles>
+
+	<distributionManagement>
+		<repository>
+			<id>central</id>
+			<name>artifactory-releases</name>
+			<url>http://artifactory.rete.make-it:8081/artifactory/libs-release-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>artifactory-snapshots</name>
+			<url>http://artifactory.rete.make-it:8081/artifactory/libs-snapshot-local</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>

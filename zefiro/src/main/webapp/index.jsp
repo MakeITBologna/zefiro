@@ -50,6 +50,8 @@
 <script type="text/javascript" src="js/app/process.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/task.js?version=${version}"></script>
 <script type="text/javascript" src="js/app/authority.js?version=${version}"></script>
+<script type="text/javascript" src="js/app/applicationState.js?version=${version}"></script>
+<script id="customTemplate.html" type="text/ng-template"><a><span bind-html-unsafe="match.label | typeaheadHighlight:query"><i>({{match.model.capital}})</script>  
 
 </head>
 
@@ -63,14 +65,21 @@
       </a>
     </div>
     <ul class="nav navbar-nav">
+       <li><a class="jb-folder-filter-title">{{getUser().rootFolderLabel}}</a></li>
+    </ul>
+    <ul class="nav navbar-nav">
     	<li><a href="#home"><fmt:message key="jsp.document.label"/></a></li>
    	</ul>
+   	<!-- ul class="nav navbar-nav">
+    	<li><a href="#portalAction">Inserisci fattura</a></li>
+   	</ul-->
    	<ul class="nav navbar-nav" ng-if="jbAuthFactory.getUser().process == true">
    	<li class="dropdown" uib-dropdown>
           <a class="dropdown-toggle" href uib-dropdown-toggle><fmt:message key="jsp.processes.label"/><span class="caret"></span></a>
           <ul class="dropdown-menu" uib-dropdown-menu>
     		<li><a href="#process"><fmt:message key="jsp.myProcesses.label"/></a></li>
     		<li><a href="#task"><fmt:message key="jsp.myTasks.label"/></a></li>
+    		
     	  </ul>
         </li>
    	</ul>

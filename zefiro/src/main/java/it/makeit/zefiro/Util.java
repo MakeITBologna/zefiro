@@ -2,8 +2,12 @@ package it.makeit.zefiro;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,6 +15,7 @@ import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.commons.lang.StringUtils;
 
 import it.makeit.alfresco.AlfrescoConfig;
+import it.makeit.alfresco.addon.ZefiroProperties;
 import it.makeit.jbrick.JBrickConfigManager;
 import it.makeit.jbrick.JBrickException;
 import it.makeit.zefiro.DecodedFieldNote.DecodingType;
@@ -22,7 +27,6 @@ public final class Util {
 	}
 
 	public static AlfrescoConfig getDefaultAlfrescoConfig(String pUsername, String pPassword) {
-
 		URL lUrlHost;
 		try {
 			lUrlHost = new URL(JBrickConfigManager.getInstance().getMandatoryProperty("alfresco/@host"));
@@ -35,7 +39,6 @@ public final class Util {
 		String lStrUsername = pUsername;
 		String lStrPassword = pPassword;
 		String lStrRootFolderId = JBrickConfigManager.getInstance().getMandatoryProperty("alfresco/@rootFolderId");
-		
 		boolean toProcess = Boolean.valueOf(JBrickConfigManager.getInstance().getMandatoryProperty("properties/@process"));
 		boolean readOnly =  Boolean.valueOf(JBrickConfigManager.getInstance().getMandatoryProperty("properties/@readOnly"));
 		//return new AlfrescoConfig(lUrlHost, lStrUsername, lStrPassword, lStrRootFolderId);
@@ -106,5 +109,30 @@ public final class Util {
 		}
 
 		return true;
+	}
+
+	public static Map<String, Object> createPropertiesMapFromRequest(HttpServletRequest httpRequest) {
+		Map<String, Object> properties = new HashMap<String, Object>();
+		AlfrescoConfig config = getUserAlfrescoConfig(httpRequest);
+		properties.put(ZefiroProperties.USER, config.getUsername());
+		
+		String remoteHost = httpRequest.getRemoteHost();
+        String remoteAddr = httpRequest.getRemoteAddr();
+        if (remoteAddr.equals("0:0:0:0:0:0:0:1")) {
+            try {
+				InetAddress localip = java.net.InetAddress.getLocalHost();
+	            remoteAddr = localip.getHostAddress();
+	            remoteHost = localip.getHostName();
+			} catch (UnknownHostException e) {
+				throw new JBrickException(e, JBrickException.FATAL);
+			}
+            
+        }
+        	
+        properties.put(ZefiroProperties.REMOTE_ADDRESS, remoteAddr);
+		properties.put(ZefiroProperties.REMOTE_HOST, remoteHost);
+		
+		
+		return properties;
 	}
 }

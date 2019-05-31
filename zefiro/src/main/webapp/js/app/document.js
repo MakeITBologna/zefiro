@@ -2,7 +2,7 @@
  * document resource module
  * 
  */
-angular.module('document', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentType', 'angular.filter'])
+angular.module('document', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentType', 'angular.filter', 'applicationState'])
 
 .factory('DocumentResource', ['$resource', function($resource) {
 	return $resource('a/Document/:id', {id:'@id'}, {
@@ -19,12 +19,25 @@ angular.module('document', ['ngResource', 'ui.bootstrap', 'ngTable', 'documentTy
 	});
 }])
 
+.factory('ItemResource', ['$resource', function($resource) {
+	return $resource('a/Item/:id', {id:'@id'}, {
+		update: {method:'PUT'}
+	});
+}])
+
 .factory('RelationResource', ['$resource', function($resource) {
 	return $resource('a/Relation/:id',{}, {});
 }])
 
-.controller('DocumentController', ['$scope', 'DocumentResource', 'DocumentTypeResource', 'RelationResource', 'NgTableParams', 'jbMessages', 'jbPatterns', 'jbValidate', 'jbUtil', 'mioPropertyBlacklist',
-function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTableParams, jbMessages, jbPatterns, jbValidate, jbUtil, mioPropertyBlacklist) {
+.factory('SearchResource',['$resource', function($resource) {
+	return $resource('a/Search/');
+}])
+
+.controller('DocumentController', ['$scope', 'DocumentResource', 'DocumentTypeResource', 'ItemResource', 'RelationResource', 'SearchResource', 
+	'NgTableParams', 'jbMessages', 'jbPatterns', 'jbValidate', 'jbUtil', 'mioPropertyBlacklist', 'customConfiguration', '$location', '$rootScope', 
+	'$route', 'externalDocument', 
+function($scope, DocumentResource, DocumentTypeResource, ItemResource, RelationResource, SearchResource, NgTableParams, jbMessages, jbPatterns, 
+		jbValidate, jbUtil, mioPropertyBlacklist, customConfiguration, $location, $rootScope, $route, externalDocument) {
 	
 	
 	$scope.jbMessages = jbMessages;
@@ -57,6 +70,19 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 	$scope.documentTable = new NgTableParams({count: 25}, {});
 	$scope.userDocumentTypes = DocumentTypeResource.query($scope.getUser());
 	
+	$scope.isItem = false;
+	$scope.customConfiguration = customConfiguration;
+	$scope.customizedSearch = false;
+	
+	
+	
+	
+	 
+	
+	
+	
+	
+	
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,9 +105,42 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 			return;
 		}
 		
+		availableSearchProp = [];
+		availableSearchCol = [];
+		suggestBox = [];
+		statusBadge = [];
+		
+		$scope.customConfiguration.value.map(function(d){
+			if (d.type == idType){
+				availableSearchProp = availableSearchProp.concat(d.searchField);
+				suggestBox = suggestBox.concat(d.suggestBox);
+				availableSearchCol = availableSearchCol.concat(d.searchTableColumn);
+				d.statusBadge.map(function(e){
+					statusBadge = statusBadge.concat(e.name);
+				})
+			}
+		});
+		
 		$scope.clearSearch(form);
 		$scope.setDocumentType("search", idType);
 		$scope.documentTemplate.type = idType;
+	}
+	
+	$scope.getBadgeClass = function(property, pvalue){
+		var cssBadge = {};
+		
+		$scope.customConfiguration.value.map(function(d){
+			if (d.type == $scope.documentTemplate.type){
+				d.statusBadge.map(function(e){
+					cssBadge[e.name]={};
+					e.option.map(function (x){
+						cssBadge[e.name][x.value]=x.style;
+					});
+				})
+			}
+		});
+
+		return cssBadge[property][pvalue];
 	}
 	
 	//Ricerca documenti a partire dalla form di ricerca
@@ -93,7 +152,7 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 		if($scope.documentTemplate.propertyNames != "")
 			$scope.documentTemplate.propertyNames = $scope.documentTemplate.propertyNames.substr(1);
 		$scope.documentTable.settings({dataset: []});
-		var documentPromise = DocumentResource.query($scope.documentTemplate, function() {
+		var documentPromise = SearchResource.query($scope.documentTemplate, function() {
 			for (i in documentPromise) {
 				var d = documentPromise[i];
 				if (d.properties) {
@@ -116,7 +175,8 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 		$scope.documentTemplate['cmis:description'] = null;
 		$scope.documentTemplate['cmis:createdBy'] = null;
 		$scope.documentTemplate['cmis:creationDate|GE'] = null;
-		$scope.documentTemplate['cmis:creationDate|LE'] = null;
+		$scope.documentTemplate['cmis:creationDate|LE'] = null;		
+
 		$scope.documentTemplate['contains'] = null;
 		
 		for (i in $scope.documentType.propertyList) {
@@ -132,6 +192,7 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 		$scope.summaries = {};
 		for (var i in $scope.documentType.propertyList) {
 			var p = $scope.documentType.propertyList[i];
+
 			if ($scope.isNumeric(p.propertyType) && p.queryable) {
 				$scope.summaries[p.queryName] = 0;
 			}
@@ -148,9 +209,10 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 	}
 	
 	//Gestisce la matrice utilizzata per creare il form di ricerca
-	$scope.getSearchMatrix = function(aProperties, nColumns) {
+	$scope.getSearchMatrix = function(aProperties, nColumns, availableSearchProp, suggestBox) {
 		
 		if (jbUtil.isEmptyObject(aProperties)) return;
+		aProperties = availableSearchProp.length > 0? aProperties.filter(prop => availableSearchProp.includes(prop.name)) : aProperties;
 		
 		var r = [];
 		var c = new Array();
@@ -162,11 +224,15 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 						c = new Array();
 				}
 				
+				if (suggestBox.indexOf(aProperties[j].name) >= 0){
+					aProperties[j].suggestBox = true;
+				}
+
 				c.push(aProperties[j]);
 				i++;
 			//}
 		}
-		
+
 		if (c[0]) r.push(c);
 		return r;
 	}
@@ -204,19 +270,115 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 		$scope.currentFileName = null;
 		$scope.uploadedFileName = null;
 		$scope.documentEditing.type = $scope.documentTemplate.type ;
+		$scope.documentEditing.baseType = $scope.documentTemplate.baseType ;
 		$scope.documentTypeEdit = {};
 		if($scope.documentEditing.type)
 			$scope.setDocumentType("edit", $scope.documentEditing.type);
+		
 	}
 	
-	//Apre la pagina di dettaglio per la modifica di un elemento esistente
+	
+	$scope.externalDocumentInserted = function( idAlfresco) {
+		//$scope.$apply(function() {
+			$scope.documentEditing = {};
+			$scope.documentEditing.id = idAlfresco;
+			
+			$scope.currentRownum = -1;
+			
+			var baseType = 'cmis:document';
+			$scope.isItem = baseType === 'cmis:document'? false : true;			
+			var resource = $scope.isItem? ItemResource : DocumentResource;
+
+			var documentPromise = resource.get($scope.documentEditing, function() {
+				$scope.documentEditing = documentPromise;
+				$scope.documentBreadcrumbs = [];
+				
+				
+				
+				
+				$scope.editing = true;
+				$scope.readOnly = false;
+				
+				$scope.setDocumentType("externalDocument", $scope.documentEditing.type);
+				$scope.getHandledPropertyList($scope.documentEditing.properties);
+				
+				if (baseType == 'cmis:document'){
+					$scope.currentFileName = "a/Document/" + $scope.documentEditing.id + "/preview";
+				};
+							
+				if(baseType == 'cmis:document'){
+					$scope.loadVersions($scope.documentEditing.id);
+				};
+				
+				$scope.isExternalDocumentEditable =  $scope.documentEditing.type == 'D:makeit:fatturaAttiva';
+				
+			});
+        //});
+		
+	};
+	
+	$scope.modifyExternalDocument = function(){
+		
+		externalDocument.portalEvent = "showModificaFattura";
+		externalDocument.context.idAlfresco = $scope.documentEditing.id;
+		externalDocument.context.azienda = $scope.getUser().rootFolderKey;
+
+		$location.url('/portalAction', true);	
+	}
+	
+	if(externalDocument.context.idAlfresco){
+		$scope.externalDocumentInserted(externalDocument.context.idAlfresco);
+			
+	} 
+	
+	
+	
 	$scope.startEdit = function(i, duplicate) {
 		$scope.currentRownum = i;
 		$scope.breadCrumbIndex = 0;
 		$scope.documentEditing = {};
 		$scope.documentEditing.id = $scope.documentTable.data[$scope.currentRownum].id;
-		var documentPromise = DocumentResource.get($scope.documentEditing, function() {
+		
+		var baseType = $scope.documentTable.data[$scope.currentRownum].baseType;
+		$scope.isItem = baseType === 'cmis:document'? false : true;
+		
+		
+		var resource = $scope.isItem? ItemResource : DocumentResource;
+		var documentPromise = resource.get($scope.documentEditing, function() {
 			$scope.documentEditing = documentPromise;
+			$scope.documentBreadcrumbs = [];
+			$scope.documentBreadcrumbs.push({
+				id: $scope.documentEditing.id,
+				name: $scope.documentEditing.name,
+				description: $scope.documentEditing.description,
+				rownum: i
+			});
+			$scope.editing = true;
+			$scope.readOnly = false;
+			
+			$scope.setDocumentType("edit", $scope.documentEditing.type);
+			$scope.getHandledPropertyList($scope.documentEditing.properties);
+			if (duplicate === true) {
+				$scope.currentRownum = null;
+				$scope.documentEditing.name = null;
+				$scope.documentEditing.id = null;
+				$scope.currentFileName = null;
+				$scope.uploadedFileName = null;
+			} else if (baseType == 'cmis:document'){
+				$scope.currentFileName = "a/Document/" + $scope.documentEditing.id + "/preview";
+			};
+						
+			if(baseType == 'cmis:document'){
+				$scope.loadVersions($scope.documentEditing.id);
+			};
+			$scope.isExternalDocumentEditable =  $scope.documentEditing.type == 'D:makeit:fatturaAttiva';
+		});
+
+	}
+	
+	$scope.editItem = function (){
+		var itemPromise = ItemResource.get($scope.documentEditing, function() {
+			$scope.documentEditing = itemPromise;
 			$scope.documentBreadcrumbs = [];
 			$scope.documentBreadcrumbs.push({
 				id: $scope.documentEditing.id,
@@ -236,15 +398,10 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 				$scope.documentEditing.id = null;
 				$scope.currentFileName = null;
 				$scope.uploadedFileName = null;
-			} else {
-				$scope.currentFileName = "a/Document/" + $scope.documentEditing.id + "/preview";
-			}
-						
-			//Carica le versioni
-			$scope.loadVersions($scope.documentEditing.id);
+			};
 		});
 	}
-
+	
 	//Carica in documentVersions le versioni del documento con id passato in ingresso alla funzione
 	$scope.loadVersions = function(pId){
 		DocumentResource.getVersions({id: pId})
@@ -257,40 +414,68 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 	
 	//Modalità visualizzazione documento in sola lettura
 	$scope.showDocument = function(shortDocument) {
-		
 		$scope.currentRownum = -1;
 		$scope.documentEditing = {};
 		$scope.documentEditing.id = shortDocument.id;
-		var documentPromise = DocumentResource.get($scope.documentEditing, function() {
+		
+		var resource = shortDocument.baseType == "cmis:item"? ItemResource : DocumentResource;
+		
+		var documentPromise = resource.get($scope.documentEditing, function() {
+			
+			$scope.isItem = shortDocument.baseType === 'cmis:document'? false : true;
+			
 			$scope.documentEditing = documentPromise;
 			$scope.documentBreadcrumbs.push(shortDocument);
-			$scope.loadVersions($scope.documentEditing.id);
+			
 			$scope.editing = true;
 			$scope.readOnly = true;
 			
 			$scope.breadCrumbIndex++;
 			$scope.setDocumentType("edit", $scope.documentEditing.type);
-			$scope.currentFileName = "a/Document/" + $scope.documentEditing.id + "/preview";
+			
+			if(!$scope.isItem) {
+				$scope.loadVersions($scope.documentEditing.id);
+				$scope.currentFileName = "a/Document/" + $scope.documentEditing.id + "/preview";
+			}
+			
+			
 		});
 	}
 	
 	//Inserisce / modifica elemento
 	$scope.saveDetail = function(form) {
+
+		$scope.isItem = $scope.documentType.baseType === 'cmis:document'? false : true; 
+		//fix per external document
+		
+		var resource =  $scope.isItem == true? ItemResource : DocumentResource;
+
 		if ($scope.currentRownum != null) {
-			DocumentResource
+			
+				resource
 				.update($scope.documentEditing)
 				.$promise
 				.then(function(data) {
-					if (data && data.properties) {
-						for (j in $scope.documentType.propertyList) {
-							var p = $scope.documentType.propertyList[j];
-							data[p.queryName] = $scope.getColumnValue(data, p.queryName);
+					if($scope.currentRownum == -1){		
+						// inserimento dell'externalDocument
+						// allo stato attuale non aggiorno la tabella
+					} else {
+						if (data && data.properties) {
+							for (j in $scope.documentType.propertyList) {
+								var p = $scope.documentType.propertyList[j];
+								data[p.queryName] = $scope.getColumnValue(data, p.queryName);
+							}
 						}
-					}
-					angular.extend($scope.documentTable.data[$scope.currentRownum], data);
-					$scope.closeDetail(form);
-					$scope.documentTable.reload();
-				});
+						angular.extend($scope.documentTable.data[$scope.currentRownum], data);
+						$scope.closeDetail(form);
+						$scope.documentTable.reload();	
+					}	
+					
+					
+				});	
+			
+			
+			
 		} else {
 			$scope.documentEditing.createdBy = $scope.getUser().fullName;
 			$scope.documentEditing.created = Date.now();
@@ -310,7 +495,13 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 					propertyType: p.propertyType
 				});
 			}
-			DocumentResource.save($scope.documentEditing)
+			
+			action = $scope.getAction("insert", $scope.documentTypeEdit.id);
+			if (action){
+				$scope.documentEditing.alfrescoDir = action.alfrescoDir;
+			}
+			
+			resource.save($scope.documentEditing)
 				.$promise
 				.then(function(data) {
 					if($scope.documentTable.settings().dataset){
@@ -353,9 +544,13 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 	//ELIMINAZIONE  / DUPLICAZIONE
 	
 	$scope.deleteRow = function(i) {
+		let baseType = $scope.documentTable.data[i].baseType;
+		let resource = baseType === 'cmis:document'? DocumentResource : ItemResource;
+
 		$scope.documentEditing = {};
 		$scope.documentEditing.id = $scope.documentTable.data[i].id;
-		DocumentResource.delete($scope.documentEditing, function() {
+		
+		resource.delete($scope.documentEditing, function() {
 			var j = jbUtil.findRowWithKey($scope.documentTable.settings().dataset, 'id', $scope.documentEditing.id);
 			$scope.documentTable.settings().dataset.splice(j, 1);
 			$scope.documentTable.data.splice(i, 1);
@@ -364,34 +559,72 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 	}
 	
 	$scope.startDuplicate = function(i) {
-		$scope.startEdit(i, true);
+		
+		var action = $scope.getAction("duplicate", $scope.documentTemplate.type);
+
+		if (action){
+			externalDocument.portalEvent = 'duplicaFattura';
+			externalDocument.context.idAlfresco = $scope.documentTable.data[i].id;
+			externalDocument.context.azienda = $scope.getUser().rootFolderKey;
+
+			$location.url('/portalAction', true);	
+
+		} else {
+			$scope.startEdit(i, true);
+		}
+		
 	}
 	
+	$scope.getAction = function (actionName, type){
+		var configuration = $scope.customConfiguration.value.filter(config => {return config.type == type})[0];
+		var duplicateAction = configuration != undefined? configuration.actions.filter(action => {return action.name = actionName}): [];
+		var action = duplicateAction.length != 0? duplicateAction[0] : null;
+		return action;
+	}
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	//UTILITA'
 	
 	//Aggiorna la lista delle proprietà del tipo documento
 	$scope.setDocumentType = function(context, id, callback){
 		var documentTypePromise = DocumentTypeResource.get({id: id}, function() {
-			
 			angular.extend(documentTypePromise, {propertyList: $scope.getHandledPropertyList(documentTypePromise.properties)});
 			
 			var relationTypesPromise = DocumentTypeResource.getRelations({id: id}, function() {
 				angular.extend(documentTypePromise, {relationTypes: relationTypesPromise});
-								
-				if (context == "search") {
+				
+				if(context == "externalDocument"){
 					$scope.documentType = documentTypePromise;
-					$scope.searchMatrix = $scope.getSearchMatrix($scope.documentType.propertyList, 2);
-				}
-				else {
+					$scope.documentTypeEdit = documentTypePromise;
+				} else if (context == "search") {
+					$scope.documentType = documentTypePromise;
+					$scope.searchMatrix = $scope.getSearchMatrix($scope.documentType.propertyList, 2, availableSearchProp, suggestBox);
+					// se esiste una list adi colonne disponibili filtro la lista delle proprietà
+					$scope.documentType.propertyList = availableSearchCol.length > 0? $scope.documentType.propertyList.filter(prop => availableSearchCol.includes(prop.name)) : $scope.documentType.propertyList;
+					// inserisco proprietà statusBadge
+					$scope.documentType.propertyList.map(function(p){if (statusBadge.indexOf(p.name) >= 0){p.statusBadge = true;}});
+					// comparatore per riordinare le colonne di ricerca
+					if  (availableSearchCol.length > 0){
+						$scope.documentType.propertyList.sort(
+							function (a, b){
+								if (availableSearchCol.indexOf(a.name) < availableSearchCol.indexOf(b.name)){
+									return -1;
+								};
+								if (availableSearchCol.indexOf(a.name) > availableSearchCol.indexOf(b.name)){
+									return 1;
+								};
+								return 0;
+							});
+					};
+					
+				} else {
 					$scope.documentTypeEdit = documentTypePromise;
 				}
-				
+
 				if (callback) callback();
 			});
 		});
 	}
-	
+ 
 	//Gestione Breadcrumb
 	$scope.gotoDocumentBreadcrumb = function(i, form) {
 		if (i < 0) {
@@ -490,7 +723,6 @@ function($scope, DocumentResource, DocumentTypeResource, RelationResource, NgTab
 		$scope.editing = false;
 		$scope.relation = true;
 		$scope.addingRelationType = relType;
-		
 		// salvo lo stato della pagina di ricerca
 		$scope.searchStatus =  angular.extend({}, {
 			documentTemplate: $scope.documentTemplate, 

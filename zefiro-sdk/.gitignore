@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 /bin/
+=======
+/target/
+/.classpath
+/.project
+>>>>>>> refs/heads/develop

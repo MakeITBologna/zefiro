@@ -1,5 +1,4 @@
 <config usedb="false">
-
 	<dataTypeConverters>
 		<dataTypeConverter dataType="java.lang.Long" pattern="pattern.integer" converter="org.apache.commons.beanutils.locale.converters.LongLocaleConverter"/>
 		<dataTypeConverter dataType="java.lang.Float" pattern="pattern.decimal" converter="org.apache.commons.beanutils.locale.converters.FloatLocaleConverter"/>
@@ -11,59 +10,57 @@
 		<dataTypeConverter dataType="java.sql.Timestamp" pattern="pattern.timestamp" converter="org.apache.commons.beanutils.locale.converters.SqlTimestampLocaleConverter"/>
 		<dataTypeConverter dataType="java.lang.Integer" pattern="pattern.integer" converter="org.apache.commons.beanutils.locale.converters.IntegerLocaleConverter"/>
 	</dataTypeConverters>
-
- <!--<alfresco baseTypeId="D:myca:calcio" host="http://127.0.0.1:8080" rootFolderId="5a556f1c-dce6-42bd-aea1-3d918660dbba"/> 	-->
-<alfresco baseTypeId="D:mio:mioDocument" host="http://10.232.1.210:8080" rootFolderId="dd44465f-7563-4130-b672-b49dfb254e06"/> 
-	<!--<alfresco baseTypeId="cmis:document" host="http://10.232.1.211:8080" rootFolderId="0e9621a2-1e16-4a6b-97c3-53bda3e49de7"/> -->
-  <properties process="false" readOnly="true" />
-
+	
+ 	<alfresco baseTypeId="D:mio:mioDocument" host="http://zefiro.yacme.com" rootFolderId="dd44465f-7563-4130-b672-b49dfb254e06"/> 
+	
+	<properties process="false" readOnly="false"/>
+	
 	<propertyBlacklist>
-		<entry name="alfcmis:nodeRef" />
-		<entry name="cmis:isImmutable" />
-		<entry name="cmis:versionLabel" />
-		<entry name="cmis:objectTypeId" />
-		<entry name="cmis:description" />
-		<entry name="cmis:createdBy" />
-		<entry name="cmis:checkinComment" />
-		<entry name="cmis:creationDate" />
-		<entry name="cmis:isMajorVersion" />
-		<entry name="cmis:contentStreamFileName" />
-		<entry name="cmis:name" />
-		<entry name="cmis:isLatestVersion" />
-		<entry name="cmis:lastModificationDate" />
-		<entry name="cmis:contentStreamLength" />
-		<entry name="cmis:objectId" />
-		<entry name="cmis:lastModifiedBy" />
-		<entry name="cmis:secondaryObjectTypeIds" />
-		<entry name="cmis:contentStreamId" />
-		<entry name="cmis:contentStreamMimeType" />
-		<entry name="cmis:changeToken" />
-		<entry name="cmis:isPrivateWorkingCopy" />
-		<entry name="cmis:versionSeriesCheckedOutBy" />
-		<entry name="cmis:isVersionSeriesCheckedOut" />
-		<entry name="cmis:versionSeriesId" />
-		<entry name="cmis:isLatestMajorVersion" />
-		<entry name="cmis:versionSeriesCheckedOutId" />
-		<entry name="cmis:baseTypeId" />
-		<entry name="exif:dateTimeOriginal" />
-		<entry name="exif:exposureTime" />
-		<entry name="exif:fNumber" />
-		<entry name="exif:flash" />
-		<entry name="exif:focalLength" />
-		<entry name="exif:isoSpeedRatings" />
-		<entry name="exif:manufacturer" />
-		<entry name="exif:model" />
-		<entry name="exif:orientation" />
-		<entry name="exif:pixelXDimension" />
-		<entry name="exif:pixelYDimension" />
-		<entry name="exif:resolutionUnit" />
-		<entry name="exif:software" />
-		<entry name="exif:xResolution" />
-		<entry name="exif:yResolution" />	
+		<entry name="alfcmis:nodeRef"/>
+		<entry name="cmis:isImmutable"/>
+		<entry name="cmis:versionLabel"/>
+		<entry name="cmis:objectTypeId"/>
+		<entry name="cmis:description"/>
+		<entry name="cmis:createdBy"/>
+		<entry name="cmis:checkinComment"/>
+		<entry name="cmis:creationDate"/>
+		<entry name="cmis:isMajorVersion"/>
+		<entry name="cmis:contentStreamFileName"/>
+		<entry name="cmis:name"/>
+		<entry name="cmis:isLatestVersion"/>
+		<entry name="cmis:lastModificationDate"/>
+		<entry name="cmis:contentStreamLength"/>
+		<entry name="cmis:objectId"/>
+		<entry name="cmis:lastModifiedBy"/>
+		<entry name="cmis:secondaryObjectTypeIds"/>
+		<entry name="cmis:contentStreamId"/>
+		<entry name="cmis:contentStreamMimeType"/>
+		<entry name="cmis:changeToken"/>
+		<entry name="cmis:isPrivateWorkingCopy"/>
+		<entry name="cmis:versionSeriesCheckedOutBy"/>
+		<entry name="cmis:isVersionSeriesCheckedOut"/>
+		<entry name="cmis:versionSeriesId"/>
+		<entry name="cmis:isLatestMajorVersion"/>
+		<entry name="cmis:versionSeriesCheckedOutId"/>
+		<entry name="cmis:baseTypeId"/>
+		<entry name="exif:dateTimeOriginal"/>
+		<entry name="exif:exposureTime"/>
+		<entry name="exif:fNumber"/>
+		<entry name="exif:flash"/>
+		<entry name="exif:focalLength"/>
+		<entry name="exif:isoSpeedRatings"/>
+		<entry name="exif:manufacturer"/>
+		<entry name="exif:model"/>
+		<entry name="exif:orientation"/>
+		<entry name="exif:pixelXDimension"/>
+		<entry name="exif:pixelYDimension"/>
+		<entry name="exif:resolutionUnit"/>
+		<entry name="exif:software"/>
+		<entry name="exif:xResolution"/>
+		<entry name="exif:yResolution"/>
 	</propertyBlacklist>
 	
 	<processDefinitionBlackList>
-		<entry key="activity$mioworkflow" />	
+		<entry key="activity$mioworkflow"/>
 	</processDefinitionBlackList>
-
 </config>

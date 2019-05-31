@@ -16,20 +16,20 @@ angular.module('main', [
 	'workflow',
 	'process',
 	'task',
-	'authority'
+	'authority',
+	'applicationState'
 ])
 
 
 	//Contiene provider e costanti
-	.config(['$routeProvider', '$httpProvider', 'uibDatepickerPopupConfig', 'uiDatetimePickerConfig', 'jbMessages',
-		function ($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePickerConfig, jbMessages) {
+	.config(['$routeProvider', '$httpProvider', 'uibDatepickerPopupConfig', 'uiDatetimePickerConfig', 'jbMessages','$sceDelegateProvider', 
+		function ($routeProvider, $httpProvider, uibDatepickerPopupConfig, uiDatetimePickerConfig, jbMessages, $sceDelegateProvider) {
 			$routeProvider
 				//Pagina home
 				.when('/home', {
 					templateUrl: 'views/document/documentBrowser.jsp',
 					controller: 'DocumentController'
 				})
-			
 				//Errore generico
 				.when('/error', {
 					templateUrl: 'views/error.jsp'
@@ -54,6 +54,7 @@ angular.module('main', [
 					resolve: {
 						reset: function (jbAuthFactory) {
 							jbAuthFactory.removeUser();
+							externalDocument = {'portalEvent':null, 'context':{}};
 						}
 					}
 				})
@@ -69,15 +70,22 @@ angular.module('main', [
 					templateUrl: 'views/process/taskBrowser.jsp',
 					controller: 'TaskController'
 				})
-
+				
+				.when('/portalAction', {	
+					template: "portale esterno",
+					controller: 'ExternalActionController'
+				})
+				
 				//Ridireziona a login
 				.otherwise({
 					redirectTo: '/login'
 				});
-
+			
 			$httpProvider.interceptors.push('responseErrorHandler');
 			
 			$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+			
+			
 
 			uibDatepickerPopupConfig.currentText = jbMessages.today;
 			uibDatepickerPopupConfig.clearText = jbMessages.clear;
@@ -89,14 +97,13 @@ angular.module('main', [
 			uiDatetimePickerConfig.nowText = jbMessages.now;
 			uiDatetimePickerConfig.dateText = jbMessages.date;
 			uiDatetimePickerConfig.timeText = jbMessages.time;
+			
+			
+			
+			
 		}])
 
-	//Codice che deve esser eseguito per lanciare l'applicazione
-	.run(['$confirmModalDefaults', 'jbMessages', function ($confirmModalDefaults, jbMessages) {
-		$confirmModalDefaults.defaultLabels.title = jbMessages.confirmTitle;
-		$confirmModalDefaults.defaultLabels.ok = jbMessages.ok;
-		$confirmModalDefaults.defaultLabels.cancel = jbMessages.cancel;
-	}])
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//FACTORY
@@ -104,7 +111,6 @@ angular.module('main', [
 	.factory('responseErrorHandler', ['$q', '$location', '$rootScope','jbAuthFactory', function responseErrorHandler($q, $location, $rootScope, jbAuthFactory) {
 		return {
 			'responseError': function (response) {
-				//console.log(response.data);
 				switch (response.status) {	
 					case 403:
 						var rdata = response.data;
@@ -115,7 +121,6 @@ angular.module('main', [
 							jbAuthFactory.storeUser(rdata );
 							$location.url('/login', true);
 						} else { // accesso non consentito
-							
 							$location.url('/forbidden', true);
 						}
 						break;
@@ -198,7 +203,7 @@ angular.module('main', [
 					result.push(angular.extend({}, obj[p]));
 				}
 
-				return result;
+				return result;'E'
 			},
 			contains: function (container, element) {
 				for (var i in container) {
@@ -311,45 +316,105 @@ angular.module('main', [
 				return $cookies.getObject(storedUserLabel);
 			},
 			storeUser: function(jbuser){ 
-				$cookies.putObject(storedUserLabel, { idUser: jbuser.idUser, username: jbuser.username, enabled: jbuser.enabled, fullName: jbuser.fullName, process: jbuser.parametersMap.process, readOnly: jbuser.parametersMap.readOnly });
+				
+				let process = jbuser.parametersMap != undefined?  jbuser.parametersMap.process : null;
+				let readOnly = jbuser.parametersMap != undefined?  jbuser.parametersMap.readOnly : null;
+				let rootFolderLabel = jbuser.parametersMap != undefined?  jbuser.parametersMap.rootFolderLabel : null;
+				let rootFolderKey = jbuser.parametersMap != undefined?  jbuser.parametersMap.rootFolderKey : null;
+
+				$cookies.putObject(storedUserLabel, { idUser: jbuser.idUser, username: jbuser.username, enabled: jbuser.enabled, fullName: jbuser.fullName, 
+					process: process, readOnly: readOnly, rootFolderLabel: rootFolderLabel, rootFolderKey: rootFolderKey });
 			},
 			removeUser(){
 				$cookies.remove(storedUserLabel);
-			}
+			},
 			
 		}
 	}])
-
-
+	
+	.constant("customConfiguration", {})
+	.constant('externalDocument', {'portalEvent':null, 'context':{}})
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//CONTROLLER
 
 	//Logincontroller
-	.controller('LoginController', [ '$scope', '$http', '$location', 'jbValidate', 'jbAuthFactory', 'jbUtil', function ( $scope, $http, $location, jbValidate, jbAuthFactory, jbUtil) {
-
+	.controller('LoginController', [ '$scope', '$http', '$location', 'jbValidate', 'jbAuthFactory', 'jbUtil', 'customConfiguration', '$rootScope', 'externalDocument', 'DocumentTypeResource',
+		function ( $scope, $http, $location, jbValidate, jbAuthFactory, jbUtil, customConfiguration, $rootScope, externalDocument, DocumentTypeResource) {
+		
 		$scope.jbValidate = jbValidate;
 
 		$scope.credentials = {};
-
+		$scope.credentials.rootFolder = null;
 		$scope.login = function () {
+			if ($scope.credentials.rootFolder == null){
+				$scope.credentials.rootFolder = $scope.rootFoldersConfiguration[Object.keys($scope.rootFoldersConfiguration)[0]];
+			}
 			 var headers =  {Authorization : "Basic "
-			        + jbUtil.b64EncodeUnicode($scope.credentials.username+ ":" +$scope.credentials.password)
-			    };
+			        + jbUtil.b64EncodeUnicode($scope.credentials.username+ ":" +$scope.credentials.password+ ":" +$scope.credentials.rootFolder)
+		    };
 			    
 			$scope.loginPromise =
 				$http.get('a/Login',{headers: headers} )
 					.then(function (response) {
 						var jbuser = response.data;
 						jbAuthFactory.storeUser(jbuser);
-						$location.url('/home', true);
+						$http.get('a/configuration/type')
+						.then(function (response) {
+							customConfiguration.value = response.data;	
+							$location.url('/home', true);
+							
+						
+							/*DocumentTypes = DocumentTypeResource.query($scope.getUser()).then(
+									
+									console.log(DocumentTypes);
+									console.log(DocumentTypes.length)
+							
+							)
+							
+							console.log(DocumentTypes);
+							console.log(DocumentTypes.length)
+							
+							for (let i =0; i < DocumentTypes.length; i++){
+								let docType = DocumentTypes[i];
+								console.log(docType.id);
+							}
+							*/
+							
+							
+						});
 					});
 		};
-
+		
+		
+		
 	}])
+	
 
+	.controller('ExternalActionController', ['$scope', '$location', '$rootScope', 'externalDocument', function($scope, $location, $rootScope, externalDocument){	
+		console.log(externalDocument)
+		if ( externalDocument.portalEvent == undefined){
+			externalDocument.portalEvent = "showInserimentoFattura";
+			externalDocument.context = {idAlfresco: null, azienda: $scope.getUser().rootFolderKey};
+		}
+		
+		if(window.parent.dispatchPortalEvent){
+			window.parent.dispatchPortalEvent(externalDocument.portalEvent, externalDocument.context);
+		}
+			
+		
+		
+	}])
+	
 	//MainController
-	.controller('MainController', [ '$scope', '$http', 'jbAuthFactory', function ( $scope, $http, jbAuthFactory) {
+	.controller('MainController', [ '$scope', '$http', '$location', 'jbAuthFactory', 'externalDocument', 
+		function ( $scope, $http, $location, jbAuthFactory, externalDocument) {
+		
+		$scope.rootFoldersConfiguration = null;
 
+		$http.get('a/configuration/rootFolders').then(function (response) {
+			$scope.rootFoldersConfiguration = response.data;
+		});
+		
 		$scope.serverMessageVisible = false;
 		$scope.serverMessageString = null;
 
@@ -382,6 +447,7 @@ angular.module('main', [
 			$http
 				.get("a/Login", { params: { action: 'logout' } })
 				.then(function (response) {
+					$scope.getUser().enabled = 0;
 					jbAuthFactory.removeUser();
 				});
 		};
@@ -391,8 +457,44 @@ angular.module('main', [
 		$scope.openCalendar = function (calendarName) {
 			$scope.calendarPopups[calendarName] = true;
 		};
+		
+		
 
+
+		 $scope.$on('$routeChangeStart', function (scope, next, current) {
+		        //if (next && next.$$route && next.$$route.controller == "LoginController") 
+	        	if ($scope.getUser() && $scope.getUser().enabled == 1){
+		            //console.log("BACK");
+	        	}
+		    });
+
+		 
+		 if(window.parent.registerPortalEventListener){
+				
+				window.parent.registerPortalEventListener("backToZefiro", function(data){
+
+					$scope.$apply(function(){
+						externalDocument.context.idAlfresco = data.idAlfrescoFattura;
+						externalDocument.portalEvent = null;
+						$location.url('/home', true);
+					})
+				});
+			}
 	}])
+	
+	//SuggestionController
+	.controller('TypeaheadCtrl', ['$scope', '$http', function($scope, $http) {
+	  $scope.getSuggestions = function(val, type, property) {
+ 	    return $http.get('a/suggest/'+type+'/'+property, {
+	      params: {
+	        hint: val,
+	      }
+	    }).then(function(response){
+	      return response.data
+	    });
+	  };
+	}])
+	
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Directive
@@ -419,6 +521,7 @@ angular.module('main', [
 			}
 		};
 	})
+	
 
 	// validazione per uguaglianza
 	.directive('equals', function () {
@@ -515,10 +618,24 @@ angular.module('main', [
 			return $sce.trustAsHtml(url);
 		};
 
+<<<<<<< HEAD
 	}]).filter('yesOrNo',function () {
 		
+=======
+	}])
+	
+	.filter('yesOrNo',function () {
+>>>>>>> refs/heads/develop
 		return function (input) {
 			return input ? 'Sì' : 'No';
 		};
+	})
 
+	.filter('objSize', function() {
+	  return function(object) {
+		  if (object == null || object == undefined){
+			  return 0;
+		  }
+	    return Object.keys(object).length;
+	  }
 	});

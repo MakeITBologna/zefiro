@@ -102,6 +102,8 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 	private static final String DEFAULT_BASE_DOC_TYPE = "cmis:document";
 	
 	private static final Gson mGson = new Gson();
+	
+	private static final Integer ALFRESCORESULTSLIMIT = 100;
 
 	@Deprecated
 	private static String buildUrl(String pTemplate, AlfrescoConfig pConfig, String... pListParameters) {
@@ -655,13 +657,15 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		mLog.debug("EXIT renameDocument(<Session>, " + pStrNodeRef + ", " + pStrNewName + ")");
 	}
 
-	public static void deleteDocument(Session pSession, String pStrNodeRef, boolean pBlnAllVersions) {
+	public static Document deleteDocument(Session pSession, String pStrNodeRef, boolean pBlnAllVersions) {
 		mLog.debug("ENTER deleteDocument(<Session>, " + pStrNodeRef + ", " + pBlnAllVersions + ")");
 
 		Document lDocument = (Document) pSession.getObject(pStrNodeRef);
 		lDocument.delete(pBlnAllVersions);
 
 		mLog.debug("EXIT deleteDocument(<Session>, " + pStrNodeRef + ", " + pBlnAllVersions + ")");
+		
+		return lDocument;
 	}
 
 	public static Document getDocumentByPath(Session pSession, String pStrPath) {
@@ -857,16 +861,13 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		LinkedHashMap<String, Document> lHashMapResults = new LinkedHashMap<String, Document>();
 
 		ItemIterable<QueryResult> lResults = pSession.query(pQuery, false);
-		// XXX (Alessio): sarà il modo giusto? Prestazioni?
-
-		if (lResults != null) {
-			int i = 0;
+		Iterator<QueryResult> iterator = lResults.iterator();
+			
+		int i = 0;
 			//
-			for (Iterator<QueryResult> iterator = lResults.iterator(); i < ((CollectionIterator<QueryResult>) iterator)
-					.getTotalNumItems();) {
+			while (iterator.hasNext()) {
 				QueryResult qResult = iterator.next();
 
-				// } (QueryResult qResult : lResults) {
 				if (qResult != null) {
 					PropertyData<?> lPropData = qResult.getPropertyById("cmis:objectId");
 
@@ -878,7 +879,9 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 				}
 
 				i++;
-			}
+				if (i == ALFRESCORESULTSLIMIT) {
+					break;
+				}
 		}
 
 		mLog.debug("END searchDocuments(String");
@@ -1022,7 +1025,10 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		List<ObjectType> lLeaves = new LinkedList<ObjectType>();
 
 		List<Tree<ObjectType>> lTypesTree = getTypesTree(pSession, pStrBaseType, -1, pBlnIncludeProperties);
-		doGetTypesTreeLeaves(lTypesTree, lLeaves);
+		if(lTypesTree != null) {
+			doGetTypesTreeLeaves(lTypesTree, lLeaves);	
+		}
+		
 
 		mLog.debug("END getTypesTreeLeaves(String, int, boolean)");
 		return lLeaves;
@@ -1065,7 +1071,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		for (ObjectType lObjectType : pSession.getTypeChildren(pRelationsRootId, true)) {
 			lRelationTypes.add((RelationshipType) lObjectType);
 		}
-
+		System.out.println(lRelationTypes);
 		mLog.debug("END getRelationshipTypes(Session, String)");
 		return lRelationTypes;
 	}
@@ -1106,10 +1112,9 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 		return lFoundAspectIds;
 	}
 
-	public static List<RelationshipType> getAllowedRelationshipTypes(Session pSession, String pRelationsRootId,
-			String pStrTypeId) {
+	public static List<RelationshipType> getAllowedRelationshipTypes(Session pSession, String pRelationsRootId, String pStrTypeId) {
 		mLog.debug("START getAllowedRelationshipTypes(Session, String, String)");
-
+		System.out.println("ALLOWEEED");
 		List<RelationshipType> lAllowedRelationTypes = new ArrayList<RelationshipType>();
 
 		List<String> lTypeAspectIds = getTypeAspectIds(pSession, pStrTypeId);
@@ -1123,7 +1128,7 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 			lRelationAllowedTypes.addAll(lRelationType.getAllowedTargetTypes());
 
 			for (ObjectType lObjectType : lRelationAllowedTypes) {
-				if (lObjectType.getId().equals(pStrTypeId) || lTypeAspectIds.contains(lObjectType.getId())) {
+				if (lObjectType.getId().equals(pStrTypeId) || lTypeAspectIds.contains(lObjectType.getId()) ) {
 					lIsAllowed = true;
 					break;
 				}
@@ -1136,6 +1141,17 @@ public class AlfrescoHelper extends BaseAlfrescoHelper {
 
 		mLog.debug("END getAllowedRelationshipTypes(Session, String, String)");
 		return lAllowedRelationTypes;
+	}
+
+	public static List<String> getParentTypeIds(Session pSession, String pStrTypeId) {
+		ObjectType t = getTypeDefinition(pSession, pStrTypeId);
+		List<String> parentTypes = new ArrayList<>();
+		while(t.getParentType() != null && t.getParentType().getId() != DEFAULT_BASE_DOC_TYPE) {
+			parentTypes.add(t.getParentTypeId());
+			t = t.getParentType();
+		}
+			
+		return parentTypes;
 	}
 
 	/**

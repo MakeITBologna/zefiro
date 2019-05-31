@@ -28,10 +28,9 @@ import org.apache.chemistry.opencmis.commons.definitions.TypeDefinition;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class DocumentType {
 	// Ottengo la lista delle proprietà che non voglio visualizzare sul client
-	private String[] mPropertyBlacklist = JBrickConfigManager.getInstance().getPropertyList("propertyBlacklist/entry",
-			"@name");
-	private static final String mAlfrescoBaseTypeId = JBrickConfigManager.getInstance()
-			.getMandatoryProperty("alfresco/@baseTypeId");
+	private String[] mPropertyBlacklist = JBrickConfigManager.getInstance().getPropertyList("propertyBlacklist/entry",	"@name");
+	private static final String mAlfrescoBaseTypeId = JBrickConfigManager.getInstance().getMandatoryProperty("alfresco/@baseTypeId");
+	private static final String mAlfrescoBaseTypeItemId = JBrickConfigManager.getInstance().getProperty("alfresco/@baseTypeItemId");
 
 	@Context
 	private HttpServletRequest httpRequest;
@@ -49,11 +48,18 @@ public class DocumentType {
 	@Path("/")
 	public Response getDocTypes() {
 		Session lSession = Util.getUserAlfrescoSession(httpRequest);
-
+		
 		List<ObjectType> lObjectTypeTreeLeaves = AlfrescoHelper.getTypesTreeLeaves(lSession, mAlfrescoBaseTypeId, true);
+		
 		for (ObjectType lObjectType : lObjectTypeTreeLeaves)
 			addAspects(lSession, lObjectType);
-
+		
+		if(mAlfrescoBaseTypeItemId != null) {
+			List<ObjectType> itemTreeLeaves = AlfrescoHelper.getTypesTreeLeaves(lSession, mAlfrescoBaseTypeItemId, true);
+			lObjectTypeTreeLeaves.addAll(itemTreeLeaves);
+	
+		}
+		
 		return Response.ok(lObjectTypeTreeLeaves).build();
 	}
 
@@ -86,15 +92,8 @@ public class DocumentType {
 
 	@Path("/{id}/relation")
 	public RelationType getAllowedRelationTypes(@PathParam("id") String pStrId) {
-		return new RelationType(pStrId, httpRequest);
+		return new RelationType(pStrId, httpRequest, mAlfrescoBaseTypeId, mAlfrescoBaseTypeItemId);
 	}
 
-	// Non più usato: logica trasferita a front-end
-	// Rimuovo dall' ObjectType le proprietà nella blackslist
-	private void removeBlacklistProperties(ObjectType pObjectType) {
-
-		for (String lPropertyName : mPropertyBlacklist) {
-			pObjectType.getPropertyDefinitions().remove(lPropertyName);
-		}
-	}
+	
 }

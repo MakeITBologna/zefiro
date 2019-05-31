@@ -76,6 +76,44 @@ public class DocumentSerializer extends StdSerializer<Document> {
 		}
 		gen.writeObjectField("properties", lMapProps);
 		
+		/*gen.writeFieldName("relationships");
+		gen.writeStartArray();
+		
+		List<Relationship> lRelationships = value.getRelationships();
+		
+		if (lRelationships != null) {
+			for (Relationship lRelationship : lRelationships) {
+				
+				lRelationship.getId();
+				
+				lRelationship.getProperties();
+				gen.writeStartObject();
+				
+				gen.writeStringField("id", lRelationship.getId());
+				gen.writeStringField("name", lRelationship.getName());
+				gen.writeStringField("description", lRelationship.getDescription());
+				gen.writeFieldName("baseType");
+				gen.writeStartObject();
+				gen.writeStringField("id", lRelationship.getBaseType().getId());
+				gen.writeStringField("name", lRelationship.getBaseType().getDisplayName());
+				gen.writeStringField("description", lRelationship.getBaseType().getDescription());
+				Map<String, Property<?>> lRelProps = new LinkedHashMap<String, Property<?>>();
+				for (Property<?> prop : value.getProperties()) {
+					if (prop.getQueryName().equals("cmis:lastModificationDate")) {
+						continue;
+					}
+					lRelProps.put(prop.getQueryName(), prop);
+				}
+				gen.writeObjectField("properties", lRelProps);
+				
+				gen.writeEndObject();
+				gen.writeEndObject();
+				;}
+			
+		}
+			
+		gen.writeEndArray();
+		*/
 		gen.writeFieldName("relationships");
 		gen.writeStartArray();
 		

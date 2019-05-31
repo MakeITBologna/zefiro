@@ -27,6 +27,8 @@ public class DocumentBean implements BaseData {
 	private Map<String, DocumentPropertyBean> properties;
 
 	private String uploadedFileName;
+	
+	private String alfrescoDir;
 
 	public DocumentBean() {
 	}
@@ -120,5 +122,13 @@ public class DocumentBean implements BaseData {
 	@Override
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this);
+	}
+
+	public String getAlfrescoDir() {
+		return alfrescoDir;
+	}
+
+	public void setAlfrescoDir(String alfrescoDir) {
+		this.alfrescoDir = alfrescoDir;
 	}
 }

@@ -13,20 +13,23 @@
 	</ol>
 	<div class="page-header ">
 		<div class="pull-right">
-			<button ng-if="!isReadOnly()" class="btn btn-primary" type="button" ng-click="jbValidate.checkForm(jbDetailFormDocument) && saveDetail(jbDetailFormDocument)">
+			<button ng-if="!readOnly && !isReadOnly()" class="btn btn-primary" type="button" ng-click="jbValidate.checkForm(jbDetailFormDocument) && saveDetail(jbDetailFormDocument)">
 				<span ng-hide="currentRownum == null"><i class="fa fa-floppy-o"></i> <fmt:message key="jsp.detail.update.submit"/></span>
 				<span ng-show="currentRownum == null"><i class="fa fa-floppy-o"></i> <fmt:message key="jsp.detail.insert.submit"/></span>
 			</button>
-			<button ng-hide="currentRownum == null" class="btn btn-default" type="button" ng-click="jbDetailFormDocument.print()"><i class="fa fa-download"></i> <fmt:message key="jsp.detail.download"/></button>
+			<button ng-show="currentRownum != null && isExternalDocumentEditable == true" class="btn btn-default" type="button" ng-click="modifyExternalDocument()"><i class="fa fa-download"></i> Modifica fattura</button>	
+			<button ng-hide="currentRownum == null || isItem" class="btn btn-default" type="button" ng-click="jbDetailFormDocument.print()"><i class="fa fa-download"></i> <fmt:message key="jsp.detail.download"/></button>
 			<button class="btn btn-default" type="button" ng-click="gotoDocumentBreadcrumb(breadCrumbIndex-1, jbDetailFormDocument)"><i class="fa fa-times"></i> <fmt:message key="js.dialog.back"/></button>
 		</div>
 			<span ng-hide="currentRownum == null"><h1><b>{{documentEditing.description}}</b></h1></span>
 			<span ng-show="currentRownum == null"><h1><b><fmt:message key="jsp.detail.insert.submit"/></b></h1></span>
 	</div>
-	
+	<div>
+
+	</div>
 	<div class="row form-group">
 		<!-- Preview -->
-		<div class="col-sm-8">
+		<div class="col-sm-8" >
 			
 			<div  ng-if="currentFileName != null" ng-bind-html="getDocumentObjectHTML() | trusted">
 			
@@ -39,38 +42,6 @@
 			<form name="jbDetailFormDocument" class="form-horizontal" novalidate jb-print="a/Document/{{documentEditing.id}}/content">
 				<input ng-if="currentRownum != null" type="hidden" name="id" ng-model="documentEditing.id"/>
 			
-				<div ng-if="currentRownum == null" class="row jb-form-group">
-					<label for="jbDetailFormDocument-file" class="control-label col-sm-4" title="<fmt:message key="jsp.document.file.title"/>"><fmt:message key="jsp.document.file.title"/></label>
-					<div class="col-sm-8">
-						<div class="input-group">
-						 <input id="jbDetailFormDocument-file" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="file" name="file" jb-upload="setCurrentFileName(newUrl, uploaded, userFilename)" />
-						 <span class="input-group-btn">
-						   <button class="btn btn-default" type="button" promise-btn="uploadPromise"><i class="fa fa-upload"></i> Upload</button>
-						 </span>
-						</div>
-					</div>
-				</div>
-				
-				<div class="row jb-form-group">
-				  <label for="jbDetailFormDocument-name" class="control-label col-sm-4" title="<fmt:message key="jsp.document.name.title"/>"><fmt:message key="jsp.document.name.label" /></label>
-				  <div class="col-sm-8">
-				  <p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.name}}</p>
-				  	<input  ng-if="!isReadOnly()" ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-name" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="text" name="name" ng-model="documentEditing.name" pattern="^\w+[\w\s\.-]*$"/>
-				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.name)"><fmt:message key="js.validate.filename"/></label>
-				  	<p ng-if="readOnly" class="form-control-static">{{documentEditing.name}}</p>
-				  </div>
-				</div>
-				
-				<div class="row jb-form-group">
-				  <label for="jbDetailFormDocument-description" class="control-label col-sm-4" title="<fmt:message key="jsp.document.description.title"/>"><fmt:message key="jsp.document.description.label" /></label>
-				  <div class="col-sm-8">
-				   <p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.description}}</p>
-				  	<input ng-if="!isReadOnly()" ng-required="true" ng-if="!readOnly" id="jbDetailFormDocument-description" class="form-control" title="<fmt:message key="jsp.document.description.title"/>" type="text" name="description" ng-model="documentEditing.description"/>
-				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.description)"><fmt:message key="js.validate.required"/></label>
-				  	<p ng-if="readOnly" class="form-control-static">{{documentEditing.description}}</p>
-				  </div>
-				</div>
-				
 				<div  class="row jb-form-group">
 				  <label for="jbDetailFormDocument-type" class="control-label col-sm-4" title="<fmt:message key="jsp.document.type.title"/>"><fmt:message key="jsp.document.type.label" /></label>
 				  <div class="col-sm-8">
@@ -84,29 +55,61 @@
 					<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.type)"><fmt:message key="js.validate.required"/></label>
 				  </div>
 				</div>	
+			
+				<div ng-if="currentRownum == null && documentTypeEdit.baseType != 'cmis:item'" class="row jb-form-group">
+					<label for="jbDetailFormDocument-file" class="control-label col-sm-4" title="<fmt:message key="jsp.document.file.title"/>"><fmt:message key="jsp.document.file.title"/></label>
+					<div class="col-sm-8">
+						<div class="input-group">
+						 <input id="jbDetailFormDocument-file" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="file" name="file" jb-upload="setCurrentFileName(newUrl, uploaded, userFilename)" />
+						 <span class="input-group-btn">
+						   <button class="btn btn-default" type="button" promise-btn="uploadPromise"><i class="fa fa-upload"></i> Upload</button>
+						 </span>
+						</div>
+					</div>
+				</div>
 				
-				<div ng-if="currentRownum != null" class="row jb-form-group">
+				<div class="row jb-form-group"  >
+				  <label for="jbDetailFormDocument-name" class="control-label col-sm-4" title="<fmt:message key="jsp.document.name.title"/>"><fmt:message key="jsp.document.name.label" /></label>
+				  <div class="col-sm-8">
+				  	<p ng-if="readOnly || isReadOnly()" class="form-control-static">{{documentEditing.name}}</p>
+				  	<input  ng-if="!readOnly && !isReadOnly()" ng-required="true" id="jbDetailFormDocument-name" class="form-control" title="<fmt:message key="jsp.document.name.title"/>" type="text" name="name" ng-model="documentEditing.name" pattern="^\w+[\w\s\.-]*$"/>
+				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.name)"><fmt:message key="js.validate.filename"/></label>
+				  </div>
+				</div>
+				
+				<div class="row jb-form-group" >
+				  <label for="jbDetailFormDocument-description" class="control-label col-sm-4" title="<fmt:message key="jsp.document.description.title"/>"><fmt:message key="jsp.document.description.label" /></label>
+				  <div class="col-sm-8">
+				    <p ng-if="readOnly || isReadOnly()" class="form-control-static">{{documentEditing.description}}</p>
+				  	<input ng-if="!readOnly && !isReadOnly()" ng-required="true" id="jbDetailFormDocument-description" class="form-control" title="<fmt:message key="jsp.document.description.title"/>" type="text" name="description" ng-model="documentEditing.description"/>
+				  	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument.description)"><fmt:message key="js.validate.required"/></label>
+				  </div>
+				</div>
+				
+		
+				
+				<div ng-if="currentRownum != null && documentTypeEdit.baseType != 'cmis:item'" class="row jb-form-group">
 				  <label for="jbDetailFormDocument-version" class="control-label col-sm-4" title="<fmt:message key="jsp.document.version.title"/>"><fmt:message key="jsp.document.version.label" /></label>
 				  <div class="col-sm-8">
 				  <p class="form-control-static">{{documentEditing.version}}</p>
 				  </div>
 				</div>	
 					
-				<div ng-if="currentRownum != null" class="row jb-form-group">
+				<div ng-if="currentRownum != null  && documentTypeEdit.baseType != 'cmis:item'" class="row jb-form-group">
 				  <label for="jbDetailFormDocument-created" class="control-label col-sm-4" title="<fmt:message key="jsp.document.created.title"/>"><fmt:message key="jsp.document.created.label" /></label>
 				  <div class="col-sm-8">
 					<p class="form-control-static">{{documentEditing.created | date: '${localePatternTimestamp}'}}</p>  
 				  </div>
 				</div>
 					
-				<div ng-if="currentRownum != null" class="row jb-form-group">
+				<div ng-if="currentRownum != null  && documentTypeEdit.baseType != 'cmis:item'" class="row jb-form-group">
 				  <label for="jbDetailFormDocument-createdBy" class="control-label col-sm-4" title="<fmt:message key="jsp.document.createdBy.title"/>"><fmt:message key="jsp.document.createdBy.label" /></label>
 				  <div class="col-sm-8">
 				 	 <p class="form-control-static">{{documentEditing.createdBy}}</p>
 				  </div>
 				</div>
 				
-				<!-- Proprietà aggiuntive -->
+				<!-- Proprietï¿½ aggiuntive -->
 				<div class="row jb-form-group" ng-repeat="p in documentTypeEdit.propertyList ">
 				  <label for="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="control-label col-sm-4" title="{{p.description}}">{{p.displayName}}</label>
 				  <div class="col-sm-8">
@@ -115,9 +118,8 @@
 					  	<div ng-if="!readOnly" ng-class="jbValidate.getClass(jbDetailFormDocument[p.queryName])">
 					  		
 					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value}}</p>
-					  	    <input ng-if="!isReadOnly()" ng-required="p.required" ng-if="jbUtil.isEmptyObject(p.choices) && !p.linkType" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value" />
-					  	  	<select ng-if="!isReadOnly()" ng-required="p.required" ng-if="!jbUtil.isEmptyObject(p.choices)" class="form-control" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value">
-						        <option></option>
+					  	    <input ng-required="p.required" ng-if="!isReadOnly() && jbUtil.isEmptyObject(p.choices) && !p.linkType" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value" />
+					  	  	<select ng-required="p.required" ng-if="!isReadOnly() && !jbUtil.isEmptyObject(p.choices)" class="form-control" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" title="{{p.description}}" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value">
 						    	<option ng-repeat="c in p.choices" value="{{c}}">{{c}}</option> 
 						    	
 						  	</select>
@@ -133,7 +135,7 @@
 					  
 					  <div ng-if="p.propertyType == 'INTEGER'">
 					  	<div ng-if="!readOnly"  ng-class="jbValidate.getClass(jbDetailFormDocument[p.queryName])">
-					  	<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value}}</p>
+					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value}}</p>
 						  	<input ng-if="!isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" ng-model="documentEditing.properties[p.queryName].value" ng-pattern="jbPatterns.number(0)" jb-number="0"/>
 						 	<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument[p.queryName])"><fmt:message key="js.validate.number"/></label>
 						</div>
@@ -170,11 +172,12 @@
 						</div>
 					  </div>
 					  
-					  <div ng-if="p.propertyType == 'DATETIME'">
+					  <!-- TODO: Fix - unico tipo in CMIS (date e datetime stessa cosa) -->
+					  <!-- div ng-if="p.propertyType == 'DATETIME'">
 					  	<div class="input-group" ng-if="!readOnly">
 					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value | date: '${localePatternTimestamp}'}}</p>
-					  		<input ng-if="!isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" readonly datetime-picker="${localePatternTimestamp}" ng-model="documentEditing.properties[p.queryName].value" is-open="calendarPopups['jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName)]" />
-					  		<span ng-if="!isReadOnly() class="input-group-btn">
+					  		<input name="DATETIME"ng-if="!isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" readonly datetime-picker="${localePatternTimestamp}" ng-model="documentEditing.properties[p.queryName].value" is-open="calendarPopups['jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName)]" />
+					  		<span ng-if="!isReadOnly()" class="input-group-btn">
 	       						<button type="button" class="btn btn-default" ng-click="openCalendar('jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName))"><i class="fa fa-calendar"></i></button>
 	      					</span>
 	      					<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument[p.queryName])"><fmt:message key="js.validate.required"/></label>
@@ -182,26 +185,26 @@
 					  	<div ng-if="readOnly">
 							<p class="form-control-static">{{documentEditing.properties[p.queryName].value | date: '${localePatternTimestamp}'}}</p>
 						</div>
-					  </div>
+					  </div-->
 					  
-					  <div ng-if="p.propertyType == 'DATE'">
+					  <div ng-if="p.propertyType == 'DATETIME'">
 					  	<div class="input-group" ng-if="!readOnly">
-					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value | date: '${localePatternTimestamp}'}}</p>
-					  		<input  ng-if="isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" readonly uib-datepicker-popup="${localePatternDate}" ng-model="documentEditing.properties[p.queryName].value" is-open="calendarPopups['jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName)]"/>
-					  		<span class="input-group-btn">
+					  		<p ng-if="isReadOnly()" class="form-control-static">{{documentEditing.properties[p.queryName].value | date: '${localePatternDate}'}}</p>
+					  		<input ng-if="!isReadOnly()" ng-required="p.required" id="jbDetailFormDocument-{{jbUtil.sanitize(p.queryName)}}" class="form-control" title="{{p.description}}" type="text" name="{{p.queryName}}" readonly uib-datepicker-popup="${localePatternDate}" ng-model="documentEditing.properties[p.queryName].value" is-open="calendarPopups['jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName)]"/>
+					  		<span ng-if="!isReadOnly()" class="input-group-btn">
 	       						<button type="button" class="btn btn-default" ng-click="openCalendar('jbDetailFormDocument-'+ jbUtil.sanitize(p.queryName))"><i class="fa fa-calendar"></i></button>
 	      					</span>
 	      					<label class="text-danger" ng-show="jbValidate.showMessage(jbDetailFormDocument[p.queryName])"><fmt:message key="js.validate.required"/></label>
 					  	</div>
 					  	<div ng-if="readOnly">
-							<p class="form-control-static">{{documentEditing.properties[p.queryName].value | date: '${localePatternTimestamp}'}}</p>
+							<p class="form-control-static">{{documentEditing.properties[p.queryName].value | date: '${localePatternDate}'}}</p>
 						</div>
 					  </div>
 				  	
 				  </div>
 			
 				</div>
-				<!-- Fine Proprietà aggiuntive -->
+				<!-- Fine Proprietï¿½ aggiuntive -->
 			 
 			</form>
 			<!-- Fine informazioni di dettaglio -->
@@ -209,18 +212,18 @@
 			<!-- Versioni documento -->
 			<br>
 			<div ng-if="currentRownum != null" >
-				<div class="row jb-toolbar" >
+				<div class="row jb-toolbar" ng-if="!isItem" >
 					<div class="col-sm-6">
 						<h4><fmt:message key="jsp.document.version.sidemenu"/></h4>
 					</div>
 		  			<div  class="col-sm-6 ">
 		  				<div  ng-if="!isReadOnly()" class="pull-right">
-		  					<button class="btn btn-success btn-sm" type="button" ng-click="startContentReplace()"><i class="fa fa-plus"></i> <fmt:message key="jsp.document.update"/></button>
+		  					<!-- button class="btn btn-success btn-sm" type="button" ng-click="startContentReplace()"><i class="fa fa-plus"></i> <fmt:message key="jsp.document.update"/></button -->
 		  				</div>
 					</div>
 		  		</div>
 				
-				<table class="table table-hover">
+				<table class="table table-hover" ng-if="!isItem">
 				<tbody>
 					<tr ng-repeat="dv in documentVersions" ng-if="$index < 10">
 						<td>
@@ -247,18 +250,18 @@
 					<table class="table table-hover">
 					<tbody><!-- relazioni esistenti per il tipo -->
 						<tr ng-repeat="r in documentEditing.relationships | filter:isRelationOfType(rt, 'source', documentEditing.id)">
-							<td><a ng-click="showDocument({id: r.target.id, name: r.target.name, description: r.target.description})" href>{{r.target.description}}</a></td>
+							<td><a ng-click="showDocument({id: r.target.id, name: r.target.name, description: r.target.description, baseType: r.target.baseType})" href>{{r.target.description}}</a></td>
 							<td>{{r.target.createdBy}}</td>
-							<td ng-if="readOnly" ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
+							<td ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
 						</tr>
 						<tr ng-repeat="r in documentEditing.relationships | filter:isRelationOfType(rt, 'target', documentEditing.id)">
-							<td><a ng-click="showDocument({id: r.source.id, name: r.source.name, description: r.source.description})" href>{{r.source.description}}</a></td>
+							<td><a ng-click="showDocument({id: r.source.id, name: r.source.name, description: r.source.description, baseType: r.source.baseType})" href>{{r.source.description}}</a></td>
 							<td>{{r.source.createdBy}}</td>
-							<td ng-if="readOnly" ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
+							<td ng-hide="readOnly" ng-click="delRelation(r.id)" confirm="{{jbMessages.confirmDeleteRel}}"><i class="fa fa-lg fa-times text-danger"></i></td>
 						</tr>
-						<tr ng-if="readOnly && isTypeSpecific(rt, documentTypeEdit.id)">
+						<tr ng-if="!isReadOnly() && isTypeSpecific(rt, documentTypeEdit.id)">
 							<td colspan="3">
-								<button class="btn btn-success btn-sm" type="button" ng-click="startAddRelation(rt)"><i class="fa fa-plus"></i> <fmt:message key="jsp.document.addRelationship"/></button>
+								<!-- button class="btn btn-success btn-sm" type="button" ng-click="startAddRelation(rt)"><i class="fa fa-plus"></i> <fmt:message key="jsp.document.addRelationship"/></button-->
 							</td>
 						</tr>
 					</tbody>

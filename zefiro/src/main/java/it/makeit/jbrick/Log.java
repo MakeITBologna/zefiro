@@ -1,14 +1,12 @@
 package it.makeit.jbrick;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.MDC;
-import org.apache.log4j.xml.DOMConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 public final class Log {
 	
-    private org.apache.log4j.Logger realLog;
+    private org.slf4j.Logger realLog;
 
     /**
      * Private constructor to force getInstance.
@@ -20,7 +18,7 @@ public final class Log {
      * Private constructor which creates a new Log instance wrapping the commons Log instance
      * provided.  Only used by the static getInstance() method on this class.
      */
-    private Log(org.apache.log4j.Logger realLog) {
+    private Log(org.slf4j.Logger realLog) {
         this.realLog = realLog;
     }
 
@@ -31,7 +29,7 @@ public final class Log {
      * @return a Log instance with which to log
      */
     public static Log getInstance(Class<?> clazz) {
-        return new Log(Logger.getLogger(clazz));
+        return new Log(LoggerFactory.getLogger(clazz));
     }
 
     /**
@@ -41,7 +39,7 @@ public final class Log {
      * @return a Log instance with which to log
      */
     public static Log getInstance(String name) {
-        return new Log(Logger.getLogger(name));
+        return new Log(LoggerFactory.getLogger(name));
     }
 
     /**
@@ -51,7 +49,7 @@ public final class Log {
      *        to form the log message.
      */
     public final void error(Throwable throwable, Object... messageParts) {
-        if (this.realLog.isEnabledFor(Level.ERROR)) {
+        if (this.realLog.isErrorEnabled()) {
             this.realLog.error(combineParts(messageParts), throwable);
         }
     }
@@ -62,7 +60,7 @@ public final class Log {
      *        to form the log message.
      */
     public final void error(Object... messageParts) {
-        if (this.realLog.isEnabledFor(Level.ERROR)) {
+        if (this.realLog.isErrorEnabled()) {
             this.realLog.error(combineParts(messageParts));
         }
     }
@@ -119,12 +117,7 @@ public final class Log {
 	}
 	
 	
-	public LoggingOutputStream getLoggingOutputStream()
-	{
-		return new LoggingOutputStream(realLog,org.apache.log4j.Level.DEBUG);
-	}
-
-	/**
+		/**
 	 * @return
 	 * @see org.apache.log4j.Category#isDebugEnabled()
 	 */
@@ -140,12 +133,13 @@ public final class Log {
 		return realLog.isInfoEnabled();
 	}
 	 
+	/*
     public void reloadConfiguration(String pStrFilePath) {
     	info("start Configuration reset ");
     	LogManager.resetConfiguration();
     	DOMConfigurator.configure(pStrFilePath);
     	info("finish Configuration reset");
-    }
+    }*/
     
     public static void mdcPut(String pStrKey, String pStrValue) {
     	MDC.put(pStrKey,pStrValue);

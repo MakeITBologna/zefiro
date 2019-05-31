@@ -1,9 +1,12 @@
 package it.makeit.jbrick;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -36,12 +39,14 @@ public final class JBrickConfigManager {
 	 * @param pStrBasePath
 	 *            cartella di configurazione
 	 * @return istanza di ConfigManager.
+	 * @throws FileNotFoundException 
 	 * @throws ConfigException
 	 */
 	
 	//Non è  più un singleton! i metodi getInstance restano per garantire la trasparenza rispetto agli utilizzi precedenti
 	public static JBrickConfigManager getInstance() throws JBrickException {
-		JBrickConfigManager lConfigManager = getInstance("/"+CONFIG_FILENAME);
+
+		JBrickConfigManager lConfigManager = getInstance("/" + CONFIG_FILENAME);
 		if (lConfigManager == null) {
 			mLog.error(CONFIG_FILENAME , " non trovato");
 			throw new JBrickException(JBrickException.FATAL);
@@ -49,7 +54,7 @@ public final class JBrickConfigManager {
 		return lConfigManager;
 	}
 	
-	public static JBrickConfigManager getInstanceForProcess(String pStrProcessName) throws JBrickException {
+	public static JBrickConfigManager getInstanceForProcess(String pStrProcessName) throws JBrickException, FileNotFoundException {
 		String lStrCfgFileName = "/it/makeit/"+pStrProcessName.toLowerCase()+"/ProcessConfig.xml";
 		JBrickConfigManager lConfigManager = getInstance(lStrCfgFileName);
 		if (lConfigManager == null) {
@@ -67,6 +72,17 @@ public final class JBrickConfigManager {
 			if (lInputStream != null) {
 				mLog.debug(pStrCfgFileName , " trovato");
 				lConfigManager = new JBrickConfigManager(lInputStream, pStrCfgFileName);
+				String external = lConfigManager.getProperty("jbrickConfig/@external");
+				if(external != null ) {
+					try {
+						lInputStream = new FileInputStream(external + CONFIG_FILENAME);
+					} catch (FileNotFoundException e) {
+						throw new JBrickException(JBrickException.FATAL);
+					}
+					lConfigManager = new JBrickConfigManager(lInputStream, pStrCfgFileName);
+					mLog.debug(external, " caricamento da sorgente esterna");
+				}	
+				
 				mMapConfigManager.put(pStrCfgFileName, lConfigManager);
 			}
 		} else {
@@ -157,6 +173,10 @@ public final class JBrickConfigManager {
 		String lStrProperty = mXMLConfiguration.getString(pStrProperty);
 		mLog.debug("Returning ",lStrProperty);
 		return lStrProperty;
+	}
+	
+	public Object getPropertyObject(String pStrProperty){
+		return mXMLConfiguration.getProperty(pStrProperty);
 	}
 	
 	/** Metodo che restituisce il valore in forma di lista della proprietà passata come parametro, 
